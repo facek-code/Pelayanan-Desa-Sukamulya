@@ -70,6 +70,9 @@ if($_SESSION['mandiri']<>1){
 	<tr style="border-bottom:1px solid #111;">
 		<td><h4><a href="<?php echo site_url();?>first/logout"  class=""> Keluar</a></h4></td><td></td>
 	</tr>
+	<tr style="border-bottom:1px solid #111;">
+		<td><h4><a href="<?php echo site_url();?>first/ganti_pin" target="ajax-modalz" rel="window-lok" header="Ganti PIN" title="Ganti PIN">Ganti PIN</a></h4></td><td></td>
+	</tr>
 </table>
 	</div>
 </div>

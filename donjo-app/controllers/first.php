@@ -97,6 +97,10 @@ class First extends CI_Controller{
 		$this->load->view("sid/kependudukan/cetak_kk", $data);
 	}
 
+	function ganti_pin($id=''){
+		$this->load->view('mandiri/reset_pin', $data);
+	}
+
 	function mandiri($p=1,$m=0){
 		if($_SESSION['mandiri']!=1){
 			redirect('first');
