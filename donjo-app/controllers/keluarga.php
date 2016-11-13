@@ -740,12 +740,13 @@ function __construct(){
 
 	function pindah_proses($id=0){
 		$id_cluster = $_POST['id_cluster'];
-		$this->keluarga_model->pindah_proses($id,$id_cluster);
+		$alamat = $_POST['alamat'];
+		$this->keluarga_model->pindah_proses($id,$id_cluster,$alamat);
 		redirect("keluarga");
 	}
 
 	function ajax_penduduk_pindah($id=0){
-
+		$data['alamat_wilayah'] = $this->keluarga_model->get_alamat_wilayah($id);
 		$data['dusun'] = $this->penduduk_model->list_dusun();
 
 		$data['form_action'] = site_url("keluarga/pindah_proses/$id");
@@ -753,10 +754,11 @@ function __construct(){
 	}
 
 	function ajax_penduduk_pindah_rw($dusun=''){
+		$dusun = urldecode($dusun);
 		$rw = $this->penduduk_model->list_rw($dusun);
 		//$this->load->view("sid/kependudukan/ajax_penduduk_pindah_form_rw", $data);
 		echo"<td>RW</td>
-		<td><select name='rw' onchange=RWSel('".$dusun."',this.value)>
+		<td><select name='rw' onchange=RWSel('".rawurlencode($dusun)."',this.value)>
 		<option value=''>Pilih RW&nbsp;</option>";
 		foreach($rw as $data){
 			echo "<option>".$data['rw']."</option>";
@@ -765,6 +767,7 @@ function __construct(){
 	}
 
 	function ajax_penduduk_pindah_rt($dusun='',$rw=''){
+		$dusun = urldecode($dusun);
 		$rt = $this->penduduk_model->list_rt($dusun,$rw);
 		//$this->load->view("sid/kependudukan/ajax_penduduk_pindah_form_rt", $data);
 		echo "<td>RT</td>

@@ -1,6 +1,6 @@
 <?php
 
-define("VERSION", '1.2.3');
+define("VERSION", '1.2.4');
 define("LOKASI_LOGO_DESA", 'desa/logo/');
 define("LOKASI_ARSIP", 'desa/arsip/');
 define("LOKASI_CONFIG_DESA", 'desa/config/');
@@ -17,7 +17,7 @@ define("LOKASI_DOKUMEN", 'desa/upload/dokumen/');
 define("LOKASI_WIDGET", 'desa/widget/');
 
 // Konversi tulisan kode Buku Induk Penduduk ke kode SID
-define("KODE_SEX", serialize(array("L" => "1", "P" => "2")));
+define("KODE_SEX", serialize(array("L" => "1", "Lk" => "1", "P" => "2", "Pr" => "2")));
 define("KODE_AGAMA", serialize(array(
       strtolower("Islam") => "1",
       strtolower("Kristen") => "2",

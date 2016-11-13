@@ -383,6 +383,10 @@
 			return;
 		}
 
+		// Simpan alamat keluarga sebelum menulis penduduk
+		$data2['alamat'] = $data['alamat'];
+		UNSET($data['alamat']);
+
 		$outp = $this->db->insert('tweb_penduduk',penetration($data));
 		if($outp) $_SESSION['success']=1;
 			else $_SESSION['success']=-1;
@@ -675,7 +679,10 @@
 	}
 	function get_kepala_a($id){
 
-		$sql   = "SELECT u.*,c.*, (SELECT no_kk FROM tweb_keluarga WHERE id = ?) AS no_kk FROM tweb_penduduk u LEFT JOIN tweb_wil_clusterdesa c ON u.id_cluster = c.id WHERE u.id = (SELECT nik_kepala FROM tweb_keluarga WHERE id = ?) ";
+		$sql = "SELECT u.*,c.*, k.no_kk, k.alamat
+			FROM tweb_penduduk u
+			LEFT JOIN tweb_keluarga k ON k.id = ?
+			LEFT JOIN tweb_wil_clusterdesa c ON u.id_cluster = c.id WHERE u.id = (SELECT nik_kepala FROM tweb_keluarga WHERE id = ?) ";
 		$query = $this->db->query($sql,array($id,$id));
 		return $query->row_array();
 
@@ -813,27 +820,49 @@
 		return $query->result_array();
 	}
 
-	function pindah_proses($id=0,$id_cluster=''){
-		$this->db->where('id_kk',$id);
-		$data['id_cluster'] = $id_cluster;
-		$outp = $this->db->update('tweb_penduduk',$data);
+	function pindah_proses($id=0,$id_cluster='',$alamat=''){
+		// Ubah alamat keluarga
+		$this->db->where('id',$id);
+		$data_kel['alamat'] = $alamat;
+		$this->db->update('tweb_keluarga', $data_kel);
+		// Ubah dusun/rw/rt untuk semua anggota keluarga
+		if ($id_cluster != '') {
+			$this->db->where('id_kk',$id);
+			$data['id_cluster'] = $id_cluster;
+			$outp = $this->db->update('tweb_penduduk',$data);
 
-		$sql   = "SELECT id FROM tweb_penduduk WHERE id_kk=$id";
+			$sql   = "SELECT id FROM tweb_penduduk WHERE id_kk=$id";
 
-		$query = $this->db->query($sql);
-		$data2= $query->result_array();
+			$query = $this->db->query($sql);
+			$data2= $query->result_array();
 
-		foreach($data2 as $datanya){
-			$log['id_pend'] = $datanya['id'];
-			$log['id_detail'] = "6";
-			$log['bulan'] = date("m");
-			$log['tahun'] = date("Y");
-			$outp = $this->db->insert('log_penduduk',$log);
+			foreach($data2 as $datanya){
+				$log['id_pend'] = $datanya['id'];
+				$log['id_detail'] = "6";
+				$log['bulan'] = date("m");
+				$log['tahun'] = date("Y");
+				$outp = $this->db->insert('log_penduduk',$log);
+			}
+
+			if($outp) $_SESSION['success']=1;
+				else $_SESSION['success']=-1;
 		}
 
-		if($outp) $_SESSION['success']=1;
-			else $_SESSION['success']=-1;
 	}
+
+	function get_alamat_wilayah($id_kk) {
+		$sql = "SELECT a.dusun,a.rw,a.rt,k.alamat
+				FROM tweb_keluarga k
+				LEFT JOIN tweb_penduduk u ON u.id = k.nik_kepala
+				LEFT JOIN tweb_wil_clusterdesa a ON u.id_cluster = a.id
+				WHERE k.id=?";
+		$query = $this->db->query($sql,$id_kk);
+		$data  = $query->row_array();
+
+		$alamat_wilayah= trim("$data[alamat] RT $data[rt] / RW $data[rw] $data[dusun]");
+		return $alamat_wilayah;
+	}
+
 
 	function get_judul_statistik($tipe=0,$nomor=1){
 		switch($tipe){
