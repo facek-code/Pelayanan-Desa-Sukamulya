@@ -72,6 +72,12 @@
     }
     // Gabung F-1.15 dan F-1.01 menjadi satu lampiran surat_permohonan_kartu_keluarga
     $this->db->where('url_surat','surat_permohonan_kartu_keluarga')->update('tweb_surat_format',array('lampiran'=>'f-1.15.php,f-1.01.php'));
+    // Ubah surat_pindah_antar_kab_prov menjadi surat_permohonan_ktp
+    $ubah_surat = array(
+      'nama'=>'Permohonan Kartu Tanda Penduduk',
+      'url_surat'=>'surat_permohonan_ktp',
+      'lampiran'=>'f-1.21.php,f-1.06.php');
+    $this->db->where('url_surat','surat_pindah_antar_kab_prov')->update('tweb_surat_format',$ubah_surat);
   }
 
   // Berdasarkan analisa database yang dikirim oleh AdJie Reverb Impulse
