@@ -61,12 +61,12 @@ table.disdukcapil td.tengah { text-align: center; }
     <col style="width: 15.2%;">
     <col style="width: 0.8%;">
     <col span="33" style="width: 2.54%;">
-    <tr>
+<!--     <tr>
       <?php for($i=0; $i<35; $i++): ?>
         <td class="kotak">&nbsp;</td>
       <?php endfor; ?>
     </tr>
-
+ -->
     <tr>
       <td class="kotak" colspan=48>
         <strong>Perhatian:</strong><br>
@@ -241,85 +241,91 @@ table.disdukcapil td.tengah { text-align: center; }
       <?php endfor; ?>
       <td colspan="7">&nbsp;</td>
     </tr>
-    <tr><td>&nbsp;</td></tr>
+  </table>
+
+  <table class="disdukcapil" style="margin-top: 25px; border: 0px; border-collapse: collapse;">
+    <col style="width: 10%;">
+    <col style="width: 10%;">
+    <col style="width: 25%;">
+    <col style="width: 20%">
+    <col style="width: 30%">
+    <col style="width: 5%">
+<!--     <tr>
+      <?php for($i=0; $i<6; $i++): ?>
+        <td class="kotak">&nbsp;</td>
+      <?php endfor; ?>
+    </tr>
+ -->
     <tr>
-      <td colspan="46" style="text-align: right">
-        <?php echo str_pad(".",40,".",STR_PAD_LEFT);?>,<?php echo str_pad(".",60,".",STR_PAD_LEFT);?>
+      <td class="kotak tengah" style="font-size: 6pt;">Pas Photo (2 x 3)</td>
+      <td class="kotak tengah">Cap Jempol</td>
+      <td class="kotak tengah">Specimen Tanda Tangan</td>
+      <td>&nbsp;</td>
+      <td class="tengah">
+        <?php echo str_pad(".",30,".",STR_PAD_LEFT);?>,<?php echo str_pad(".",50,".",STR_PAD_LEFT);?>
       </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td rowspan="6" class="kotak" style="vertical-align: middle;">pas foto</td>
+      <td class="tengah_blank">&nbsp;</td>
+      <td class="tengah_blank">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td class="tengah">Pemohon,</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="pinggir_kanan">&nbsp;</td>
+      <td class="pinggir_kanan">&nbsp;</td>
+      <td colspan="4">&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td class="pinggir_kanan"><span style="margin-left: -20px; font-size: 6pt;text-align: left;">Atau --></span></td>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="pinggir_kanan">&nbsp;</td>
+      <td class="pinggir_kanan">&nbsp;</td>
+      <td colspan="4"><span style="font-size: 20pt;">&nbsp;</span></td>
+    </tr>
+    <tr>
+      <td class="pinggir_kanan">&nbsp;</td>
+      <td class="tengah_blank" style="border-bottom: 1px solid black;">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td class="tengah" style="vertical-align: bottom;">(&nbsp;<?php echo padded_string_center(strtoupper($individu['nama']),30)?>&nbsp;)</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="bawah pinggir_kanan">&nbsp;</td>
+      <td>Ket: &nbsp;&nbsp;Cap Jempol/Tanda Tangan<br>&nbsp;</td>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+      <td class="tengah">Mengetahui</td>
       <td colspan="2">&nbsp;</td>
     </tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
     <tr>
-      <td colspan="4">&nbsp;</td>
-      <td colspan="16" style="text-align: center;">Mengetahui</td>
-      <td colspan="15">&nbsp;</td>
-      <td colspan="10" style="text-align: center;">Pemohon</td>
-      <td colspan="3">&nbsp;</td>
-    </tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr>
+      <td colspan="2">&nbsp;</td>
+      <td style="text-align: right;">Camat<?php echo str_pad(".",50,".",STR_PAD_LEFT);?></td>
       <td>&nbsp;</td>
-      <td colspan="11" style="text-align: center;">Camat</td>
+      <td colspan="2">Kepala Desa/Lurah<?php echo str_pad(".",45,".",STR_PAD_LEFT);?></td>
+    </tr>
+    <tr><td colspan="6"><span style="font-size: 20pt;">&nbsp;</span></td></tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+      <td style="text-align: right;">(<?php echo str_pad(".",60,".",STR_PAD_LEFT);?>)</td>
       <td>&nbsp;</td>
-      <td colspan="13" style="text-align: center;">Kepala Desa/Lurah</td>
-      <td colspan="22">&nbsp;</td>
-    </tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr>
+      <td>(&nbsp;<?php echo padded_string_center(strtoupper($kepala_desa['pamong_nama']),40)?>&nbsp;)</td>
       <td>&nbsp;</td>
-      <td colspan="11"><?php echo str_pad(".",50,".",STR_PAD_LEFT);?></td>
+    </tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+      <td class="tengah"><?php echo "&nbsp;&nbsp;NIP&nbsp;&nbsp;:&nbsp;".str_pad("",42*6,"&nbsp;",STR_PAD_LEFT)?></td>
       <td>&nbsp;</td>
-      <td colspan="13" style="text-align: center;">(&nbsp;<?php echo padded_string_center(strtoupper($kepala_desa['pamong_nama']),30)?>&nbsp;)</td>
-      <td colspan="9">&nbsp;</td>
-      <td colspan="10" style="text-align: center;">(&nbsp;<?php echo padded_string_center(strtoupper($individu['nama']),30)?>&nbsp;)</td>
-      <td colspan="3">&nbsp;</td>
-    </tr>
-    <tr>
+      <td><?php echo "&nbsp;&nbsp;NIP&nbsp;&nbsp;:&nbsp;".$kepala_desa['pamong_nip']?></td>
       <td>&nbsp;</td>
-      <td colspan="11" style="text-align: center;"><?php echo "NIP&nbsp;&nbsp;:&nbsp;".str_pad("",40*6,"&nbsp;",STR_PAD_LEFT)?></td>
-      <td>&nbsp;</td>
-      <td colspan="13" style="text-align: center;"><?php echo "NIP&nbsp;&nbsp;:&nbsp;".$kepala_desa['pamong_nip']?></td>
-      <td colspan="22">&nbsp;</td>
-    </tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr>
-      <td colspan="26">&nbsp;</td>
-      <td colspan="22"><strong>Tanggal Pemasukan Data</strong></td>
-    </tr>
-    <tr>
-      <td colspan="26">&nbsp;</td>
-      <td colspan="2" style="text-align: left;">Tgl.</td>
-      <?php for($j=0; $j<2; $j++) : ?>
-        <td class="kotak padat tengah">&nbsp;</td>
-      <?php endfor; ?>
-      <td colspan="2" style="text-align: center;">Bln.</td>
-      <?php for($j=0; $j<2; $j++) : ?>
-        <td class="kotak padat tengah">&nbsp;</td>
-      <?php endfor; ?>
-      <td colspan="2" style="text-align: center;">Thn.</td>
-      <?php for($j=0; $j<2; $j++) : ?>
-        <td class="kotak padat tengah">&nbsp;</td>
-      <?php endfor; ?>
-      <td colspan="12">&nbsp;</td>
-    </tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr>
-      <td colspan="26">&nbsp;</td>
-      <td colspan="6" style="text-align: left;"><strong>Paraf Petugas</strong></td>
-      <td colspan="6" class="kotak">&nbsp;</td>
-      <td colspan="10">&nbsp;</td>
-    </tr>
-
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr><td colspan="48">&nbsp;</td></tr>
-    <tr>
-      <?php for($i=0; $i<48; $i++): ?>
-        <td>&nbsp;</td>
-      <?php endfor; ?>
     </tr>
   </table>
 
