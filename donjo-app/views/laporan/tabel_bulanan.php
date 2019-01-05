@@ -1,3 +1,6 @@
+<style type="text/css">
+	.italic {font-style: italic;}
+</style>
 <div class="table-responsive">
 	<table id="tfhover" class="table table-bordered table-hover tftable lap-bulanan">
 		<thead class="bg-gray">
@@ -25,19 +28,19 @@
 				<th class="text-center">L+P</th>
 			</tr>
 			<tr>
-				<th class="text-center">1</th>
-				<th class="text-center">2</th>
-				<th class="text-center">3</th>
-				<th class="text-center">4</th>
-				<th class="text-center">5</th>
-				<th class="text-center">6</th>
-				<th class="text-center">7</th>
-				<th class="text-center">8</th>
-				<th class="text-center">9</th>
-				<th class="text-center">10</th>
-				<th class="text-center">11</th>
-				<th class="text-center">12</th>
-			</tr>
+				<th class="text-center italic">1</th>
+				<th class="text-center italic">2</th>
+				<th class="text-center italic">3</th>
+				<th class="text-center italic">4</th>
+				<th class="text-center italic">5</th>
+				<th class="text-center italic">6</th>
+				<th class="text-center italic">7</th>
+				<th class="text-center italic">8</th>
+				<th class="text-center italic">9</th>
+				<th class="text-center italic">10</th>
+				<th class="text-center italic">11</th>
+				<th class="text-center italic">12</th>
+			</tr
 		</thead>
 		<tbody>
 			<tr>

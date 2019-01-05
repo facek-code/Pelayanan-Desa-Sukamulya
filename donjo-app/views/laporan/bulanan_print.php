@@ -7,7 +7,8 @@
   </head>
   <style type="text/css">
     .underline { text-decoration: underline; }
-    td.judul {font-size: 14pt; font-weight: bold;};
+    td.judul {font-size: 14pt; font-weight: bold;}
+    td.text-bold {font-weight: bold;}
     table.tftable
     {
       margin-top: 5px;
@@ -60,27 +61,35 @@
       <div id="body">
         <table>
           <tr>
+            <td colspan="10" class='text-bold'>PEMERINTAH KABUPATEN/KOTA</td>
+            <td colspan="2" class="text-bold"><span style="float: right; border: solid 1px black; font-size: 12pt; text-align: center; padding: 5px 20px;">LAMPIRAN A-9</span></td>
+          </tr>
+          <tr>
+            <td colspan="2" class="text"><span style="border-bottom: 2px solid;"><?= strtoupper($config[0]['nama_kabupaten'])?></span></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
             <td colspan="2">&nbsp;</td>
-            <td colspan="10" class="judul"><span style="border-bottom: 2px solid">LAPORAN BULANAN DESA/KELURAHAN</span></td>
+            <td colspan="10" class="judul" style="padding-bottom: 10px;"><span style="border-bottom: 2px solid;">LAPORAN BULANAN DESA/KELURAHAN</span></td>
           <tr>
-          <tr>
+<!--           <tr>
             <td colspan="12" class="judul">&nbsp;</td>
-          <tr>
+          <tr> -->
           <?php foreach ($config as $data): ?>
             <tr>
               <td colspan="2" width="32%">&nbsp;</td>
-              <td colspan="3" width="15%" class="judul">Desa/Kelurahan</td>
+              <td colspan="3" width="15%" class="text-bold">Desa/Kelurahan</td>
               <td colspan="7" width="53%">: <?= strtoupper($data['nama_desa'])?></td>
             </tr>
             <tr>
               <td colspan="2">&nbsp;</td>
-              <td colspan="3" class="judul">Kecamatan</td>
+              <td colspan="3" class="text-bold">Kecamatan</td>
               <td colspan="7">: <?= strtoupper($data['nama_kecamatan'])?></td>
             </tr>
           <?php endforeach; ?>
           <tr>
             <td colspan="2">&nbsp;</td>
-            <td colspan="3" class="judul">Laporan Bulan</td>
+            <td colspan="3" class="text-bold">Laporan Bulan</td>
             <td colspan="7">: <?= $bln?> <?= $tahun?></td>
           </tr>
         </table>
