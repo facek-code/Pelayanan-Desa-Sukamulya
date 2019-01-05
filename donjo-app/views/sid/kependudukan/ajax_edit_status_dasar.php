@@ -20,24 +20,22 @@
 				<div class="box box-danger">
 					<div class="box-body">
 						<div class="form-group">
-              <div class="radio">
-                <label>
-								  <input name="status_dasar" id="sd1" value="1" <?php if ($nik['status_dasar_id'] == '1'): ?>checked<?php endif; ?> type="radio">
-                  Hidup
-                </label>
-								<label>
-								  <input name="status_dasar" id="sd2" value="4" <?php if ($nik['status_dasar_id'] == '4'): ?>checked<?php endif; ?> type="radio">
-                  Hilang
-                </label>
-								<label>
-								  <input name="status_dasar" id="sd3" value="3" <?php if ($nik['status_dasar_id'] == '3'): ?>checked<?php endif; ?> type="radio">
-                  Pindah Ke Luar Desa
-                </label>
-								<label>
-								  <input name="status_dasar" id="sd4" value="2" <?php if ($nik['status_dasar_id'] == '2'): ?>checked<?php endif; ?> type="radio">
-                  Mati
-                </label>
-              </div>
+							<label for="status_dasar">Status Dasar Baru</label>
+							<select  name="status_dasar" class="form-control select2 input-sm required">
+								<option value="">Pilih Status Dasar</option>
+								<?php foreach ($list_status_dasar AS $data): ?>
+									<option value="<?=$data['id']?>" <?php selected($data['id'], $nik['status_dasar_id'])?>><?=$data['nama']?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="ref_pindah">Tujuan Pindah</label>
+							<select  name="ref_pindah" class="form-control select2 input-sm required">
+								<option value="">Pilih Tujuan Pindah</option>
+								<?php foreach ($list_ref_pindah AS $data): ?>
+									<option value="<?=$data['id']?>" <?php selected($data['id'], $nik['ref_pindah'])?>><?=$data['nama']?></option>
+								<?php endforeach; ?>
+							</select>
 						</div>
 						<div class="form-group">
 							<label for="tgl_peristiwa">Tanggal Peristiwa</label>
