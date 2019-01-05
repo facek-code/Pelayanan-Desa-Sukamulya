@@ -2,12 +2,15 @@
 	<table id="tfhover" class="table table-bordered table-hover tftable lap-bulanan">
 		<thead class="bg-gray">
 			<tr>
-				<th rowspan="2" width='2%' class="text-center">No</th>
-				<th rowspan="2" width='30%' class="text-center">Rincian</th>
-				<th rowspan="1" colspan="2" class="text-center">WNI</th>
-				<th rowspan="1" colspan="2" class="text-center">WNA</th>
-				<th rowspan="1" colspan="3" class="text-center">Jumlah</th>
-				<th rowspan="1" colspan="3" class="text-center">Kepala Keluarga</th>
+				<th rowspan="3" width='2%' class="text-center">No</th>
+				<th rowspan="3" width='30%' class="text-center">Perincian</th>
+				<th colspan="7" width='45%' class="text-center">Penduduk</th>
+				<th colspan="3" rowspan="2" width='23%'class="text-center">Keluarga (KK)</th>
+			</tr>
+			<tr>
+				<th colspan="2" class="text-center">WNI</th>
+				<th colspan="2" class="text-center">WNA</th>
+				<th colspan="3" class="text-center">Jumlah</th>
 			</tr>
 			<tr>
 				<th class="text-center">L</th>
@@ -39,7 +42,7 @@
 		<tbody>
 			<tr>
 				<td>1</td>
-				<td>Awal bulan ini</td>
+				<td>Penduduk/Keluarga awal bulan ini</td>
 				<td class="text-right"><?= show_zero_as($penduduk_awal['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_awal['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_awal['WNA_L'],'-') ?></td>
@@ -53,7 +56,7 @@
 			</tr>
 			<tr>
 				<td>2</td>
-				<td>Kelahiran/Keluarga Baru bulan ini</td>
+				<td>Kelahiran/Keluarga baru bulan ini</td>
 				<td class="text-right"><?= show_zero_as($kelahiran['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($kelahiran['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($kelahiran['WNA_L'],'-') ?></td>
@@ -95,7 +98,7 @@
 			</tr>
 			<tr>
 				<td>5</td>
-				<td>Pindah/Keluarga Pergi bulan ini</td>
+				<td>Pindah/Keluarga pergi bulan ini</td>
 				<td class="text-right"><?= show_zero_as($pindah['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($pindah['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($pindah['WNA_L'],'-') ?></td>
@@ -123,7 +126,7 @@
 			</tr>
 			<tr>
 				<td>7</td>
-				<td>Akhir bulan ini</td>
+				<td>Penduduk/Keluarga akhir bulan ini</td>
 				<td class="text-right"><?= show_zero_as($penduduk_akhir['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_akhir['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_akhir['WNA_L'],'-') ?></td>
