@@ -81,34 +81,31 @@
       <div id="body">
         <table>
           <tr>
-            <td colspan="10" class='text-bold'>PEMERINTAH KABUPATEN/KOTA</td>
+            <td colspan="11" class='text-bold'>PEMERINTAH KABUPATEN/KOTA</td>
             <td colspan="2" class="text-bold"><span style="float: right; border: solid 1px black; font-size: 12pt; text-align: center; padding: 5px 20px;">LAMPIRAN A-9</span></td>
           </tr>
           <tr>
             <td colspan="2" class="text"><span style="border-bottom: 2px solid;"><?= strtoupper($config[0]['nama_kabupaten'])?></span></td>
-            <td>&nbsp;</td>
+            <td colspan="11">&nbsp;</td>
           </tr>
           <tr>
-            <td colspan="2">&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
             <td colspan="10" class="judul" style="padding-bottom: 10px;"><span style="border-bottom: 2px solid;">LAPORAN BULANAN DESA/KELURAHAN</span></td>
           <tr>
-<!--           <tr>
-            <td colspan="12" class="judul">&nbsp;</td>
-          <tr> -->
           <?php foreach ($config as $data): ?>
             <tr>
-              <td colspan="2" width="32%">&nbsp;</td>
+              <td colspan="3" width="32%">&nbsp;</td>
               <td colspan="3" width="15%" class="text-bold">Desa/Kelurahan</td>
               <td colspan="7" width="53%">: <?= strtoupper($data['nama_desa'])?></td>
             </tr>
             <tr>
-              <td colspan="2">&nbsp;</td>
+              <td colspan="3">&nbsp;</td>
               <td colspan="3" class="text-bold">Kecamatan</td>
               <td colspan="7">: <?= strtoupper($data['nama_kecamatan'])?></td>
             </tr>
           <?php endforeach; ?>
           <tr>
-            <td colspan="2">&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
             <td colspan="3" class="text-bold">Laporan Bulan</td>
             <td colspan="7">: <?= $bln?> <?= $tahun?></td>
           </tr>
@@ -121,7 +118,7 @@
             <td colspan="8" class="judul2 no-border-kecuali-bawah" style="padding-bottom: 10px;">
               <span style="border-bottom: 2px solid;">PERINCIAN PINDAH</span>
             </td>
-            <td colspan="5">&nbsp;</td>
+            <td colspan="5" class="no-border">&nbsp;</td>
           </tr>
           <tr>
             <th rowspan="2" width='2%' class="text-center">NO</th>
@@ -129,12 +126,9 @@
             <th colspan="3" class="text-center">PENDUDUK</th>
             <th colspan="3" class="text-center">KELUARGA (KK)</th>
             <td rowspan="7" colspan="2" width="10%" class="no-border-kecuali-kiri">&nbsp;</td>
-            <td rowspan="7" colspan="3" class="no-border" style="vertical-align: top;">
+            <td rowspan="2" colspan="3" class="no-border" style="vertical-align: top;">
               <?= ucwords($this->setting->sebutan_desa)?> <?= $data['nama_desa']?>, <?= tgl_indo(date("Y m d"))?><br>
               KEPALA DESA/LURAH <?= $data['nama_desa']?><br>
-              <br><br><br><br><br><br><br><br><br>
-              ( <?= $pamong_ttd['pamong_nama']?> )<br>
-              NIP/NIAP <?= $pamong_ttd['pamong_niap_nip']?>
             </td>
           </tr>
           <tr>
@@ -154,6 +148,7 @@
             <td class="text-right"><?= show_zero_as($rincian_pindah['DESA_KK_L'],'-')?></td>
             <td class="text-right"><?= show_zero_as($rincian_pindah['DESA_KK_P'],'-')?></td>
             <td class="text-right"><?= show_zero_as(($rincian_pindah['DESA_KK_L']+$rincian_pindah['DESA_KK_P']),'-')?></td>
+            <td colspan="3" class="no-border">&nbsp;</td>
           </tr>
           <tr>
             <td class="text-center">2</td>
@@ -164,6 +159,7 @@
             <td class="text-right"><?= show_zero_as($rincian_pindah['KEC_KK_L'],'-')?></td>
             <td class="text-right"><?= show_zero_as($rincian_pindah['KEC_KK_P'],'-')?></td>
             <td class="text-right"><?= show_zero_as(($rincian_pindah['KEC_KK_L']+$rincian_pindah['KEC_KK_P']),'-')?></td>
+            <td colspan="3" class="no-border">&nbsp;</td>
           </tr>
           <tr>
             <td class="text-center">3</td>
@@ -174,6 +170,7 @@
             <td class="text-right"><?= show_zero_as($rincian_pindah['KAB_KK_L'],'-')?></td>
             <td class="text-right"><?= show_zero_as($rincian_pindah['KAB_KK_P'],'-')?></td>
             <td class="text-right"><?= show_zero_as(($rincian_pindah['KAB_KK_L']+$rincian_pindah['KAB_KK_P']),'-')?></td>
+            <td colspan="3" class="no-border">&nbsp;</td>
           </tr>
           <tr>
             <td class="text-center">4</td>
@@ -184,6 +181,10 @@
             <td class="text-right"><?= show_zero_as($rincian_pindah['PROV_KK_L'],'-')?></td>
             <td class="text-right"><?= show_zero_as($rincian_pindah['PROV_KK_P'],'-')?></td>
             <td class="text-right"><?= show_zero_as(($rincian_pindah['PROV_KK_L']+$rincian_pindah['PROV_KK_P']),'-')?></td>
+            <td rowspan="2" colspan="3" class="no-border" style="vertical-align: top;">
+              ( <?= $pamong_ttd['pamong_nama']?> )<br>
+              NIP/NIAP <?= $pamong_ttd['pamong_niap_nip']?>
+            </td>
           </tr>
           <tr>
             <td colspan="2" class="text-center text-bold">JUMLAH:</td>

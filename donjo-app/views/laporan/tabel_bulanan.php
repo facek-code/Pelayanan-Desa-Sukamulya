@@ -6,7 +6,7 @@
 		<thead class="bg-gray">
 			<tr>
 				<th rowspan="3" width='2%' class="text-center">No</th>
-				<th rowspan="3" width='30%' class="text-center">Perincian</th>
+				<th rowspan="3" colspan="2" width='30%' class="text-center">Perincian</th>
 				<th colspan="7" width='45%' class="text-center">Penduduk</th>
 				<th colspan="3" rowspan="2" width='23%'class="text-center">Keluarga (KK)</th>
 			</tr>
@@ -29,7 +29,7 @@
 			</tr>
 			<tr>
 				<th class="text-center italic">1</th>
-				<th class="text-center italic">2</th>
+				<th class="text-center italic" colspan="2">2</th>
 				<th class="text-center italic">3</th>
 				<th class="text-center italic">4</th>
 				<th class="text-center italic">5</th>
@@ -45,7 +45,7 @@
 		<tbody>
 			<tr>
 				<td>1</td>
-				<td>Penduduk/Keluarga awal bulan ini</td>
+				<td colspan="2">Penduduk/Keluarga awal bulan ini</td>
 				<td class="text-right"><?= show_zero_as($penduduk_awal['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_awal['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_awal['WNA_L'],'-') ?></td>
@@ -59,7 +59,7 @@
 			</tr>
 			<tr>
 				<td>2</td>
-				<td>Kelahiran/Keluarga baru bulan ini</td>
+				<td colspan="2">Kelahiran/Keluarga baru bulan ini</td>
 				<td class="text-right"><?= show_zero_as($kelahiran['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($kelahiran['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($kelahiran['WNA_L'],'-') ?></td>
@@ -73,7 +73,7 @@
 			</tr>
 			<tr>
 				<td>3</td>
-				<td>Kematian bulan ini</td>
+				<td colspan="2">Kematian bulan ini</td>
 				<td class="text-right"><?= show_zero_as($kematian['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($kematian['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($kematian['WNA_L'],'-') ?></td>
@@ -87,7 +87,7 @@
 			</tr>
 			<tr>
 				<td>4</td>
-				<td>Pendatang bulan ini</td>
+				<td colspan="2">Pendatang bulan ini</td>
 				<td class="text-right"><?= show_zero_as($pendatang['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($pendatang['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($pendatang['WNA_L'],'-') ?></td>
@@ -101,7 +101,7 @@
 			</tr>
 			<tr>
 				<td>5</td>
-				<td>Pindah/Keluarga pergi bulan ini</td>
+				<td colspan="2">Pindah/Keluarga pergi bulan ini</td>
 				<td class="text-right"><?= show_zero_as($pindah['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($pindah['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($pindah['WNA_L'],'-') ?></td>
@@ -115,7 +115,7 @@
 			</tr>
 			<tr>
 				<td>6</td>
-				<td>Penduduk hilang bulan ini</td>
+				<td colspan="2">Penduduk hilang bulan ini</td>
 				<td class="text-right"><?= show_zero_as($hilang['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($hilang['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($hilang['WNA_L'],'-') ?></td>
@@ -129,7 +129,7 @@
 			</tr>
 			<tr>
 				<td>7</td>
-				<td>Penduduk/Keluarga akhir bulan ini</td>
+				<td colspan="2">Penduduk/Keluarga akhir bulan ini</td>
 				<td class="text-right"><?= show_zero_as($penduduk_akhir['WNI_L'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_akhir['WNI_P'],'-') ?></td>
 				<td class="text-right"><?= show_zero_as($penduduk_akhir['WNA_L'],'-') ?></td>
