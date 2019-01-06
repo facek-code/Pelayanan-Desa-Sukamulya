@@ -125,7 +125,7 @@
             <th rowspan="2" width='20%' class="text-center">KETERANGAN</th>
             <th colspan="3" class="text-center">PENDUDUK</th>
             <th colspan="3" class="text-center">KELUARGA (KK)</th>
-            <td rowspan="7" colspan="2" width="10%" class="no-border-kecuali-kiri">&nbsp;</td>
+            <td rowspan="7" colspan="2" width="30%" class="no-border-kecuali-kiri">&nbsp;</td>
             <td rowspan="2" colspan="3" class="no-border" style="vertical-align: top;">
               <?= ucwords($this->setting->sebutan_desa)?> <?= $data['nama_desa']?>, <?= tgl_indo(date("Y m d"))?><br>
               KEPALA DESA/LURAH <?= $data['nama_desa']?><br>
