@@ -126,6 +126,7 @@ class Laporan extends CI_Controller {
 		$data['kematian'] = $this->laporan_bulanan_model->kematian();
 		$data['pendatang'] = $this->laporan_bulanan_model->pendatang();
 		$data['pindah'] = $this->laporan_bulanan_model->pindah();
+		$data['rincian_pindah'] = $this->laporan_bulanan_model->rincian_pindah();
 		$data['hilang'] = $this->laporan_bulanan_model->hilang();
 		$data['pamong_ttd'] = $this->pamong_model->get_data($_POST['pamong_ttd']);
 		return $data;

@@ -14,6 +14,21 @@
       border: 0px;
       border-style: hidden;
     }
+    table.tftable td.no-border-kecuali-kiri {
+      border-top-style: hidden;
+      border-bottom-style: hidden;
+      border-right-style: hidden;
+    }
+    table.tftable td.no-border-kecuali-atas {
+      border-left-style: hidden;
+      border-bottom-style: hidden;
+      border-right-style: hidden;
+    }
+    table.tftable td.no-border-kecuali-bawah {
+      border-left-style: hidden;
+      border-top-style: hidden;
+      border-right-style: hidden;
+    }
     table.tftable
     {
       margin-top: 5px;
@@ -103,15 +118,24 @@
         <table class="tftable">
           <tr><td colspan="13" class="no-border">&nbsp;</td></tr>
           <tr>
-            <td colspan="13" class="judul2" style="padding-bottom: 10px;"><span style="border-bottom: 2px solid;">PERINCIAN PINDAH</span></td>
+            <td colspan="8" class="judul2 no-border-kecuali-bawah" style="padding-bottom: 10px;">
+              <span style="border-bottom: 2px solid;">PERINCIAN PINDAH</span>
+            </td>
+            <td colspan="5">&nbsp;</td>
           </tr>
           <tr>
             <th rowspan="2" width='2%' class="text-center">NO</th>
             <th rowspan="2" width='20%' class="text-center">KETERANGAN</th>
             <th colspan="3" class="text-center">PENDUDUK</th>
             <th colspan="3" class="text-center">KELUARGA (KK)</th>
-            <td colspan="2" width="10%">&nbsp;</td>
-            <td colspan="3" class="no-border"><?= ucwords($this->setting->sebutan_desa)?> <?= $data['nama_desa']?>, <?= tgl_indo(date("Y m d"))?></td>
+            <td rowspan="7" colspan="2" width="10%" class="no-border-kecuali-kiri">&nbsp;</td>
+            <td rowspan="7" colspan="3" class="no-border" style="vertical-align: top;">
+              <?= ucwords($this->setting->sebutan_desa)?> <?= $data['nama_desa']?>, <?= tgl_indo(date("Y m d"))?><br>
+              KEPALA DESA/LURAH <?= $data['nama_desa']?><br>
+              <br><br><br><br><br><br><br><br><br>
+              ( <?= $pamong_ttd['pamong_nama']?> )<br>
+              NIP/NIAP <?= $pamong_ttd['pamong_niap_nip']?>
+            </td>
           </tr>
           <tr>
             <th class="text-center">L</th>
@@ -120,67 +144,58 @@
             <th class="text-center">L</th>
             <th class="text-center">P</th>
             <th class="text-center">L+P</th>
-            <td colspan="2">&nbsp;</td>
-            <td colspan="3" class="no-border">KEPALA DESA/LURAH <?= $data['nama_desa']?></td>
           </tr>
           <tr>
             <td class="text-center">1</td>
             <td>Pindah keluar Desa/Kelurahan</td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L'])+($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_L'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_P'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK'],'-')?></td>
-            <td colspan="5">&nbsp;</td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['DESA_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['DESA_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['DESA_L']+$rincian_pindah['DESA_P']),'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['DESA_KK_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['DESA_KK_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['DESA_KK_L']+$rincian_pindah['DESA_KK_P']),'-')?></td>
           </tr>
           <tr>
             <td class="text-center">2</td>
             <td>Pindah keluar Kecamatan</td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L'])+($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_L'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_P'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK'],'-')?></td>
-            <td colspan="5">&nbsp;</td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KEC_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KEC_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['KEC_L']+$rincian_pindah['KEC_P']),'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KEC_KK_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KEC_KK_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['KEC_KK_L']+$rincian_pindah['KEC_KK_P']),'-')?></td>
           </tr>
           <tr>
             <td class="text-center">3</td>
             <td>Pindah keluar Kabupaten/Kota</td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L'])+($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_L'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_P'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK'],'-')?></td>
-            <td colspan="5">&nbsp;</td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KAB_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KAB_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['KAB_L']+$rincian_pindah['KAB_P']),'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KAB_KK_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['KAB_KK_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['KAB_KK_L']+$rincian_pindah['KAB_KK_P']),'-')?></td>
           </tr>
           <tr>
             <td class="text-center">4</td>
             <td>Pindah keluar Provinsi</td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L'])+($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_L'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_P'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK'],'-')?></td>
-            <td colspan="5">&nbsp;</td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['PROV_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['PROV_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['PROV_L']+$rincian_pindah['PROV_P']),'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['PROV_KK_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['PROV_KK_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['PROV_KK_L']+$rincian_pindah['PROV_KK_P']),'-')?></td>
           </tr>
           <tr>
             <td colspan="2" class="text-center text-bold">JUMLAH:</td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as(($penduduk_awal['WNI_L']+$penduduk_awal['WNA_L'])+($penduduk_awal['WNI_P']+$penduduk_awal['WNA_P']),'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_L'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK_P'],'-')?></td>
-            <td class="text-right"><?= show_zero_as($penduduk_awal['KK'],'-')?></td>
-            <td colspan="2">&nbsp;</td>
-            <td colspan="3" class="no-border">( <?= $pamong_ttd['pamong_nama']?> )</td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['TOTAL_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['TOTAL_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['TOTAL_L']+$rincian_pindah['TOTAL_P']),'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['TOTAL_KK_L'],'-')?></td>
+            <td class="text-right"><?= show_zero_as($rincian_pindah['TOTAL_KK_P'],'-')?></td>
+            <td class="text-right"><?= show_zero_as(($rincian_pindah['TOTAL_KK_L']+$rincian_pindah['TOTAL_KK_P']),'-')?></td>
           </tr>
           <tr>
-            <td colspan="10" class="no-border">&nbsp;</td>
-            <td colspan="3" class="no-border">NIP/NIAP <?= $pamong_ttd['pamong_niap_nip']?> </td>
+            <td colspan="8" class="no-border-kecuali-atas">&nbsp;</td>
           </tr>
         </table>
       </div>
