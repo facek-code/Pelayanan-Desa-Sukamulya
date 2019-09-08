@@ -21,7 +21,9 @@ class Setting_model extends CI_Model {
 				$this->load->model('database_model');
 				$this->database_model->migrasi_db_cri();
 			}
-			$pr = $this->db->order_by('key')->get("setting_aplikasi")->result();
+			$pr = $this->db
+				->where("kategori is null or kategori <> 'sistem'")
+				->order_by('key')->get("setting_aplikasi")->result();
 			foreach($pr as $p)
 			{
 				$pre[addslashes($p->key)] = addslashes($p->value);
@@ -100,6 +102,14 @@ class Setting_model extends CI_Model {
 		$_SESSION['success'] = 1;
 		$this->setting->sumber_gambar_slider = $this->input->post('pilihan_sumber');
 		$outp = $this->db->where('key','sumber_gambar_slider')->update('setting_aplikasi', array('value'=>$this->input->post('pilihan_sumber')));
+		if (!$outp) $_SESSION['success'] = -1;
+	}
+
+	public function update_penggunaan_server()
+	{
+		$_SESSION['success'] = 1;
+		$this->setting->penggunaan_server = $this->input->post('pilihan_sumber');
+		$outp = $this->db->where('key','penggunaan_server')->update('setting_aplikasi', array('value'=>$this->input->post('pilihan_sumber')));
 		if (!$outp) $_SESSION['success'] = -1;
 	}
 

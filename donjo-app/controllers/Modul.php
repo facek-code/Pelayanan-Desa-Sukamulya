@@ -100,4 +100,11 @@ class Modul extends Admin_Controller {
 			redirect("modul/sub_modul/$_POST[parent]");
 		}
 	}
+
+	public function ubah_server()
+	{
+		// var_dump($this->input->post());
+		$this->load->model('setting_model');
+		$this->setting_model->update_penggunaan_server();
+	}
 }
