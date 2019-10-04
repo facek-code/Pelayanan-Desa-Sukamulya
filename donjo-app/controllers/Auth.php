@@ -330,8 +330,7 @@ class Auth extends MY_Controller {
 
 			// set any errors and display the form
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-			//$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'forgot_password', $this->data);
-
+			
                         $header = $this->header_model->get_config();
                         $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $header);
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'forgot_password', $this->data); 
@@ -427,7 +426,10 @@ class Auth extends MY_Controller {
 				$this->data['code'] = $code;
 
 				// render
-				$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'reset_password', $this->data);
+                                $header = $this->header_model->get_config();
+                                $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $header);
+			        $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'reset_password', $this->data); 
+				
 			}
 			else
 			{
