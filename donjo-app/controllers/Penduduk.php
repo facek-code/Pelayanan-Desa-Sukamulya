@@ -302,16 +302,18 @@ class Penduduk extends Admin_Controller {
 		$this->load->view('footer');
 
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
+	        }
 	}
 
 	public function dokumen($id = '')
 	{
-		$data['list_dokumen'] = $this->penduduk_model->list_dokumen($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                { 
+                $data['list_dokumen'] = $this->penduduk_model->list_dokumen($id);
 		$data['penduduk'] = $this->penduduk_model->get_penduduk($id);
 		$header = $this->header_model->get_data();
 		$nav['act']= 2;
@@ -321,11 +323,19 @@ class Penduduk extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/kependudukan/penduduk_dokumen', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function dokumen_form($id = 0, $id_dokumen = 0)
 	{
-		$data['penduduk'] = $this->penduduk_model->get_penduduk($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $data['penduduk'] = $this->penduduk_model->get_penduduk($id);
 		if ($id_dokumen)
 		{
 			$data['dokumen'] = $this->web_dokumen_model->get_dokumen($id_dokumen);
@@ -337,27 +347,61 @@ class Penduduk extends Admin_Controller {
 			$data['form_action'] = site_url("penduduk/dokumen_insert");
 		}
 		$this->load->view('sid/kependudukan/dokumen_form', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function dokumen_list($id = 0)
 	{
-		$data['list_dokumen'] = $this->penduduk_model->list_dokumen($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $data['list_dokumen'] = $this->penduduk_model->list_dokumen($id);
 		$data['penduduk'] = $this->penduduk_model->get_penduduk($id);
 		$this->load->view('sid/kependudukan/dokumen_ajax', $data);
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function dokumen_insert()
 	{
-		$this->web_dokumen_model->insert();
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $this->web_dokumen_model->insert();
 		$id = $_POST['id_pend'];
 		redirect("penduduk/dokumen/$id");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function dokumen_update($id = '')
 	{
-		$this->web_dokumen_model->update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $this->web_dokumen_model->update($id);
 		$id = $_POST['id_pend'];
 		redirect("penduduk/dokumen/$id");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete_dokumen($id_pend = 0, $id = '')
@@ -401,12 +445,11 @@ class Penduduk extends Admin_Controller {
 		$data['penduduk'] = $this->penduduk_model->get_penduduk($id);
                 $this->load->view('sid/kependudukan/cetak_biodata', $data);
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
-                
+	        }
 	}
 
 	public function search()
@@ -486,7 +529,9 @@ class Penduduk extends Admin_Controller {
 
 	public function insert()
 	{
-		$id = $this->penduduk_model->insert();
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $id = $this->penduduk_model->insert();
 		if ($_SESSION['success'] == -1)
 		{
 			$_SESSION['dari_internal'] = true;
@@ -496,11 +541,19 @@ class Penduduk extends Admin_Controller {
 		{
 			redirect("penduduk/detail/1/0/$id");
 		}
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update($p = 1, $o = 0, $id = '')
 	{
-		$this->penduduk_model->update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $this->penduduk_model->update($id);
 		if ($_SESSION['success'] == -1)
 		{
 			$_SESSION['dari_internal'] = true;
@@ -510,6 +563,12 @@ class Penduduk extends Admin_Controller {
 		{
 			redirect("penduduk/detail/1/0/$id");
 		}
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete($p = 1, $o = 0, $id = '')
@@ -539,11 +598,11 @@ class Penduduk extends Admin_Controller {
 		$this->penduduk_model->delete_all();
 		redirect("penduduk/index/$p/$o");
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
+	        }
                 
 	}
 
@@ -684,7 +743,9 @@ class Penduduk extends Admin_Controller {
 
 	public function ajax_penduduk_maps($p = 1, $o = 0, $id = '', $edit = '')
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 		$data['id'] = $id;
 		$data['edit'] = $edit;
@@ -694,6 +755,12 @@ class Penduduk extends Admin_Controller {
 		$data['form_action'] = site_url("penduduk/update_maps/$p/$o/$id");
 
 		$this->load->view("sid/kependudukan/maps", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_maps($p = 1, $o = 0, $id = '')
@@ -703,23 +770,47 @@ class Penduduk extends Admin_Controller {
 
 	public function edit_status_dasar($p = 1, $o = 0, $id = 0)
 	{
-		$data['nik'] = $this->penduduk_model->get_penduduk($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $data['nik'] = $this->penduduk_model->get_penduduk($id);
 		$data['form_action'] = site_url("penduduk/update_status_dasar/$p/$o/$id");
 		$data['list_ref_pindah'] = $this->referensi_model->list_data('ref_pindah');
 		$data['list_status_dasar'] = $this->referensi_model->list_data('tweb_status_dasar', '9'); //Kecuali status dasar 'TIDAK VALID'
 		$this->load->view('sid/kependudukan/ajax_edit_status_dasar', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_status_dasar($p = 1, $o = 0, $id = '')
 	{
-		$this->penduduk_model->update_status_dasar($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $this->penduduk_model->update_status_dasar($id);
 		redirect("penduduk/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function kembalikan_status($p = 1, $o = 0, $id = '')
 	{
-		$this->penduduk_model->kembalikan_status($id);
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_update())))
+                {
+                $this->penduduk_model->kembalikan_status($id);
 		redirect("penduduk/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function cetak($o = 0)
@@ -743,16 +834,18 @@ class Penduduk extends Admin_Controller {
                 $data['main'] = $this->penduduk_model->list_data($o, 0, 10000);
                 $this->load->view('sid/kependudukan/penduduk_excel', $data);
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
+	        }
 	}
 
 	public function statistik($tipe = 0, $nomor = 0, $sex = NULL)
 	{
-		$_SESSION['per_page'] = 50;
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_view())))
+                {
+                $_SESSION['per_page'] = 50;
 		$this->clear_session();
 		// Untuk tautan TOTAL di laporan statistik, di mana arg-2 = sex dan arg-3 kosong
 		// kecuali untuk laporan wajib KTP
@@ -813,11 +906,19 @@ class Penduduk extends Admin_Controller {
 			unset($_SESSION['judul_statistik']);
 		}
 		redirect('penduduk');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function lap_statistik($id_cluster = 0, $tipe = 0, $nomor = 0)
 	{
-		$this->clear_session();
+		if (!$this->ion_auth->logged_in() || (in_array('21', gp_view())))
+                {
+                $this->clear_session();
 		$cluster = $this->penduduk_model->get_cluster($id_cluster);
 		switch ($tipe)
 		{
@@ -926,5 +1027,11 @@ class Penduduk extends Admin_Controller {
 			unset($_SESSION['judul_statistik']);
 		}
 		redirect("penduduk");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 }

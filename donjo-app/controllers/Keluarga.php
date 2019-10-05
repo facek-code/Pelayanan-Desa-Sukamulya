@@ -34,8 +34,7 @@ class Keluarga extends Admin_Controller {
 	public function index($p=1, $o=0)
 	{
 		if (!$this->ion_auth->logged_in() || (in_array('22', gp_read())))
-               
-               {
+                {
 
                 $data['p'] = $p;
 		$data['o'] = $o;
@@ -100,23 +99,39 @@ class Keluarga extends Admin_Controller {
 
 
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
+	        }
 	}
 
 	public function cetak($o=0)
 	{
-		$data['main'] = $this->keluarga_model->list_data($o, 0, 10000);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $data['main'] = $this->keluarga_model->list_data($o, 0, 10000);
 		$this->load->view('sid/kependudukan/keluarga_print', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function excel($o=0)
 	{
-		$data['main'] = $this->keluarga_model->list_data($o, 0, 10000);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $data['main'] = $this->keluarga_model->list_data($o, 0, 10000);
 		$this->load->view('sid/kependudukan/keluarga_excel', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	/*
@@ -124,7 +139,9 @@ class Keluarga extends Admin_Controller {
 	 */
 	public function form($p=1, $o=0)
 	{
-		// Reset kalau dipanggil dari luar pertama kali ($_POST kosong)
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_create())))
+                {
+                // Reset kalau dipanggil dari luar pertama kali ($_POST kosong)
 		if (empty($_POST) AND (!isset($_SESSION['dari_internal']) OR !$_SESSION['dari_internal']))
 				unset($_SESSION['validation_error']);
 
@@ -185,12 +202,20 @@ class Keluarga extends Admin_Controller {
 		$this->load->view('nav',$nav);
 		$this->load->view('sid/kependudukan/keluarga_form', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	// Tambah anggota keluarga dari penduduk baru
 	public function form_a($p=1, $o=0, $id=0)
 	{
-		// Reset kalau dipanggil dari luar pertama kali ($_POST kosong)
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_create())))
+                {
+                // Reset kalau dipanggil dari luar pertama kali ($_POST kosong)
 		if (empty($_POST) AND !$_SESSION['dari_internal'])
 				unset($_SESSION['validation_error']);
 		else unset($_SESSION['dari_internal']);
@@ -234,11 +259,19 @@ class Keluarga extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/kependudukan/keluarga_form_a', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function edit_nokk($p=1, $o=0, $id=0)
 	{
-		$data['kk'] = $this->keluarga_model->get_keluarga($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $data['kk'] = $this->keluarga_model->get_keluarga($id);
 		$data['dusun'] = $this->wilayah_model->list_dusun();
 		$data['rw'] = $this->wilayah_model->list_rw($data['kk']['dusun']);
 		$data['rt'] = $this->wilayah_model->list_rt($data['kk']['dusun'], $data['kk']['rw']);
@@ -246,13 +279,27 @@ class Keluarga extends Admin_Controller {
 		$data['keluarga_sejahtera'] = $this->referensi_model->list_data('tweb_keluarga_sejahtera');
 		$data['form_action'] = site_url("keluarga/update_nokk/$id");
 		$this->load->view('sid/kependudukan/ajax_edit_nokk', $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function form_old($p=1, $o=0, $id=0)
 	{
-		$data['penduduk'] = $this->keluarga_model->list_penduduk_lepas();
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $data['penduduk'] = $this->keluarga_model->list_penduduk_lepas();
 		$data['form_action'] = site_url("keluarga/insert/$id");
 		$this->load->view('sid/kependudukan/ajax_add_keluarga', $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function status_dasar()
@@ -317,13 +364,23 @@ class Keluarga extends Admin_Controller {
 	 */
 	public function insert()
 	{
-		$this->keluarga_model->insert();
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $this->keluarga_model->insert();
 		redirect('keluarga');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function insert_a()
 	{
-		$this->keluarga_model->insert_a();
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $this->keluarga_model->insert_a();
 		if ($_SESSION['validation_error'])
 		{
 			$id_kk = $this->input->post('id_kk');
@@ -336,6 +393,12 @@ class Keluarga extends Admin_Controller {
 		{
 			redirect('keluarga');
 		}
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	/*
@@ -343,7 +406,9 @@ class Keluarga extends Admin_Controller {
 	 */
 	public function insert_new()
 	{
-		$this->keluarga_model->insert_new();
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_create())))
+                {
+                $this->keluarga_model->insert_new();
 		if ($_SESSION['success'] == -1)
 		{
 			$_SESSION['dari_internal'] = true;
@@ -353,37 +418,77 @@ class Keluarga extends Admin_Controller {
 		{
 			redirect('keluarga');
 		}
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update($id='')
 	{
-		$this->keluarga_model->update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $this->keluarga_model->update($id);
 		redirect('keluarga');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_nokk($id='')
 	{
-		$this->keluarga_model->update_nokk($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $this->keluarga_model->update_nokk($id);
 		redirect('keluarga');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete($p=1, $o=0, $id='')
 	{
-		$this->redirect_hak_akses('h', 'keluarga');
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', 'keluarga');
 		$this->keluarga_model->delete($id);
 		redirect('keluarga');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete_all($p=1, $o=0)
 	{
-		$this->redirect_hak_akses('h', 'keluarga');
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', 'keluarga');
 		$this->keluarga_model->delete_all();
 		redirect('keluarga');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function anggota($p=1, $o=0, $id=0)
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_read())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 		$data['kk'] = $id;
 
@@ -399,11 +504,19 @@ class Keluarga extends Admin_Controller {
 		$this->load->view('nav',$nav);
 		$this->load->view('sid/kependudukan/keluarga_anggota', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function ajax_add_anggota($p=1, $o=0, $id=0)
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_create())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 
 		$kk = $this->keluarga_model->get_kepala_kk($id);
@@ -418,11 +531,19 @@ class Keluarga extends Admin_Controller {
 		$data['form_action'] = site_url("keluarga/add_anggota/$p/$o/$id");
 
 		$this->load->view("sid/kependudukan/ajax_add_anggota_form", $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function edit_anggota($p=1, $o=0, $id_kk=0, $id=0)
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 
 		$data['hubungan'] = $this->keluarga_model->list_hubungan();
@@ -437,11 +558,19 @@ class Keluarga extends Admin_Controller {
 		$data['form_action'] = site_url("keluarga/update_anggota/$p/$o/$id_kk/$id");
 
 		$this->load->view("sid/kependudukan/ajax_edit_anggota_form", $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function kartu_keluarga($p=1, $o=0, $id=0)
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 		$data['id_kk'] = $id;
 
@@ -466,57 +595,129 @@ class Keluarga extends Admin_Controller {
 
 		$this->load->view("sid/kependudukan/kartu_keluarga", $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function cetak_kk($id=0)
 	{
-		$data = $this->keluarga_model->get_data_cetak_kk($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $data = $this->keluarga_model->get_data_cetak_kk($id);
 		$this->load->view("sid/kependudukan/cetak_kk_all", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function cetak_kk_all()
 	{
-		$data = $this->keluarga_model->get_data_cetak_kk_all();
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $data = $this->keluarga_model->get_data_cetak_kk_all();
 		$this->load->view("sid/kependudukan/cetak_kk_all", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function doc_kk($id=0)
 	{
-		$this->keluarga_model->unduh_kk($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $this->keluarga_model->unduh_kk($id);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function doc_kk_all($id=0)
 	{
-		$this->keluarga_model->unduh_kk();
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $this->keluarga_model->unduh_kk();
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function add_anggota($p=1, $o=0, $id=0)
 	{
-		$this->keluarga_model->add_anggota($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_create())))
+                {
+                $this->keluarga_model->add_anggota($id);
 		redirect("keluarga/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_anggota($p=1, $o=0, $id_kk=0, $id=0)
 	{
-		$this->keluarga_model->update_anggota($id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_update())))
+                {
+                $this->keluarga_model->update_anggota($id);
 		redirect("keluarga/anggota/$p/$o/$id_kk");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete_anggota($p=1, $o=0, $kk=0, $id='')
 	{
-		$this->keluarga_model->rem_anggota($kk,$id);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_delete())))
+                {
+                $this->keluarga_model->rem_anggota($kk,$id);
 		redirect("keluarga/anggota/$p/$o/$kk");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete_all_anggota($p=1, $o=0, $kk=0)
 	{
-		$this->keluarga_model->rem_all_anggota($kk);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_delete())))
+                {
+                $this->keluarga_model->rem_all_anggota($kk);
 		redirect("keluarga/anggota/$p/$o/$kk");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function statistik($tipe=0, $nomor=0, $sex=null, $p=1, $o=0)
 	{
-		$_SESSION['per_page'] = 50;
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_read())))
+                {
+                $_SESSION['per_page'] = 50;
 		unset($_SESSION['cari']);
 		unset($_SESSION['filter']);
 		$_SESSION['status_dasar'] = 1; // tampilkan KK aktif saja
@@ -558,11 +759,25 @@ class Keluarga extends Admin_Controller {
 			unset($_SESSION['judul_statistik']);
 		}
 		redirect('keluarga');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function cetak_statistik($tipe=0)
 	{
-		$data['main'] = $this->keluarga_model->list_data_statistik($tipe);
+		if (!$this->ion_auth->logged_in() || (in_array('22', gp_print())))
+                {
+                $data['main'] = $this->keluarga_model->list_data_statistik($tipe);
 		$this->load->view('sid/kependudukan/keluarga_print', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 }
