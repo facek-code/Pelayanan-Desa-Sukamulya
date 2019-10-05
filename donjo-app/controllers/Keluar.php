@@ -27,7 +27,7 @@ class Keluar extends Admin_Controller {
 	public function index($p=1, $o=0)
 	{
 		if (!$this->ion_auth->logged_in() || (in_array('32', gp_read())))
-               {
+                {
 
                 $data['p'] = $p;
 		$data['o'] = $o;
@@ -64,35 +64,59 @@ class Keluar extends Admin_Controller {
 		$this->load->view('footer');
 
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
+	        }
 	}
 
 	public function edit_keterangan($id=0)
 	{
-		$data['data'] = $this->keluar_model->list_data_keterangan($id);
+		if (!$this->ion_auth->logged_in() || (in_array('32', gp_update())))
+                {
+                $data['data'] = $this->keluar_model->list_data_keterangan($id);
 		$data['form_action'] = site_url("keluar/update_keterangan/$id");
 		$this->load->view('surat/ajax_edit_keterangan', $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function update_keterangan($id='')
 	{
-		$data = array('keterangan' => $this->input->post('keterangan'));
+		if (!$this->ion_auth->logged_in() || (in_array('32', gp_update())))
+                {
+                $data = array('keterangan' => $this->input->post('keterangan'));
 		$data = $this->security->xss_clean($data);
 		$data = html_escape($data);
 		$this->keluar_model->update_keterangan($id, $data);
 		redirect($_SERVER['HTTP_REFERER']);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete($p=1, $o=0, $id='')
 	{
-		$this->redirect_hak_akses('h', "keluar/index/$p/$o");
+		if (!$this->ion_auth->logged_in() || (in_array('32', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "keluar/index/$p/$o");
 		session_error_clear();
 		$this->keluar_model->delete($id);
 		redirect("keluar/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function search()
@@ -115,7 +139,10 @@ class Keluar extends Admin_Controller {
 
 	public function perorangan($nik='', $p=1, $o=0)
 	{
-		if (isset($_POST['nik']))
+		if (!$this->ion_auth->logged_in() || (in_array('32', gp_create())))
+                {
+
+                if (isset($_POST['nik']))
 		{
 			$nik = $_POST['nik'];
 		}
@@ -148,6 +175,12 @@ class Keluar extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('surat/surat_keluar_perorangan', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function graph()
@@ -183,49 +216,99 @@ class Keluar extends Admin_Controller {
 
   public function cetak_surat_keluar($id)
   {
+    if (!$this->ion_auth->logged_in() || (in_array('32', gp_print())))
+                {
     $berkas = $this->db->select('nama_surat')->where('id', $id)->get('log_surat')->row();
     ambilBerkas($berkas->nama_surat, 'keluar');
+
+    }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
   }
 
   public function unduh_lampiran($id)
   {
+    if (!$this->ion_auth->logged_in() || (in_array('32', gp_print())))
+                {
     $berkas = $this->db->select('lampiran')->where('id', $id)->get('log_surat')->row();
     ambilBerkas($berkas->lampiran, 'keluar');
+    }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
   }
 
   public function dialog_cetak($o = 0)
   {
-	  $data['aksi'] = "Cetak";
+	  if (!$this->ion_auth->logged_in() || (in_array('32', gp_print())))
+          {
+          $data['aksi'] = "Cetak";
 	  $data['pamong'] = $this->pamong_model->list_data(true);
 	  $data['form_action'] = site_url("keluar/cetak/$o");
 	  $this->load->view('surat/ajax_cetak', $data);
+          }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
   }
 
 	public function dialog_unduh($o = 0)
 	{
-		$data['aksi'] = "Unduh";
+	  if (!$this->ion_auth->logged_in() || (in_array('32', gp_print())))
+          {	
+          $data['aksi'] = "Unduh";
 		$data['pamong'] = $this->pamong_model->list_data(true);
 	  $data['form_action'] = site_url("keluar/unduh/$o");
 	  $this->load->view('surat/ajax_cetak', $data);
+          }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
   public function cetak($o=0)
   {
-	  $data['input'] = $_POST;
+	  if (!$this->ion_auth->logged_in() || (in_array('32', gp_print())))
+          {
+          $data['input'] = $_POST;
 	  $data['pamong_ttd'] = $this->pamong_model->get_data($_POST['pamong_ttd']);
 	  $data['pamong_ketahui'] = $this->pamong_model->get_data($_POST['pamong_ketahui']);
 	  $data['desa'] = $this->config_model->get_data();
 	  $data['main'] = $this->keluar_model->list_data();
 	  $this->load->view('surat/keluar_print', $data);
+          }
+          else
+          {
+	  $data['page'] = "errors/html/error_access";
+          $this->load->view('dashboard',$data);
+	  }
+
   }
 
   public function unduh($o=0)
   {
-	  $data['input'] = $_POST;
+	  if (!$this->ion_auth->logged_in() || (in_array('32', gp_print())))
+          {
+          $data['input'] = $_POST;
 	  $data['pamong_ttd'] = $this->pamong_model->get_data($_POST['pamong_ttd']);
 	  $data['pamong_ketahui'] = $this->pamong_model->get_data($_POST['pamong_ketahui']);
 	  $data['desa'] = $this->config_model->get_data();
 	  $data['main'] = $this->keluar_model->list_data();
 	  $this->load->view('surat/keluar_excel', $data);
+          }
+          else
+          {
+	  $data['page'] = "errors/html/error_access";
+          $this->load->view('dashboard',$data);
+	  }
   }
 }

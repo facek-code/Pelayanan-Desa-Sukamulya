@@ -23,7 +23,9 @@ class Surat_master extends Admin_Controller {
 
 	public function index($p = 1, $o = 0)
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_read())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 
 		if (isset($_SESSION['cari']))
@@ -49,11 +51,19 @@ class Surat_master extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('surat_master/table', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function form($p = 1, $o = 0, $id = '')
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_create())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 		$data['klasifikasi'] = $this->klasifikasi_model->list_kode();
 
@@ -76,12 +86,26 @@ class Surat_master extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('surat_master/form', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function form_upload($p = 1, $o = 0, $url = '')
 	{
-		$data['form_action'] = site_url("surat_master/upload/$p/$o/$url");
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $data['form_action'] = site_url("surat_master/upload/$p/$o/$url");
 		$this->load->view('surat_master/ajax-upload', $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function search()
@@ -104,65 +128,140 @@ class Surat_master extends Admin_Controller {
 
 	public function insert()
 	{
-		$this->surat_master_model->insert();
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $this->surat_master_model->insert();
 		redirect('surat_master');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update($p = 1, $o = 0, $id = '')
 	{
-		$this->surat_master_model->update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $this->surat_master_model->update($id);
 		redirect("surat_master/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function upload($p = 1, $o = 0, $url = '')
 	{
-		$this->surat_master_model->upload($url);
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $this->surat_master_model->upload($url);
 		redirect("surat_master/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete($p = 1, $o = 0, $id = '')
 	{
-		$this->redirect_hak_akses('h', "surat_master/index/$p/$o");
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "surat_master/index/$p/$o");
 		$this->surat_master_model->delete($id);
 		redirect("surat_master/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete_all($p = 1, $o = 0)
 	{
-		$this->redirect_hak_akses('h', "surat_master/index/$p/$o");
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "surat_master/index/$p/$o");
 		$this->surat_master_model->delete_all();
 		redirect("surat_master/index/$p/$o");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function p_insert($in = '')
 	{
-		$this->surat_master_model->p_insert($in);
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $this->surat_master_model->p_insert($in);
 		redirect("surat_master/atribut/$in");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
+                
 	}
 
 	public function p_update($in = '', $id = '')
 	{
-		$this->surat_master_model->p_update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $this->surat_master_model->p_update($id);
 		redirect("surat_master/atribut/$in");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function p_delete($in = '', $id = '')
 	{
-		$this->redirect_hak_akses('h', "surat_master/atribut/$in");
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "surat_master/atribut/$in");
 		$this->surat_master_model->p_delete($id);
 		redirect("surat_master/atribut/$in");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function p_delete_all()
 	{
-		$this->redirect_hak_akses('h', "surat_master/atribut/$in");
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "surat_master/atribut/$in");
 		$this->surat_master_model->p_delete_all();
 		redirect("surat_master/atribut/$in");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function kode_isian($p = 1, $o = 0, $id = '')
 	{
-		$data['p'] = $p;
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $data['p'] = $p;
 		$data['o'] = $o;
 		if ($id)
 		{
@@ -178,12 +277,26 @@ class Surat_master extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('surat_master/kode_isian', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function lock($id = 0, $k = 0)
 	{
-		$this->surat_master_model->lock($id, $k);
+		if (!$this->ion_auth->logged_in() || (in_array('30', gp_update())))
+                {
+                $this->surat_master_model->lock($id, $k);
 		redirect("surat_master");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function favorit($id = 0, $k = 0)

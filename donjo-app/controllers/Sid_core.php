@@ -22,8 +22,7 @@ class Sid_Core extends Admin_Controller {
 	public function index($p = 1, $o = 0)
 	{
 		
-                if (!$this->ion_auth->logged_in() || (in_array('20', gp_read())))
-               
+               if (!$this->ion_auth->logged_in() || (in_array('20', gp_read())))
                {
 
                 $data['p'] = $p;
@@ -56,34 +55,52 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('footer');
 
                 }
-               else
-               {
+                else
+                {
 		  $data['page'] = "errors/html/error_access";
                   $this->load->view('dashboard',$data);
-	       }
+	        }
 	}
 
 	public function cetak()
 	{
-		$data['desa'] = $this->header_model->get_data();
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_print())))
+                {
+                $data['desa'] = $this->header_model->get_data();
 		$data['main'] = $this->wilayah_model->list_data(0, 0, 1000);
 		$data['total'] = $this->wilayah_model->total();
 
 		$this->load->view('sid/wilayah/wilayah_print', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function excel()
 	{
-		$data['desa'] = $this->header_model->get_data();
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_print())))
+                {
+                $data['desa'] = $this->header_model->get_data();
 		$data['main'] = $this->wilayah_model->list_data(0, 0, 1000);
 		$data['total'] = $this->wilayah_model->total();
 
 		$this->load->view('sid/wilayah/wilayah_excel', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function form($id = '')
 	{
-		$data['penduduk'] = $this->wilayah_model->list_penduduk();
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_create())))
+                {
+                $data['penduduk'] = $this->wilayah_model->list_penduduk();
 
 		if ($id)
 		{
@@ -113,6 +130,12 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/wilayah/wilayah_form', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function search()
@@ -126,26 +149,52 @@ class Sid_Core extends Admin_Controller {
 
 	public function insert($dusun = '')
 	{
-		$this->wilayah_model->insert();
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->insert();
 		redirect('sid_core');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update($id = '')
 	{
-		$this->wilayah_model->update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->update($id);
 		redirect('sid_core');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete($id = '')
 	{
-		$this->redirect_hak_akses('h', 'sid_core');
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', 'sid_core');
 		$this->wilayah_model->delete($id);
 		redirect('sid_core');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function sub_rw($id_dusun = '')
 	{
-		$dusun = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_read())))
+                {
+                $dusun = $this->wilayah_model->cluster_by_id($id_dusun);
 		$nama_dusun = $dusun['dusun'];
 		$data['dusun'] = $dusun['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -160,12 +209,20 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/wilayah/wilayah_rw', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 
 	public function cetak_rw($id_dusun = '')
 	{
-		$dusun = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_print())))
+                {
+                $dusun = $this->wilayah_model->cluster_by_id($id_dusun);
 		$nama_dusun = $dusun['dusun'];
 		$data['dusun'] = $dusun['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -173,11 +230,19 @@ class Sid_Core extends Admin_Controller {
 		$data['total'] = $this->wilayah_model->total_rw($nama_dusun );
 
 		$this->load->view('sid/wilayah/wilayah_rw_print', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function excel_rw($id_dusun = '')
 	{
-		$dusun = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_print())))
+                {
+                $dusun = $this->wilayah_model->cluster_by_id($id_dusun);
 		$nama_dusun = $dusun['dusun'];
 		$data['dusun'] = $dusun['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -185,11 +250,18 @@ class Sid_Core extends Admin_Controller {
 		$data['total'] = $this->wilayah_model->total_rw($nama_dusun );
 
 		$this->load->view('sid/wilayah/wilayah_rw_excel', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function form_rw($id_dusun = '', $rw = '')
 	{
-
+                if (!$this->ion_auth->logged_in() || (in_array('20', gp_create())))
+                {
 		$temp = $this->wilayah_model->cluster_by_id($id_dusun);
 		$dusun = $temp['dusun'];
 		$data['dusun'] = $temp['dusun'];
@@ -225,31 +297,64 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/wilayah/wilayah_form_rw', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function insert_rw($dusun = '')
 	{
-		$this->wilayah_model->insert_rw($dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_create())))
+                {
+                $this->wilayah_model->insert_rw($dusun);
 		redirect("sid_core/sub_rw/$dusun");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_rw($dusun = '', $rw = '')
 	{
-		$this->wilayah_model->update_rw($dusun, $rw);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->update_rw($dusun, $rw);
 		redirect("sid_core/sub_rw/$dusun");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
+                
 	}
 
 	public function delete_rw($id_dusun = '', $id = '')
 	{
-		$this->redirect_hak_akses('h', "sid_core/sub_rw/$id_dusun");
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "sid_core/sub_rw/$id_dusun");
 		$this->wilayah_model->delete_rw($id);
 		redirect("sid_core/sub_rw/$id_dusun");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function sub_rt($id_dusun = '', $rw = '')
 	{
 
-		$temp = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_read())))
+                {
+                $temp = $this->wilayah_model->cluster_by_id($id_dusun);
 		$dusun = $temp['dusun'];
 		$data['dusun'] = $temp['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -266,11 +371,19 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/wilayah/wilayah_rt', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function cetak_rt($id_dusun = '', $rw = '')
 	{
-		$temp = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_print())))
+                {
+                $temp = $this->wilayah_model->cluster_by_id($id_dusun);
 		$dusun = $temp['dusun'];
 		$data['dusun'] = $temp['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -280,11 +393,19 @@ class Sid_Core extends Admin_Controller {
 		$data['total'] = $this->wilayah_model->total_rt($dusun, $rw);
 
 		$this->load->view('sid/wilayah/wilayah_rt_print', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function excel_rt($id_dusun = '', $rw = '')
 	{
-		$temp = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_print())))
+                {
+                $temp = $this->wilayah_model->cluster_by_id($id_dusun);
 		$dusun = $temp['dusun'];
 		$data['dusun'] = $temp['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -294,11 +415,19 @@ class Sid_Core extends Admin_Controller {
 		$data['total'] = $this->wilayah_model->total_rt($dusun, $rw);
 
 		$this->load->view('sid/wilayah/wilayah_rt_excel', $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function list_dusun_rt($dusun = '', $rw = '')
 	{
-		$data['dusun'] = $dusun;
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_read())))
+                {
+                $data['dusun'] = $dusun;
 		$data['rw'] = $rw;
 		$data['main'] = $this->wilayah_model->list_data_rt($dusun, $rw);
 
@@ -309,11 +438,19 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/wilayah/list_dusun_rt', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function form_rt($id_dusun = '', $rw = '', $rt = '')
 	{
-		$temp = $this->wilayah_model->cluster_by_id($id_dusun);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_create())))
+                {
+                $temp = $this->wilayah_model->cluster_by_id($id_dusun);
 
 		$data['dusun'] = $temp['dusun'];
 		$data['id_dusun'] = $id_dusun;
@@ -350,73 +487,151 @@ class Sid_Core extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view('sid/wilayah/wilayah_form_rt', $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function insert_rt($dusun = '', $rw = '')
 	{
-		$this->wilayah_model->insert_rt($dusun, $rw);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->insert_rt($dusun, $rw);
 		redirect("sid_core/sub_rt/$dusun/$rw");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_rt($dusun = '', $rw = '', $id_cluster = 0)
 	{
-		$this->wilayah_model->update_rt($id_cluster);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->update_rt($id_cluster);
 		redirect("sid_core/sub_rt/$dusun/$rw");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function delete_rt($id_cluster = '')
 	{
-		$this->redirect_hak_akses('h', "sid_core/sub_rt/$id_dusun/$rw");
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_delete())))
+                {
+                $this->redirect_hak_akses('h', "sid_core/sub_rt/$id_dusun/$rw");
 		$temp = $this->wilayah_model->cluster_by_id($id_cluster);
 		$id_dusun = $temp['id_dusun'];
 		$rw = $temp['rw'];
 		$this->wilayah_model->delete_rt($id_cluster);
 		redirect("sid_core/sub_rt/$id_dusun/$rw");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function ajax_wil_maps($id = 0)
 	{
-		$data['dusun'] = $this->wilayah_model->get_dusun_maps($id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $data['dusun'] = $this->wilayah_model->get_dusun_maps($id);
 		$data['desa'] = $this->config_model->get_data();
 		$data['form_action'] = site_url("sid_core/update_dusun_map/$id");
 
 		$this->load->view("sid/wilayah/ajax_wil_dusun", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_dusun_map($id = 0)
 	{
-		$this->wilayah_model->update_dusun_map($id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->update_dusun_map($id);
 		redirect("sid_core");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function ajax_rw_maps($dus = 0, $id = 0)
 	{
-		$data['dusun'] = $this->wilayah_model->get_rw($dus, $id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $data['dusun'] = $this->wilayah_model->get_rw($dus, $id);
 		$data['desa'] = $this->config_model->get_data();
 		$data['form_action'] = site_url("sid_core/update_rw_map/$dus/$id");
 
 		$this->load->view("sid/wilayah/ajax_wil_dusun", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_rw_map($dus = 0, $id = 0)
 	{
-		$this->wilayah_model->update_rw_map($dus, $id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->update_rw_map($dus, $id);
 		redirect("sid_core/sub_rw/$dus");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function ajax_rt_maps($dus = 0, $rw = 0, $id = 0)
 	{
-		$data['dusun'] = $this->wilayah_model->get_rt($dus, $rw, $id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $data['dusun'] = $this->wilayah_model->get_rt($dus, $rw, $id);
 		$data['desa'] = $this->config_model->get_data();
 		$data['form_action'] = site_url("sid_core/update_rt_map/$dus/$rw/$id");
 
 		$this->load->view("sid/wilayah/ajax_wil_dusun", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_rt_map($dus = 0, $rw = 0, $id = 0)
 	{
-		$this->wilayah_model->update_rt_map($dus, $rw, $id);
+		if (!$this->ion_auth->logged_in() || (in_array('20', gp_update())))
+                {
+                $this->wilayah_model->update_rt_map($dus, $rw, $id);
 		redirect("sid_core/sub_rt/$dus/$rw");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function warga($id = '')

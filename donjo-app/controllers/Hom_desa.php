@@ -14,12 +14,22 @@ class Hom_desa extends Admin_Controller {
 
 	public function index()
 	{
-		redirect('hom_desa/konfigurasi');
+	       if (!$this->ion_auth->logged_in() || (in_array('17', gp_read())))
+               {
+               redirect('hom_desa/konfigurasi');
+               }
+               else
+               {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	       }
 	}
 
 	public function konfigurasi()
 	{
-		$this->load->model('provinsi_model');
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_read())))
+                {
+                $this->load->model('provinsi_model');
 		// Menampilkan menu dan sub menu aktif
 		$nav['act'] = 1;
 		$nav['act_sub'] = 17;
@@ -34,44 +44,99 @@ class Hom_desa extends Admin_Controller {
 		$data['list_provinsi'] = $this->provinsi_model->list_data();
 		$this->load->view('home/konfigurasi_form',$data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function insert()
 	{
-		$this->config_model->insert();
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_update())))
+                {
+                $this->config_model->insert();
 		redirect('hom_desa/konfigurasi');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update($id='')
 	{
-		$this->config_model->update($id);
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_update())))
+                {
+                $this->config_model->update($id);
 		redirect("hom_desa/konfigurasi");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function ajax_kantor_maps()
 	{
-		$data['desa'] = $this->config_model->get_data();
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_update())))
+                {
+                $data['desa'] = $this->config_model->get_data();
 		$data['form_action'] = site_url("hom_desa/update_kantor_maps/");
 		$this->load->view("home/ajax_kantor_desa_maps", $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
 	}
 
 	public function ajax_wilayah_maps()
 	{
-		$data['desa'] = $this->config_model->get_data();
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_update())))
+                {
+                $data['desa'] = $this->config_model->get_data();
 		$data['form_action'] = site_url("hom_desa/update_wilayah_maps/");
 		$this->load->view("home/ajax_wilayah_desa_maps", $data);
+                }
+                else
+                {
+		  //$data['page'] = "errors/html/error_access";
+                  $this->load->view("errors/html/error_access");
+	        }
+
 	}
 
 	public function update_kantor_maps()
 	{
-		$this->config_model->update_kantor();
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_update())))
+                {
+                $this->config_model->update_kantor();
 		redirect("hom_desa/konfigurasi");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function update_wilayah_maps()
 	{
-		$this->config_model->update_wilayah();
-			redirect("hom_desa/konfigurasi");
+		if (!$this->ion_auth->logged_in() || (in_array('17', gp_update())))
+                {
+                $this->config_model->update_wilayah();
+		redirect("hom_desa/konfigurasi");
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 }

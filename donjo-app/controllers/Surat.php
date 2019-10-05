@@ -19,7 +19,7 @@ class Surat extends Admin_Controller {
 
 	public function index()
 	{
-		if (!$this->ion_auth->logged_in() || (in_array('4', gp_read())))
+		if (!$this->ion_auth->logged_in() || (in_array('31', gp_read())))
                 {
                 $header = $this->header_model->get_data();
 		$data['menu_surat'] = $this->surat_model->list_surat();
@@ -68,7 +68,9 @@ class Surat extends Admin_Controller {
 
 	public function form($url = '', $clear = '')
 	{
-		$data['url'] = $url;
+		if (!$this->ion_auth->logged_in() || (in_array('31', gp_create())))
+                {
+                $data['url'] = $url;
 		$data['anchor'] = $this->input->post('anchor');
 		if (!empty($_POST['nik']))
 		{
@@ -93,10 +95,18 @@ class Surat extends Admin_Controller {
 		$this->load->view('nav', $nav);
 		$this->load->view("surat/form_surat", $data);
 		$this->load->view('footer');
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function cetak($url = '')
 	{            
+                if (!$this->ion_auth->logged_in() || (in_array('31', gp_print())))
+                {
                 $user = $this->ion_auth->user()->row();
                 $log_surat['url_surat'] = $url;
 		$log_surat['pamong_nama'] = $_POST['pamong'];
@@ -125,6 +135,12 @@ class Surat extends Admin_Controller {
 
 		$data['url'] = $url;
 		$this->load->view("surat/print_surat", $data);
+                }
+                else
+                {
+		  $data['page'] = "errors/html/error_access";
+                  $this->load->view('dashboard',$data);
+	        }
 	}
 
 	public function doc($url = '')
