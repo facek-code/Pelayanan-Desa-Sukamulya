@@ -1,20 +1,86 @@
--- --------------------------------------------------------
+#
+# DROP TABLE + FOREIGN KEY DAN ROLLBACK MENU
+#
 
---
--- Table structure for table `groups`
---
+/* ========= DROP fk_users_groups_users1 ========= */
 
+DROP PROCEDURE IF EXISTS tmp_drop_foreign_key;
+DELIMITER $$
+CREATE PROCEDURE tmp_drop_foreign_key(IN tableName VARCHAR(64), IN constraintName VARCHAR(64))
+BEGIN
+    IF EXISTS(
+        SELECT * FROM information_schema.table_constraints
+        WHERE 
+            table_schema    = DATABASE()     AND
+            table_name      = 'users_groups'   AND
+            constraint_name = 'fk_users_groups_users1' AND
+            constraint_type = 'FOREIGN KEY')
+    THEN
+        SET @query = CONCAT('ALTER TABLE ', tableName, ' DROP FOREIGN KEY ', constraintName, ';');
+        PREPARE stmt FROM @query; 
+        EXECUTE stmt; 
+        DEALLOCATE PREPARE stmt; 
+    END IF; 
+END$$
+DELIMITER ;
+CALL tmp_drop_foreign_key('users_groups', 'fk_users_groups_users1');
+DROP PROCEDURE tmp_drop_foreign_key;
+
+/* ========= DROP fk_users_groups_groups1 ========= */
+DROP PROCEDURE IF EXISTS tmp1_drop_foreign_key;
+DELIMITER $$
+CREATE PROCEDURE tmp1_drop_foreign_key(IN tableName VARCHAR(64), IN constraintName VARCHAR(64))
+BEGIN
+    IF EXISTS(
+        SELECT * FROM information_schema.table_constraints
+        WHERE 
+            table_schema    = DATABASE()     AND
+            table_name      = 'users_groups'   AND
+            constraint_name = 'fk_users_groups_groups1' AND
+            constraint_type = 'FOREIGN KEY')
+    THEN
+        SET @query = CONCAT('ALTER TABLE ', tableName, ' DROP FOREIGN KEY ', constraintName, ';');
+        PREPARE stmt FROM @query; 
+        EXECUTE stmt; 
+        DEALLOCATE PREPARE stmt; 
+    END IF; 
+END$$
+DELIMITER ;
+CALL tmp1_drop_foreign_key('users_groups', 'fk_users_groups_groups1');
+DROP PROCEDURE tmp1_drop_foreign_key;
+
+/* ========= DROP TABLE ========= */
 DROP TABLE IF EXISTS `groups`;
-CREATE TABLE IF NOT EXISTS `groups` (
-  `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `users_groups`;
+DROP TABLE IF EXISTS `login_attempts`;
+DROP TABLE IF EXISTS `settings`;
+DROP TABLE IF EXISTS `group_perm`;
+
+/* ========= ROLLBACK ========= */
+UPDATE `setting_modul` SET `url` = 'man_user' WHERE `setting_modul`.`id` = 11;
+UPDATE `setting_modul` SET `url` = 'man_user' WHERE `setting_modul`.`id` = 44;
+UPDATE `setting_modul` SET `urut` = '4' WHERE `setting_modul`.`id` = 45;
+UPDATE `setting_modul` SET `urut` = '5' WHERE `setting_modul`.`id` = 46;
+SET @query1 = 'DELETE FROM `setting_modul` WHERE `id`=204';
+PREPARE stmt FROM @query1; 
+EXECUTE stmt;
+
+
+#
+# Table structure for table 'groups'
+#
+
+CREATE TABLE `groups` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `description` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `groups`
---
+#
+# Dumping data for table 'groups'
+#
 
 INSERT INTO `groups` (`id`, `name`, `description`) VALUES
 (1, 'admin', 'Administrator'),
@@ -22,13 +88,100 @@ INSERT INTO `groups` (`id`, `name`, `description`) VALUES
 (3, 'redaksi', 'Redaksi'),
 (4, 'kontributor', 'Kontributor');
 
--- --------------------------------------------------------
 
---
--- Table structure for table `group_perm`
---
+#
+# Table structure for table 'users'
+#
 
-DROP TABLE IF EXISTS `group_perm`;
+CREATE TABLE `users` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `username` varchar(100) NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `activation_selector` varchar(255) DEFAULT NULL,
+  `activation_code` varchar(255) DEFAULT NULL,
+  `forgotten_password_selector` varchar(255) DEFAULT NULL,
+  `forgotten_password_code` varchar(255) DEFAULT NULL,
+  `forgotten_password_time` int(11) unsigned DEFAULT NULL,
+  `remember_selector` varchar(255) DEFAULT NULL,
+  `remember_code` varchar(255) DEFAULT NULL,
+  `created_on` int(11) unsigned NOT NULL,
+  `last_login` int(11) unsigned DEFAULT NULL,
+  `active` tinyint(1) unsigned DEFAULT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `user_img` text,
+  `id_grup` int(11) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `uc_email` UNIQUE (`email`),
+  CONSTRAINT `uc_activation_selector` UNIQUE (`activation_selector`),
+  CONSTRAINT `uc_forgotten_password_selector` UNIQUE (`forgotten_password_selector`),
+  CONSTRAINT `uc_remember_selector` UNIQUE (`remember_selector`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+#
+# Dumping data for table 'users'
+#
+
+INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_code`, `forgotten_password_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`, `user_img`, `id_grup`) VALUES
+     (1, '127.0.0.1', 'adminrbac', '$2y$12$VCCzq5PRAqu35pCZvB9OTu2zFeWojWzzi8CDod4IJgPftkZKc4bDi', 'admin@opendesa.id', '', '','1268889823','1268889823','1', 'admin', 'rbac', 'opendesa', '08100000000', 'kuser.png', 1);
+
+
+#
+# Table structure for table 'users_groups'
+#
+
+CREATE TABLE `users_groups` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `group_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_users_groups_users1_idx` (`user_id`),
+  KEY `fk_users_groups_groups1_idx` (`group_id`),
+  CONSTRAINT `uc_users_groups` UNIQUE (`user_id`, `group_id`),
+  CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
+     (1,1,1);
+
+
+#
+# Table structure for table 'login_attempts'
+#
+
+CREATE TABLE `login_attempts` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `time` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+#
+# Table structure for table 'settings'
+#
+
+CREATE TABLE IF NOT EXISTS `settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `registration_status` tinyint(4) NOT NULL,
+  `forgot_pass_status` tinyint(4) NOT NULL,
+  `social_login_status` tinyint(4) NOT NULL,
+  `two_factor_auth` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+#
+# Table structure for table 'group_perm'
+#
+
 CREATE TABLE IF NOT EXISTS `group_perm` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `group_id` int(10) UNSIGNED NOT NULL,
@@ -38,11 +191,11 @@ CREATE TABLE IF NOT EXISTS `group_perm` (
   `delete_id` int(10) UNSIGNED DEFAULT NULL,
   `print_id` int(10) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=756 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `group_perm`
---
+#
+# Dumping data for table 'group_perm'
+#
 
 INSERT INTO `group_perm` (`id`, `group_id`, `perm_id`, `create_id`, `update_id`, `delete_id`, `print_id`) VALUES
 (1, 1, 1, 0, 0, 0, 0),
@@ -801,116 +954,10 @@ INSERT INTO `group_perm` (`id`, `group_id`, `perm_id`, `create_id`, `update_id`,
 (754, 4, 0, 0, 0, 0, 54),
 (755, 4, 0, 0, 0, 0, 64);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `login_attempts`
---
-
-DROP TABLE IF EXISTS `login_attempts`;
-CREATE TABLE IF NOT EXISTS `login_attempts` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(15) NOT NULL,
-  `login` varchar(100) NOT NULL,
-  `time` int(11) UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(45) NOT NULL,
-  `username` varchar(100) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `email` varchar(254) NOT NULL,
-  `activation_selector` varchar(255) DEFAULT NULL,
-  `activation_code` varchar(255) DEFAULT NULL,
-  `forgotten_password_selector` varchar(255) DEFAULT NULL,
-  `forgotten_password_code` varchar(255) DEFAULT NULL,
-  `forgotten_password_time` int(11) UNSIGNED DEFAULT NULL,
-  `remember_selector` varchar(255) DEFAULT NULL,
-  `remember_code` varchar(255) DEFAULT NULL,
-  `created_on` int(11) UNSIGNED NOT NULL,
-  `last_login` int(11) UNSIGNED DEFAULT NULL,
-  `active` tinyint(1) UNSIGNED DEFAULT NULL,
-  `first_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
-  `company` varchar(100) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `user_img` text,
-  `id_grup` int(11) UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_email` (`email`),
-  UNIQUE KEY `uc_activation_selector` (`activation_selector`),
-  UNIQUE KEY `uc_forgotten_password_selector` (`forgotten_password_selector`),
-  UNIQUE KEY `uc_remember_selector` (`remember_selector`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`, `user_img`, `id_grup`) VALUES
-(1, '::1', 'administrator', '$2y$12$VCCzq5PRAqu35pCZvB9OTu2zFeWojWzzi8CDod4IJgPftkZKc4bDi', 'admin@opendesa.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1569987030, 1569987233, 1, 'administrator', 'administrator', 'opendesa', '08100000000', 'opensid_logo4.png', 0),
-(2, '::1', 'operator', '$2y$10$qXSD5Q.VPB4A4/rB2PMjsOt.acZje6o/UDFnEZMkZNss7WY8.7B5O', 'operator@opendesa.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1569987815, 1569993160, 1, 'operator', 'operator', 'opendesa', '08100000000', NULL, 0),
-(3, '::1', 'redaksi', '$2y$10$3.yQJwZ/0dzTuFP6QAm.devK84PxGYXs3sNFitQFofER5uY55Flvm', 'redaksi@opendesa.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1569987949, NULL, 1, 'redaksi', 'redaksi', 'opendesa', '08100000000', NULL, 0),
-(4, '::1', 'kontributor', '$2y$10$5jg96gMw3bwFJt5KtScxuuW3V/dFddBJGcjHQ.9MWe.GHcatAmfdy', 'kontributor@opendesa.id', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1569988078, 1569988201, 1, 'kontributor', 'kontributor', 'opendesa', '08100000000', NULL, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users_groups`
---
-
-DROP TABLE IF EXISTS `users_groups`;
-CREATE TABLE IF NOT EXISTS `users_groups` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `group_id` mediumint(8) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
-  KEY `fk_users_groups_users1_idx` (`user_id`),
-  KEY `fk_users_groups_groups1_idx` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `users_groups`
---
-
-INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 4, 4);
-
-
---
--- Table structure for table `settings`
---
-
-CREATE TABLE IF NOT EXISTS `settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `registration_status` tinyint(4) NOT NULL,
-  `forgot_pass_status` tinyint(4) NOT NULL,
-  `socail_login_status` tinyint(4) NOT NULL,
-  `two_factor_auth` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
---
--- Constraints for dumped tables
---
-
-INSERT INTO `users` ( `username`, `password`, `email`, `last_login`, `active`, `first_name`, `company`, `phone`, `user_img`, `id_grup`) SELECT `username`, `password`, `email`,  `last_login`, `active`, `nama`, `company`, `phone`, `foto`, `id_grup` FROM `user`;
-
-INSERT INTO `users_groups` (`user_id`, `group_id`) SELECT `id`, `id_grup` FROM `users` WHERE id > 4;
+#
+# Menambahkan menu 'Group / Hak Akses' ke table 'setting_modul'
+# dan update no urut menu karena ada penambahan menu 'Group / Hak Akses' di table 'setting_modul'
+#
 
 UPDATE `setting_modul` SET `url` = '' WHERE `setting_modul`.`id` = 11;
 
@@ -923,13 +970,24 @@ UPDATE `setting_modul` SET `urut` = '6' WHERE `setting_modul`.`id` = 46;
 INSERT INTO `setting_modul` (`id`, `modul`, `url`, `aktif`, `ikon`, `urut`, `level`, `hidden`, `parent`) VALUES (204, 'Group / Hak Akses', 'user_groups', '1', 'fa-users', '4', '1', '0', '11');
 
 
---
--- Constraints for table `users_groups`
---
-ALTER TABLE `users_groups`
-  ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+/* ========= Proses Migrasi di atas ini HARUS dilakukan SEBELUM masuk web admin ========= */
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/* ========= Proses Migrasi di bawah ini BISA dilakukan SETELAH masuk web admin (tetapi akan 2x proses migrasi, maka ditambahkan disini) ========= */
+
+#
+# Menambahkan Dummy Email Address ke table 'user' dgn mengambil 'username' sbg nama email
+#
+
+UPDATE `user` SET `email` = CONCAT(user.username, '@opensid.id');
+
+#
+# Salin Data Pengguna yg sudah ada di table 'user' ke table 'users'
+#
+
+INSERT INTO `users` ( `username`, `password`, `email`, `last_login`, `active`, `first_name`, `company`, `phone`, `user_img`, `id_grup`) SELECT `username`, `password`, `email`, CAST(user.last_login AS DATE), `active`, `nama`, `company`, `phone`, `foto`, `id_grup` FROM `user`;
+
+#
+# Menambahkan Data Pengguna yg sudah ada ke dalam Group
+#
+
+INSERT INTO `users_groups` (`user_id`, `group_id`) SELECT `id`, `id_grup` FROM `users` WHERE id > 1;
