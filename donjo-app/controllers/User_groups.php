@@ -107,18 +107,9 @@ class User_groups extends MY_Controller
              
                 // level 1
                 $privilege = $this->Users_modal->list_data_main();
-                $privilege_create = $privilege;
-                $privilege_update = $privilege;
-                $privilege_delete = $privilege;
-                $privilege_print = $privilege;
-
+                
                 $currentPrivilege = $this->Users_modal->get_user_privileges($id);
-                $currentPrivilege_create = $this->Users_modal->get_user_privileges_create($id);  
-                $currentPrivilege_update = $this->Users_modal->get_user_privileges_update($id);
-                $currentPrivilege_delete = $this->Users_modal->get_user_privileges_delete($id);
-                $currentPrivilege_print = $this->Users_modal->get_user_privileges_print($id);
-
-                  
+                                  
                 // level 2
                 $privilege1 = $this->Users_modal->list_data_main();
                 $privilege1_create = $privilege1;
@@ -145,12 +136,7 @@ class User_groups extends MY_Controller
                 	        //Update the groups user belongs to
 
                                         $privilegeData = $this->input->post('privlg');
-                                        $privilegeData_create = $this->input->post('privlg1');
-                                        $privilegeData_update = $this->input->post('privlg2');
-                                        $privilegeData_delete = $this->input->post('privlg3');
-                                        $privilegeData_print = $this->input->post('privlg4');
                                          
-                                        
                                         $privilegeData1 = $this->input->post('privlg5');
                                         $privilegeData1_create = $this->input->post('privlg6');
                                         $privilegeData1_update = $this->input->post('privlg7');
@@ -166,11 +152,7 @@ class User_groups extends MY_Controller
                                         if (isset($privilegeData) && !empty($privilegeData)) {
 
 						$query = $this->Users_modal->remove_from_privileges($privilegeData, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData_create, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData_update, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData_delete, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData_print, $id); 
-
+                                                
                                                 $query = $this->Users_modal->remove_from_privileges($privilegeData1, $id);
                                                 $query = $this->Users_modal->remove_from_privileges($privilegeData1_create, $id);
                                                 $query = $this->Users_modal->remove_from_privileges($privilegeData1_update, $id);
@@ -186,47 +168,7 @@ class User_groups extends MY_Controller
                                                         
 						}
 					}
-                                       //tambah level1
-                                       if (isset($privilegeData_create) && !empty($privilegeData_create)) {
-                                               
-						foreach ($privilegeData_create as $key => $value) {
-							$data_create = array('perm_id' => '0', 'group_id' => $id, 'create_id' => $privilegeData_create[$key],'update_id' => '0','delete_id' => '0','print_id' => '0');
-
-                                                         
-							$result_create = $this->common_model->add('group_perm', $data_create);
-                                                }
-					}
-				
-                                        //ubah level1
-                                        if (isset($privilegeData_update) && !empty($privilegeData_update)) {
-
-						foreach ($privilegeData_update as $key => $value) {
-							$data_update = array('perm_id' => '0', 'group_id' => $id, 'create_id' => '0','update_id' => $privilegeData_update[$key],'delete_id' => '0','print_id' => '0');
-
-							$result_update = $this->common_model->add('group_perm', $data_update);
-						}
-					}
-                                        
-                                        //hapus level1
-                                        if (isset($privilegeData_delete) && !empty($privilegeData_delete)) {
-
-						foreach ($privilegeData_delete as $key => $value) {
-							$data_delete = array('perm_id' => '0', 'group_id' => $id, 'create_id' => '0','update_id' => '0','delete_id' => $privilegeData_delete[$key],'print_id' => '0');
-
-							$result_delete = $this->common_model->add('group_perm', $data_delete);
-						}
-					}
-
-                                        //cetak dan unduh level1
-                                        if (isset($privilegeData_print) && !empty($privilegeData_print)) {
-
-						foreach ($privilegeData_print as $key => $value) {
-							$data_print = array('perm_id' => '0', 'group_id' => $id, 'create_id' => '0','update_id' => '0','delete_id' => '0','print_id' => $privilegeData_print[$key]);
-
-							$result_print = $this->common_model->add('group_perm', $data_print);
-						}
-					}
-
+                                       
                                        //LEVEL 2
                                        //lihat	level2
                                        if (isset($privilegeData1) && !empty($privilegeData1)) {
@@ -301,16 +243,8 @@ class User_groups extends MY_Controller
 		$data['group'] = $group;
 		
                 $data['privileges'] = $privilege;
-                $data['privileges_create'] = $privilege_create;
-                $data['privileges_update'] = $privilege_update;
-                $data['privileges_delete'] = $privilege_delete;
-                $data['privileges_print'] = $privilege_print;
                 $data['crtPrivilege'] = $currentPrivilege;
-                $data['crtPrivilege_create'] = $currentPrivilege_create;
-                $data['crtPrivilege_update'] = $currentPrivilege_update;
-                $data['crtPrivilege_delete'] = $currentPrivilege_delete;
-                $data['crtPrivilege_print'] = $currentPrivilege_print;
-
+                
                 $data['privileges1'] = $privilege1;
                 $data['privileges1_create'] = $privilege1_create;
                 $data['privileges1_update'] = $privilege1_update;
