@@ -20,7 +20,7 @@
 					</div>
 						
                   <div class="panel-body">
-                     <div class="col-md-6">
+                     <div class="col-md-4">
                         <p><?php echo lang('edit_group_subheading');?></p>
                         <?php echo form_open(current_url());?>
                         <p>
@@ -34,6 +34,7 @@
                         </p>
                         <p><?php echo form_submit('submit', lang('edit_group_submit_btn'),'class="btn btn-success"');?></p>
                      </div>
+				
 
 <!-- #level 1 table -->			
 												
@@ -45,13 +46,9 @@
 <thead class="bg-gray disabled color-palette">
 <tr>
 <th>Id</th>
-<th width="5%">Nama Modul</th>
+<th width="10%">Modul</th>
 <th><label><input type="checkbox" id="checkall0" onclick="myFunction0()"/> Lihat</label></th>
-<th><label><input type="checkbox" id="checkall1" onclick="myFunction1()"/> Tambah</label></th>
-<th><label><input type="checkbox" id="checkall2" onclick="myFunction2()"/> Ubah</label></th>
-<th><label><input type="checkbox" id="checkall3" onclick="myFunction3()"/> Hapus</label></th>
-<th><label><input type="checkbox" id="checkall4" onclick="myFunction4()"/> Cetak</label></th>
-<th><center>Sub Modul</center></th>
+<th><center>Sub Modul - Hak Akses</center></th>
 </tr>
 </thead>
 <tbody>
@@ -72,72 +69,10 @@ break;
 }
 ?>
 
-<?php
-$pID_create = $privilege[id];
-$checked_create = null;
-$item = null;
-foreach($crtPrivilege_create as $pri_create)
-{
-if ($pID_create == $pri_create->id)
-{
-$checked_create= ' checked="checked"';
-break;
-}
-}
-?>
-
-<?php
-$pID_update = $privilege[id];
-$checked_update = null;
-$item = null;
-foreach($crtPrivilege_update as $pri_update)
-{
-if ($pID_update == $pri_update->id)
-{
-$checked_update= ' checked="checked"';
-break;
-}
-}
-?>
-
-<?php
-$pID_delete = $privilege[id];
-$checked_delete = null;
-$item = null;
-foreach($crtPrivilege_delete as $pri_delete)
-{
-if ($pID_delete == $pri_delete->id)
-{
-$checked_delete= ' checked="checked"';
-break;
-}
-}
-?>
-
-<?php
-$pID_print = $privilege[id];
-$checked_print = null;
-$item = null;
-foreach($crtPrivilege_print as $pri_print)
-{
-if ($pID_print == $pri_print->id)
-{
-$checked_print= ' checked="checked"';
-break;
-}
-}
-?>
-
-
-
 <tr>															
 <td><?=$privilege['id']?></td>
 <td><?=$privilege['modul']?></td>
-<td class="align-middle"><input type="checkbox" name="privlg[]"  value="<?=$privilege['id']?>"<?php echo $checked;?>></td>
-<td class="align-middle"><input type="checkbox" name="privlg1[]" value="<?=$privilege['id']?>"<?php echo $checked_create;?>></td>
-<td><input type="checkbox" name="privlg2[]" value="<?=$privilege['id']?>"<?php echo $checked_update;?>></td>
-<td><input type="checkbox" name="privlg3[]" value="<?=$privilege['id']?>"<?php echo $checked_delete;?>></td>
-<td><input type="checkbox" name="privlg4[]" value="<?=$privilege['id']?>"<?php echo $checked_print;?>></td>
+<td><input type="checkbox" name="privlg[]"  value="<?=$privilege['id']?>"<?php echo $checked;?>></td>
 
 <!-- #level 2 table -->	
 
@@ -151,12 +86,12 @@ break;
 <thead class="bg-gray disabled color-palette">
 <tr>
 <th>Id</th>
-<th width="25%">Nama Modul</th>
-<th><label><input type="checkbox" id="checkall5" onclick="myFunction5()"/> Lihat</label></th>
-<th><label><input type="checkbox" id="checkall6" onclick="myFunction6()"/> Tambah</label></th>
-<th><label><input type="checkbox" id="checkall7" onclick="myFunction7()"/> Ubah</label></th>
-<th><label><input type="checkbox" id="checkall8" onclick="myFunction8()"/> Hapus</label></th>
-<th><label><input type="checkbox" id="checkall9" onclick="myFunction9()"/> Cetak</label></th>
+<th width="20%">Modul</th>
+<th><label><input type="checkbox" id="checkall5" onclick="myFunction5()"/> Lihat </label></th>
+<th><label><input type="checkbox" id="checkall6" onclick="myFunction6()"/> Tambah </label></th>
+<th><label><input type="checkbox" id="checkall7" onclick="myFunction7()"/> Ubah </label></th>
+<th><label><input type="checkbox" id="checkall8" onclick="myFunction8()"/> Hapus </label></th>
+<th><label><input type="checkbox" id="checkall9" onclick="myFunction9()"/> Cetak </label></th>
 </tr>
 </thead>
 <?php endif; ?>
@@ -304,7 +239,7 @@ break;
              if (msg[0] == "ok")
              {
                $("#err_msg").fadeIn();
-               $("#err_msg").text("Group name already taken.");
+               $("#err_msg").text("Nama Group ini sudah terdaftar. Masukan Nama Group lainnya.");
              }  
              else
              {
@@ -355,74 +290,7 @@ break;
   }
   }
 
-  function myFunction1() {
-  var checkBox = document.getElementById("checkall1");
-  if (checkBox.checked == true){
-    var items=document.getElementsByName('privlg1[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=true;
-				}
-  } else {
-     var items=document.getElementsByName('privlg1[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=false;
-				}
-  }
-  }			
-
-  function myFunction2() {
-  var checkBox = document.getElementById("checkall2");
-  if (checkBox.checked == true){
-    var items=document.getElementsByName('privlg2[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=true;
-				}
-  } else {
-     var items=document.getElementsByName('privlg2[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=false;
-				}
-  }
-  }
-
-  function myFunction3() {
-  var checkBox = document.getElementById("checkall3");
-  if (checkBox.checked == true){
-    var items=document.getElementsByName('privlg3[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=true;
-				}
-  } else {
-     var items=document.getElementsByName('privlg3[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=false;
-				}
-  }
-  }
-
- function myFunction4() {
-  var checkBox = document.getElementById("checkall4");
-  if (checkBox.checked == true){
-    var items=document.getElementsByName('privlg4[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=true;
-				}
-  } else {
-     var items=document.getElementsByName('privlg4[]');
-				for(var i=0; i<items.length; i++){
-					if(items[i].type=='checkbox')
-						items[i].checked=false;
-				}
-  }
-  }
-
+  
  function myFunction5() {
   var checkBox = document.getElementById("checkall5");
   if (checkBox.checked == true){
