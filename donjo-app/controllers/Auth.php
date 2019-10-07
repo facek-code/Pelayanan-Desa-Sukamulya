@@ -65,63 +65,12 @@ class Auth extends MY_Controller {
 
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
 			{
-				$check = $this->common_model->getAllData('settings','two_factor_auth');
-
-				// checking if Two  Factor Authentication is Enable
-				if ($check[0]->two_factor_auth == 1) 
-				{
-				 	//if the login is successful
-					//redirect them back to the home page
-					$destry = array('identity','email','user_id','old_last_login','last_check');
-
-					$this->session->unset_userdata($destry);
-
-					$string = mt_rand(100000, 999999);
-
-					$newdata = array(
-					                   'new_email' => $identity,
-					                   'pass'      => $password,
-					                   'remember'  => $remember,
-					                   'verification_code'  => $string,
-					                );
-
-					$this->session->set_userdata($newdata);
-
-
-					$Message = 'Hi Dear, <br> Your Verification code is: <br> <h3>'.$string.'</h3> <br><br> Thanks';
-				
-					$config = array(
-						'mailtype' => 'html',
-						'charset'  => 'utf-8',
-						'wordwrap' => TRUE
-					);
+				//if the login is successful
+				//redirect them back to the home page
 					
-					$this->load->library('email', $config);
-		
-					$this->email->from($this->config->item('admin_email','ion_auth'),$this->config->item('site_title','ion_auth'));
-					$this->email->to($identity);
-					$this->email->subject('Verification');
-					$this->email->message($Message);
-					$send = $this->email->send();
-						
-					if($send) 
-					{
-						$msg = "Please Check Your Email to Verify your Account";
-						$this->session->set_flashdata('success',$msg);
-						redirect('auth/authentication','refresh');
-					}
-					else
-					{
-						$msg = "Email Can not Send";
-						$this->session->set_flashdata('error',$msg);
-						redirect('auth/login','refresh');
-					}
-				} 
-				else
-				{	
-					$this->session->set_flashdata('message', $this->ion_auth->messages());
-					redirect('auth/', 'refresh');
-				}
+				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				redirect('auth/', 'refresh');
+				
 			}
 			else
 			{
@@ -148,9 +97,7 @@ class Auth extends MY_Controller {
 				'type' => 'password',
 			);
 
-			$data['reg_status'] = $this->common_model->select('settings');
-
-			$data['reg_email']     = $this->config->item('reg_status');
+			
 
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
                         
@@ -158,52 +105,6 @@ class Auth extends MY_Controller {
                         $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $header);
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $data);  
                         
-		}
-	}
-
-	/*
-		Two Factor Authentication
-	*/
-	public function Authentication()
-	{
-		if ($this->input->post()) 
-		{
-			// validate form input
-			$this->form_validation->set_rules('code','Code' , 'trim|required|numeric');
-
-			if ($this->form_validation->run() === TRUE)
-			{
-				$code = $this->input->post('code');
-
-				if ($code == $this->session->userdata('verification_code')) 
-				{
-					if ($this->ion_auth->login($this->session->userdata('new_email'),$this->session->userdata('pass'),$this->session->userdata('remember'))) 
-					{
-						$destry = array('new_email','pass','remember','verification_code');
-
-						$this->session->unset_userdata($destry);
-
-						$msg = "Your Verification Completed Successfully";
-						$this->session->set_flashdata('success',$msg);
-						redirect('auth/','refresh');
-					}
-				}
-				else
-				{
-					$msg = "You have Enter wrong Code, Please Try Again";
-					$this->session->set_flashdata('error',$msg);
-					redirect('auth/Authentication','refresh');
-				}
-			}	
-			else
-			{
-				$data['message'] = validation_errors();
-				view('two_factor_auth');
-			}
-		} 
-		else 
-		{
-			view("auth/two_factor_auth");
 		}
 	}
 
