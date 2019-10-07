@@ -54,7 +54,6 @@ DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `users_groups`;
 DROP TABLE IF EXISTS `login_attempts`;
-DROP TABLE IF EXISTS `settings`;
 DROP TABLE IF EXISTS `group_perm`;
 
 /* ========= ROLLBACK ========= */
@@ -102,7 +101,7 @@ INSERT INTO `groups` (`id`, `name`, `description`) VALUES
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(45) NOT NULL,
-  `username` varchar(100) NULL,
+  `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(254) NOT NULL,
   `activation_selector` varchar(255) DEFAULT NULL,
@@ -122,6 +121,7 @@ CREATE TABLE `users` (
   `user_img` text,
   `id_grup` int(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
+  CONSTRAINT `uc_username` UNIQUE (`username`),
   CONSTRAINT `uc_email` UNIQUE (`email`),
   CONSTRAINT `uc_activation_selector` UNIQUE (`activation_selector`),
   CONSTRAINT `uc_forgotten_password_selector` UNIQUE (`forgotten_password_selector`),
@@ -166,20 +166,6 @@ CREATE TABLE `login_attempts` (
   `ip_address` varchar(45) NOT NULL,
   `login` varchar(100) NOT NULL,
   `time` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-#
-# Table structure for table 'settings'
-#
-
-CREATE TABLE IF NOT EXISTS `settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `registration_status` tinyint(4) NOT NULL,
-  `forgot_pass_status` tinyint(4) NOT NULL,
-  `social_login_status` tinyint(4) NOT NULL,
-  `two_factor_auth` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
