@@ -3,7 +3,8 @@
 define("KODE_KATEGORI", serialize(array(
 			1 => 'Dokumen Umum',
 			2 => 'SK Kades',
-			3 => 'Perdes')));
+			3 => 'Perdes',
+			4 => 'Laporan Siskeudes')));
 
 class Web_dokumen_model extends CI_Model {
 

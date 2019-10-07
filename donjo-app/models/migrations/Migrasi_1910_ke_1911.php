@@ -3,6 +3,7 @@ class Migrasi_1910_ke_1911 extends CI_model {
 
   public function up()
   {
+  	$this->laporan_siskeudes();
   	// WNI sebagai nilai default untuk kolom kewarganegaraan
 	  $this->dbforge->modify_column('tweb_penduduk', array('warganegara_id' => array('type' => 'TINYINT', 'constraint' => 4, 'null' => false, 'default' => 1)));
 	  // Hapus modul yg salah tambah
@@ -29,5 +30,25 @@ class Migrasi_1910_ke_1911 extends CI_model {
 		// Update view supaya kolom baru ikut masuk
 		$this->db->query("DROP VIEW penduduk_hidup");
 		$this->db->query("CREATE VIEW penduduk_hidup AS SELECT * FROM tweb_penduduk WHERE status_dasar = 1");
+  }
+
+  private function laporan_siskeudes()
+  {
+		$this->db->where('id', 203)->update('setting_modul', array('modul'=>'Laporan Transparansi'));
+  	// Tambah menu teks berjalan
+		$data = array(
+			'id' => '204',
+			'modul' => 'Laporan Siskeudes',
+			'url' => 'laporan_siskeudes',
+			'aktif' => '1',
+			'ikon' => 'fa-file-text',
+			'urut' => '7',
+			'level' => '2',
+			'parent' => '201',
+			'hidden' => '0',
+			'ikon_kecil' => 'fa-file-text'
+		);
+		$sql = $this->db->insert_string('setting_modul', $data) . " ON DUPLICATE KEY UPDATE url = VALUES(url), ikon = VALUES(ikon), modul = VALUES(modul)";
+		$this->db->query($sql);
   }
 }
