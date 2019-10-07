@@ -114,7 +114,7 @@ $lang['edit_group_heading']                  = 'Ubah Grup';
 $lang['edit_group_subheading']               = 'Silakan masukan detail Grup di bawah ini.';
 $lang['edit_group_name_label']               = 'Nama Grup:';
 $lang['edit_group_desc_label']               = 'Deskripsi:';
-$lang['edit_group_submit_btn']               = 'Simpan Grup';
+$lang['edit_group_submit_btn']               = 'Simpan Grup dan Hak Akses ';
 $lang['edit_group_validation_name_label']    = 'Nama Grup';
 $lang['edit_group_validation_desc_label']    = 'Deskripsi';
 
