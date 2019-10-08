@@ -50,16 +50,15 @@
       	<?php echo form_input($identity);?>
       </div>
 
+      <div id="infoMessage"><?php echo $message;?></div>
+
       <hr />
       <button type="submit" class="btn">KIRIM</button>
 
 <?php echo form_close();?>
 
 <p><a href="login">Balik ke login</a></p>
-                                                               <div id="infoMessage"><?php echo $message;?></div>
-
-										
-								
+                                                               
 								<hr/>
 								<div class="login-footer-bottom">powered by: <a href="https://github.com/OpenSID/OpenSID" target="_blank">OpenSID</a> <?= substr(AmbilVersi(), 0, 11)?></div>
 							</div>
