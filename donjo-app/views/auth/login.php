@@ -42,7 +42,7 @@
 							<div class="form-bottom">
                                                               
                                                                <?php echo form_open("auth/login");?>
-
+                                                                                
                                                                 		<div class="form-group">
                                                                                 <?php echo form_input($identity);?>
 										</div>
@@ -50,17 +50,14 @@
 										<div class="form-group">
                                                                                 <?php echo form_input($password);?>
 										</div>
-
-                                                                                <hr />
-										<button type="submit" class="btn">LOGIN</button>
+                                                                                                                                                               
+                                                                                <div id="infoMessage"><?php echo $message;?></div>
+                                                                                               
+										<div class="form-group"><button type="submit" class="btn">LOGIN</button></div>
 
                                                                <?php echo form_close();?>
 
-
                                                                <p><a href="forgot_password"><?php echo lang('login_forgot_password');?></a></p>
-                                                               <div id="infoMessage"><?php echo $message;?></div>
-
-										
 								
 								<hr/>
 								<div class="login-footer-bottom">powered by: <a href="https://github.com/OpenSID/OpenSID" target="_blank">OpenSID</a> <?= substr(AmbilVersi(), 0, 11)?></div>
