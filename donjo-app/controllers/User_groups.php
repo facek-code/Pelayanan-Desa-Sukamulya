@@ -111,7 +111,7 @@ class User_groups extends MY_Controller
                 $currentPrivilege = $this->Users_modal->get_user_privileges($id);
                                   
                 // level 2
-                $privilege1 = $this->Users_modal->list_data_main();
+                $privilege1 = $this->Users_modal->list_data_sub();
                 $privilege1_create = $privilege1;
                 $privilege1_update = $privilege1;
                 $privilege1_delete = $privilege1;
@@ -149,55 +149,48 @@ class User_groups extends MY_Controller
 						redirect("user_groups/edit_group/" . $id, 'refresh');
 					}
                                          
+                                        //LEVEL 1
+                                        //lihat level1
                                         if (isset($privilegeData) && !empty($privilegeData)) {
 
 						$query = $this->Users_modal->remove_from_privileges($privilegeData, $id);
-                                                
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData1, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData1_create, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData1_update, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData1_delete, $id);
-                                                $query = $this->Users_modal->remove_from_privileges($privilegeData1_print, $id);  
 
-					//LEVEL 1
-                                        //lihat level1
-                                                foreach ($privilegeData as $key => $value) {
-							$data = array('perm_id' => $privilegeData[$key], 'group_id' => $id, 'create_id' => '0','update_id' => '0','delete_id' => '0','print_id' => '0');
-
-							$result = $this->common_model->add('group_perm', $data);
-                                                        
+					        foreach ($privilegeData as $key => $value) {
+							$data1 = array('perm_id' => $privilegeData[$key], 'group_id' => $id, 'create_id' => NULL,'update_id' => NULL,'delete_id' => NULL,'print_id' => NULL);
+							$result = $this->common_model->add('group_perm', $data1);
 						}
 					}
                                        
                                        //LEVEL 2
-                                       //lihat	level2
+                                       //lihat level2
                                        if (isset($privilegeData1) && !empty($privilegeData1)) {
 
                                                 foreach ($privilegeData1 as $key => $value) {
-							$data1 = array('perm_id' => $privilegeData1[$key], 'group_id' => $id, 'create_id' => '0','update_id' => '0','delete_id' => '0','print_id' => '0');
+						        $data2 = array('perm_id' => $privilegeData1[$key], 'group_id' => $id, 'create_id' => $privilegeData1_create[$key],'update_id' => $privilegeData1_update[$key],'delete_id' => $privilegeData1_delete[$key],'print_id' => $privilegeData1_print[$key]);
 
-							$result1 = $this->common_model->add('group_perm', $data1);
-                                                        
+							$perm_read = $this->common_model->add('group_perm', $data2);
 						}
 					}
+
                                        //tambah level2
                                        if (isset($privilegeData1_create) && !empty($privilegeData1_create)) {
-                                               
-						foreach ($privilegeData1_create as $key => $value) {
-							$data1_create = array('perm_id' => '0', 'group_id' => $id, 'create_id' => $privilegeData1_create[$key],'update_id' => '0','delete_id' => '0','print_id' => '0');
 
-                                                         
-							$result1_create = $this->common_model->add('group_perm', $data1_create);
-                                                }
+						 foreach ($privilegeData1_create as $key => $value) {
+							
+                                                        $data3 = array('create_id' => $privilegeData1_create[$key]);
+
+				                        $perm_create = $this->common_model->update($id, $data3, 'group_perm');
+                                                 }
 					}
 				
                                         //ubah level2
                                         if (isset($privilegeData1_update) && !empty($privilegeData1_update)) {
 
 						foreach ($privilegeData1_update as $key => $value) {
-							$data1_update = array('perm_id' => '0', 'group_id' => $id, 'create_id' => '0','update_id' => $privilegeData1_update[$key],'delete_id' => '0','print_id' => '0');
+							                                                        
+                                                        $data4 = array('update_id' => $privilegeData1_update[$key]);
 
-							$result1_update = $this->common_model->add('group_perm', $data1_update);
+				                        $perm_update = $this->common_model->update($id, $data4, 'group_perm');
 						}
 					}
                                         
@@ -205,9 +198,10 @@ class User_groups extends MY_Controller
                                         if (isset($privilegeData1_delete) && !empty($privilegeData1_delete)) {
 
 						foreach ($privilegeData1_delete as $key => $value) {
-							$data1_delete = array('perm_id' => '0', 'group_id' => $id, 'create_id' => '0','update_id' => '0','delete_id' => $privilegeData1_delete[$key],'print_id' => '0');
+							
+                                                       $data5 = array('delete_id' => $privilegeData1_delete[$key]);
 
-							$result1_delete = $this->common_model->add('group_perm', $data1_delete);
+				                       $perm_delete = $this->common_model->update($id, $data5, 'group_perm');
 						}
 					}
 
@@ -215,14 +209,15 @@ class User_groups extends MY_Controller
                                         if (isset($privilegeData1_print) && !empty($privilegeData1_print)) {
 
 						foreach ($privilegeData1_print as $key => $value) {
-							$data1_print = array('perm_id' => '0', 'group_id' => $id, 'create_id' => '0','update_id' => '0','delete_id' => '0','print_id' => $privilegeData1_print[$key]);
+						       
+                                                       $data6 = array('print_id' => $privilegeData1_print[$key]);
 
-							$result1_print = $this->common_model->add('group_perm', $data1_print);
+				                       $perm_print = $this->common_model->update($id, $data6, 'group_perm');
 						}
 					}
 
-
                                  }
+
                                 $data = array('name' => $this->input->post('group_name'), 'description' => $this->input->post('group_description'));
 
 				$group_update = $this->common_model->update($id, $data, 'groups');
