@@ -115,13 +115,11 @@ class Users_modal extends CI_Model
 					 ->join('groups', "groups.id = group_perm.group_id")
 					 ->join('setting_modul', "setting_modul.id = group_perm.perm_id")
 					 ->where('group_perm.group_id',$group_id);
-					 //->where('group_perm.perm_id',$privilege_id);
-			$this->db->delete();		 	
+			$this->db->delete(); 	
 		}
 
 		return TRUE;
 	}
-
 
         public function get_group_users($group)
 	{
