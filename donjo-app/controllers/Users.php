@@ -442,10 +442,7 @@ class Users extends Admin_Controller {
             'value' => $user->id,
         );
 
-        $data['page'] = "users/user_profile";
-	$header = $this->header_model->get_config();
-        $this->load->view('header',$header);		
-	$this->load->view('dashboard',$data);
+        $this->load->view('users/user_profile',$data);
      }
 
      public function edit_profile()
@@ -471,11 +468,11 @@ class Users extends Admin_Controller {
            {
                $msg =  "Profile Updated Successfully";
                $this->session->set_flashdata('success',$msg);
-               redirect('users/profile','refresh');
+               redirect('hom_sid','refresh');
            } else {
                $msg =  "Profile Updated Successfully";
                $this->session->set_flashdata('error',$msg);
-               redirect('users/profile','refresh');
+               redirect('hom_sid','refresh');
            }
            
         } 
@@ -489,7 +486,7 @@ class Users extends Admin_Controller {
             $data['page'] = "users/edit_user_profile";
             $header = $this->header_model->get_config();
             $this->load->view('header',$header);		
-	     $this->load->view('dashboard',$data);	  
+	    $this->load->view('dashboard',$data);	  
         }
         
         
@@ -526,11 +523,11 @@ class Users extends Admin_Controller {
            {
                $msg =  "Image Updated Successfully";
                $this->session->set_flashdata('success',$msg);
-               redirect('users/Profile','refresh');
+               redirect('hom_sid','refresh');
            } else {
                $msg =  "Image Updated Successfully";
                $this->session->set_flashdata('error',$msg);
-               redirect('users/Profile','refresh');
+               redirect('hom_sid','refresh');
            }
      }
 }
