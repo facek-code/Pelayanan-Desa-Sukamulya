@@ -1,29 +1,11 @@
-<div class="content-wrapper">
-   <div class="static-content">
-      <div class="page-content">
-         <section class="content-header">
-		<h1>Profile Pengguna</h1>
-		<ol class="breadcrumb">
-			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
-			<li class="active">Profile Pengguna</li>
-		</ol>
-	</section>
-
-         <section class="content" id="maincontent">
-	 
-		<div data-widget-group="group1">
-            
-        
-			<div class="box box-info">
-					<div class="box-header with-border">
-						<a href="<?=site_url()?>hom_sid" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-arrow-circle-o-left"></i> Home</a> </div>
-					</div>
+<div class="modal-body" id="maincontent">
+		
             
                <div class="row">
                <div class="col-sm-3">
                   <div class="panel panel-profile">
                      <div class="panel-body">
-                        <img src="<?php bs() ?>assets/files/user_pict/<?php echo $user_profile->user_img ?>" class="img-circle" width="200" alt="">
+                        <img src="<?php bs() ?>assets/files/user_pict/<?php echo $user_profile->user_img ?>" class="img-circle" width="100" alt="">
                         <?php 
                            $user = $this->ion_auth->user()->row();
                         ?>
@@ -192,13 +174,7 @@
                   <!-- .tab-content -->
                </div>
 
-          </div>
-       </div>
-      </section>
-   </div>
-   <!-- .container-fluid -->
-</div>
-<!-- #page-content -->
-</div>               
+     
+</div>                      
 
                 
