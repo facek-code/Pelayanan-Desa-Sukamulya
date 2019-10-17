@@ -91,7 +91,6 @@ class Users_modal extends CI_Model
 		return $query->result(); 
 	}
 
-
               
 	public function remove_from_privileges($privilege_ids=false, $group_id=false)
 	{
@@ -177,10 +176,129 @@ class Users_modal extends CI_Model
 		return $data;
 	}
 
-       
         
+       public function autocomplete()
+	{
+		$sql = "SELECT username FROM users UNION SELECT first_name FROM users";
+		$query = $this->db->query($sql);
+		$data = $query->result_array();
+
+		$out = '';
+		for ($i=0; $i < count($data); $i++)
+		{
+			$out .= ",'".$data[$i]['username']."'";
+		}
+		return '['.strtolower(substr($out, 1)).']';
+	}
+
+	private function search_sql()
+	{
+		if (isset($_SESSION['cari']))
+		{
+			$keyword = $_SESSION['cari'];
+			$keyword = '%'.$this->db->escape_like_str($keyword).'%';
+			$search_sql = " AND (u.username LIKE '$keyword' OR u.first_name LIKE '$keyword')";
+			return $search_sql;
+		}
+	}
+
+	private function filter_sql()
+	{
+		if (isset($_SESSION['filter']))
+		{
+			$filter = $_SESSION['filter'];
+			$filter_sql = " AND p.group_id = $filter";
+			return $filter_sql;
+		}
+	}
+
+	public function paging($page = 1, $o = 0)
+	{
+		$sql = "SELECT COUNT(*) AS jml " . $this->list_data_sql();
+		$query = $this->db->query($sql);
+		$row = $query->row_array();
+		$jml_data = $row['jml'];
+
+		$this->load->library('paging');
+		$cfg['page'] = $page;
+		$cfg['per_page'] = $_SESSION['per_page'];
+		$cfg['num_rows'] = $jml_data;
+		$this->paging->init($cfg);
+
+		return $this->paging;
+	}
+
+	private function list_data_sql()
+	{
+		$sql = " FROM users u
+                         LEFT JOIN users_groups p ON u.id = p.user_id
+                         LEFT JOIN groups m ON p.group_id = m.id
+                         WHERE 1 ";
+		$sql .= $this->search_sql();
+		$sql .= $this->filter_sql();
+		return $sql;
+	}
+
+	public function list_data($order = 0, $offset = 0, $limit = 500)
+	{
+		// Ordering sql
+		switch($order)
+		{
+			case 1 :
+				$order_sql = ' ORDER BY u.username';
+				break;
+			case 2:
+				$order_sql = ' ORDER BY u.username DESC';
+				break;
+			case 3:
+				$order_sql = ' ORDER BY u.first_name';
+				break;
+			case 4:
+				$order_sql = ' ORDER BY u.first_name DESC';
+				break;
+                        case 5:
+				$order_sql = ' ORDER BY u.email';
+				break;
+			case 6:
+				$order_sql = ' ORDER BY u.email DESC';
+				break;
+			case 7:
+				$order_sql = ' ORDER BY m.name';
+				break;
+			case 8:
+				$order_sql = ' ORDER BY m.name DESC';
+				break;
+			default:
+				$order_sql = ' ORDER BY u.username';
+		}
+		// Paging sql
+		$paging_sql = ' LIMIT '.$offset.','.$limit;
+		// Query utama
+		$sql = "SELECT u.*, m.name AS grup " . $this->list_data_sql();
+		$sql .= $order_sql;
+		$sql .= $paging_sql;
+
+		$query = $this->db->query($sql);
+		$data = $query->result_array();
+
+		// Formating output
+		$j = $offset;
+		for ($i=0; $i < count($data); $i++)
+		{
+			$data[$i]['no'] = $j + 1;
+			$j++;
+		}
+		return $data;
+	}
+
+
+	public function list_group()
+	{
+		$sql = "SELECT * FROM groups WHERE 1 ";
+
+		$query = $this->db->query($sql);
+		$data = $query->result_array();
+		return $data;
+	}
 
 }
-
-/* End of file Users_modal.php */
-/* Location: ./application/models/Users_modal.php */
