@@ -6,29 +6,77 @@ class Users extends Admin_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-        
+                session_start();
+                $this->load->model('users_modal');
+        }
+
+        public function clear()
+	{
+		unset($_SESSION['cari']);
+		unset($_SESSION['filter']);
+		redirect('users');
 	}      
 
-	public function index()
+	public function index($p = 1, $o = 0)
 	{
-        // set the flash data error message if there is one
-        $data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+                $data['p'] = $p;
+		$data['o'] = $o;
+
+		if (isset($_SESSION['cari']))
+			$data['cari'] = $_SESSION['cari'];
+		else $data['cari'] = '';
+
+		if (isset($_SESSION['filter']))
+			$data['filter'] = $_SESSION['filter'];
+		else $data['filter'] = '';
+
+		if (isset($_POST['per_page']))
+			$_SESSION['per_page']=$_POST['per_page'];
+		$data['per_page'] = $_SESSION['per_page'];
+
+		$data['paging'] = $this->users_modal->paging($p,$o);
+		$data['main'] = $this->users_modal->list_data($o, $data['paging']->offset, $data['paging']->per_page);
+		$data['keyword'] = $this->users_modal->autocomplete();
+		$data['list_group'] = $this->users_modal->list_group();
+		
+
+                // set the flash data error message if there is one
+                $data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
 		// list the users
 		$data['users'] = $this->ion_auth->users()->result();
+                
 		foreach ($data['users'] as $k => $user)
 		{
 			$data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
 		}
 
-        $this->session->set_flashdata('message', $this->ion_auth->messages());
-
-        $header = $this->header_model->get_config();
-        $data['page'] = "users/view_users";
-	$this->load->view('header',$header);		
-	$this->load->view('dashboard',$data);
+                $this->session->set_flashdata('message', $this->ion_auth->messages());
+                
+                $header = $this->header_model->get_config();
+                $data['page'] = "users/view_users";
+	        $this->load->view('header',$header);		
+	        $this->load->view('dashboard',$data);
 
         }
+
+        public function search()
+	{
+		$cari = $this->input->post('cari');
+		if ($cari != '')
+			$_SESSION['cari'] = $cari;
+		else unset($_SESSION['cari']);
+		redirect('users');
+	}
+
+	public function filter()
+	{
+		$filter = $this->input->post('filter');
+		if ($filter != 0)
+			$_SESSION['filter'] = $filter;
+		else unset($_SESSION['filter']);
+		redirect('users');
+	}
 
 	public function create_user()
 	{
@@ -285,6 +333,38 @@ class Users extends Admin_Controller {
         $this->load->view('header',$header);		
 	$this->load->view('dashboard',$data);
     }
+
+    //Delete User
+    public function delete_user()
+    {
+        $id = $this->uri->segment(3);
+
+        if ($this->session->userdata('user_id') == $id) 
+        {
+            return show_error("You Can't Delete Logged In User");
+        }
+
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id)))
+        {
+            $msg = "You Must Be an Administrator To Delete This Record.";
+            $this->session->set_flashdata('error', $msg);
+            redirect('users','refresh');
+        }
+
+        $result = $this->ion_auth->delete_user($id);
+
+        if ($result) 
+            {
+              $this->session->set_flashdata('message', $this->ion_auth->messages());
+              redirect('users','refresh');
+            }
+        else
+            {
+                $this->session->set_flashdata('message', $this->ion_auth->errors());
+                redirect('users','refresh');
+            }
+    }
+
 
     public function _render_page($view, $data=null, $returnhtml=false)//I think this makes more sense
     {

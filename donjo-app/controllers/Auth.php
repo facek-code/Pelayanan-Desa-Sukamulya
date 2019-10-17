@@ -471,7 +471,7 @@ class Auth extends MY_Controller {
 
        
 
-        public function delete_user($id = NULL)
+        public function delete_user($p = 1, $o = 0, $id = '')
 	{
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
@@ -499,11 +499,7 @@ class Auth extends MY_Controller {
 			$data['csrf'] = $this->_get_csrf_nonce();
 			$data['user'] = $this->ion_auth->user($id)->row();
 
-			$data['page'] = 'auth/del_user'; 
-			
-			$header = $this->header_model->get_config();
-                        $this->load->view('header',$header);		
-	                $this->load->view('dashboard',$data);
+                        redirect('users', 'refresh');
 		}
 		else
 		{
@@ -919,7 +915,6 @@ class Auth extends MY_Controller {
 	}
 
         
-
          public function delete_group($id = NULL)
 	{
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
@@ -948,11 +943,12 @@ class Auth extends MY_Controller {
 			$data['csrf'] = $this->_get_csrf_nonce();
 			$data['group'] = $this->ion_auth->group($id)->row();
 
-			$data['page'] = 'auth/del_grup'; 
+			//$data['page'] = 'auth/del_grup'; 
 			
-			$header = $this->header_model->get_config();
-                        $this->load->view('header',$header);		
-	                $this->load->view('dashboard',$data);
+			//$header = $this->header_model->get_config();
+                        //$this->load->view('header',$header);		
+	                //$this->load->view('dashboard',$data);
+                        redirect('user_groups', 'refresh');
 		}
 		else
 		{

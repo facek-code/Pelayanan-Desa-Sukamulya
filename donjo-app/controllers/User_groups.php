@@ -13,7 +13,7 @@ class User_groups extends MY_Controller
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
 		$this->lang->load('auth');
-		$this->load->model(array('common_model', 'Users_modal', 'Users_groups'));
+		$this->load->model(array('common_model', 'users_modal', 'users_groups'));
 
 		                
 		if (!$this->ion_auth->logged_in()) {
@@ -25,9 +25,39 @@ class User_groups extends MY_Controller
 			// pr($sess_data);
 			// die(); 	
 	}
-	public function index()
+
+
+       public function clear()
 	{
-		// set the flash data error message if there is one
+		unset($_SESSION['cari']);
+		unset($_SESSION['filter']);
+		redirect('users');
+	}  
+
+
+	public function index($p = 1, $o = 0)
+	{
+		$data['p'] = $p;
+		$data['o'] = $o;
+
+		if (isset($_SESSION['cari']))
+			$data['cari'] = $_SESSION['cari'];
+		else $data['cari'] = '';
+
+		if (isset($_SESSION['filter']))
+			$data['filter'] = $_SESSION['filter'];
+		else $data['filter'] = '';
+
+		if (isset($_POST['per_page']))
+			$_SESSION['per_page']=$_POST['per_page'];
+		$data['per_page'] = $_SESSION['per_page'];
+
+		$data['paging'] = $this->users_groups->paging($p,$o);
+		$data['main'] = $this->users_groups->list_data($o, $data['paging']->offset, $data['paging']->per_page);
+		$data['keyword'] = $this->users_groups->autocomplete();
+		$data['list_group'] = $this->users_groups->list_group();
+
+                // set the flash data error message if there is one
 		$data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
 		// list the groups
@@ -38,6 +68,24 @@ class User_groups extends MY_Controller
 		$header = $this->header_model->get_config();
                 $this->load->view('header',$header);		
 	        $this->load->view('dashboard',$data);
+	}
+
+        public function search()
+	{
+		$cari = $this->input->post('cari');
+		if ($cari != '')
+			$_SESSION['cari'] = $cari;
+		else unset($_SESSION['cari']);
+		redirect('user_groups');
+	}
+
+	public function filter()
+	{
+		$filter = $this->input->post('filter');
+		if ($filter != 0)
+			$_SESSION['filter'] = $filter;
+		else unset($_SESSION['filter']);
+		redirect('user_groups');
 	}
 
        	// create a new group
@@ -287,6 +335,32 @@ class User_groups extends MY_Controller
 		$view_html = $this->load->view($view, $this->viewdata, $returnhtml);
 
 		if ($returnhtml) return $view_html;//This will return html on 3rd argument being true
+	}
+
+
+        /*
+	 * Delete group
+	 */
+	public function delete_group()
+	{
+		// Chekck If user is admin
+		if (!$this->ion_auth->is_admin()) {
+			return show_error("You Must Be An Administrator To Delete This Page");
+		}
+
+		$group_id = $this->uri->segment(3);
+
+		//pass the right arguments and it's done
+		$group_delete = $this->ion_auth->delete_group($group_id);
+
+		if ($group_delete) {
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect('User_groups', 'refresh');
+		} else {
+			$msg = "You Can Not Delete Admin!";
+			$this->session->set_flashdata('error', $msg);
+			redirect('User_groups', 'refresh');
+		}
 	}
 
 	
