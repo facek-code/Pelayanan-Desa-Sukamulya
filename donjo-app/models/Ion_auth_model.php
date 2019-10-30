@@ -1847,9 +1847,15 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Phil Sturgeon
 	 */
-	public function delete_user($id)
+	public function delete_user($id = FALSE)
 	{
-		$this->trigger_events('pre_delete_user');
+
+		if ($this->ion_auth->user()->row()->id == $id)
+        	{
+                return show_error("Tidak Bisa Menghapus Pengguna ynng sedang Login ");
+        	}
+
+        	$this->trigger_events('pre_delete_user');
 
 		$this->db->trans_begin();
 
@@ -1864,6 +1870,7 @@ class Ion_auth_model extends CI_Model
 			$this->db->trans_rollback();
 			$this->trigger_events(['post_delete_user', 'post_delete_user_unsuccessful']);
 			$this->set_error('delete_unsuccessful');
+                        return show_error("Admin tidak dapat dihapus");
 			return FALSE;
 		}
 
@@ -1871,7 +1878,26 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events(['post_delete_user', 'post_delete_user_successful']);
 		$this->set_message('delete_successful');
+		$_SESSION['success'] = 1;
 		return TRUE;
+	}
+
+	public function delete_user_all()
+	{
+    	$id_cb = $_POST['id_cb'];
+    	// Cek apakah ada data yang dicentang atau dipilih
+    	if (!is_null($id_cb))
+    	{
+      	foreach ($id_cb as $id)
+      	{
+        	$this->delete_user($id);
+      	}
+    	}
+    	else
+    	{
+      	$_SESSION['error_msg'] = 'Tidak ada data yang dipilih';
+      	$_SESSION['success'] = -1;
+    	}
 	}
 
 	/**
@@ -2152,6 +2178,8 @@ class Ion_auth_model extends CI_Model
 			if (isset($existing_group->id) && $existing_group->id != $group_id)
 			{
 				$this->set_error('group_already_exists');
+                                $_SESSION['success'] = -1;
+                		$_SESSION['error_msg'] = "Nama Grup sudah ada";
 				return FALSE;
 			}
 
@@ -2163,6 +2191,8 @@ class Ion_auth_model extends CI_Model
 		if ($this->config->item('admin_group', 'ion_auth') === $group->name && $group_name !== $group->name)
 		{
 			$this->set_error('group_name_admin_not_alter');
+                        $_SESSION['success'] = -1;
+                	$_SESSION['error_msg'] = "Nama Grup Admin tidak bisa dirubah";
 			return FALSE;
 		}
 
@@ -2176,6 +2206,7 @@ class Ion_auth_model extends CI_Model
 		$this->db->update($this->tables['groups'], $data, ['id' => $group_id]);
 
 		$this->set_message('group_update_successful');
+                $_SESSION['success'] = 1;
 
 		return TRUE;
 	}
@@ -2200,6 +2231,8 @@ class Ion_auth_model extends CI_Model
 		{
 			$this->trigger_events(['post_delete_group', 'post_delete_group_notallowed']);
 			$this->set_error('group_delete_notallowed');
+                        $_SESSION['success'] = -1;
+                	$_SESSION['error_msg'] = "Admin tidak dapat dihapus";
 			return FALSE;
 		}
 
@@ -2217,6 +2250,8 @@ class Ion_auth_model extends CI_Model
 			$this->db->trans_rollback();
 			$this->trigger_events(['post_delete_group', 'post_delete_group_unsuccessful']);
 			$this->set_error('group_delete_unsuccessful');
+                        $_SESSION['success'] = -1;
+                	$_SESSION['error_msg'] = "Ada kesalahan";
 			return FALSE;
 		}
 
@@ -2224,7 +2259,27 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events(['post_delete_group', 'post_delete_group_successful']);
 		$this->set_message('group_delete_successful');
+                $_SESSION['success'] = 1;
 		return TRUE;
+	}
+
+
+        public function delete_group_all()
+	{
+    	$id_cb = $_POST['id_cb'];
+    	// Cek apakah ada data yang dicentang atau dipilih
+    	if (!is_null($id_cb))
+    	{
+      	foreach ($id_cb as $group_id)
+      	{
+        	$this->delete_group($group_id);
+      	}
+    	}
+    	else
+    	{
+      	$_SESSION['error_msg'] = 'Tidak ada data yang dipilih';
+      	$_SESSION['success'] = -1;
+    	}
 	}
 
 	/**
