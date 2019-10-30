@@ -335,37 +335,19 @@ class Users extends Admin_Controller {
     }
 
     //Delete User
-    public function delete_user()
+    public function delete_user($id = '')
     {
-        $id = $this->uri->segment(3);
-
-        if ($this->session->userdata('user_id') == $id) 
-        {
-            return show_error("You Can't Delete Logged In User");
-        }
-
-        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id)))
-        {
-            $msg = "You Must Be an Administrator To Delete This Record.";
-            $this->session->set_flashdata('error', $msg);
-            redirect('users','refresh');
-        }
-
-        $result = $this->ion_auth->delete_user($id);
-
-        if ($result) 
-            {
-              $this->session->set_flashdata('message', $this->ion_auth->messages());
-              redirect('users','refresh');
-            }
-        else
-            {
-                $this->session->set_flashdata('message', $this->ion_auth->errors());
-                redirect('users','refresh');
-            }
+        $this->ion_auth->delete_user($id);
+	redirect('Users', 'refresh');
     }
 
-
+    //Delete User
+    public function delete_user_all()
+    {
+        $this->ion_auth->delete_user_all($id);
+	redirect('Users', 'refresh');
+    }
+	
     public function _render_page($view, $data=null, $returnhtml=false)//I think this makes more sense
     {
 
@@ -400,56 +382,6 @@ class Users extends Admin_Controller {
         return array($key => $value);
     }
 
-    // deactivate the user
-    public function deactivate($id = NULL)
-    {
-        if (!$this->ion_auth->logged_in())
-        {
-            // redirect them to the home page because they must be an administrator to view this
-            return show_error('You must be an administrator to view this page.');
-        }
-
-        $id = (int) $id;
-
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('confirm', $this->lang->line('deactivate_validation_confirm_label'), 'required');
-        $this->form_validation->set_rules('id', $this->lang->line('deactivate_validation_user_id_label'), 'required|alpha_numeric');
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            // insert csrf check
-            $this->data['csrf'] = $this->_get_csrf_nonce();
-            $this->data['user'] = $this->ion_auth->user($id)->row();
-            $this->data['page'] = "users/deactivate_user";
-
-            $header = $this->header_model->get_config();
-            $this->load->view('header',$header);		
-	    $this->load->view('dashboard',$this->data);
-        }
-        else
-        {
-            // do we really want to deactivate?
-            if ($this->input->post('confirm') == 'yes')
-            {
-                // do we have a valid request?
-                if ($this->_valid_csrf_nonce() === FALSE || $id != $this->input->post('id'))
-                {
-                    show_error($this->lang->line('error_csrf'));
-                }
-
-                // do we have the right userlevel?
-                if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
-                {
-                    $this->ion_auth->deactivate($id);
-                }
-            }
-
-            // redirect them back to the auth page
-            $this->session->set_flashdata('message', $this->ion_auth->messages());
-            redirect('Users', 'refresh');
-        }
-    }
-
     // activate the user
     public function activate($id, $code=false)
     {
@@ -464,17 +396,77 @@ class Users extends Admin_Controller {
 
         if ($activation)
         {
-            // redirect them to the auth page
+            
             $this->session->set_flashdata('message', $this->ion_auth->messages());
             redirect("users", 'refresh');
         }
         else
         {
-            // redirect them to the forgot password page
+            
             $this->session->set_flashdata('message', $this->ion_auth->errors());
             redirect("users", 'refresh');
         }
     } 
+
+	// deactivate the user
+	public function deactivate($id = NULL)
+	{
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
+		{
+			// redirect them to the home page because they must be an administrator to view this
+			// return show_error('You must be an administrator to view this page.');
+			$msg = "You must be an administrator to view this page.";
+	        $this->session->set_flashdata('error', $msg);
+	        redirect('users','refresh');
+		}
+
+		if ($this->session->userdata('user_id') == $id) 
+        {
+            return show_error("You Can't De-Activated Logged In User");
+        }
+
+		$id = (int) $id;
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('confirm', $this->lang->line('deactivate_validation_confirm_label'), 'required');
+		$this->form_validation->set_rules('id', $this->lang->line('deactivate_validation_user_id_label'), 'required|alpha_numeric');
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			// insert csrf check
+			$data['csrf'] = $this->_get_csrf_nonce();
+			$data['user'] = $this->ion_auth->user($id)->row();
+
+			$header = $this->header_model->get_config();
+                	$data['page'] = 'auth/deactivate_user'; 
+	        	$this->load->view('header',$header);		
+	        	$this->load->view('dashboard',$data);
+                        //redirect('users', 'refresh');
+                        
+		}
+		else
+		{
+			// do we really want to deactivate?
+			if ($this->input->post('confirm') == 'yes')
+			{
+				// do we have a valid request?
+				if ($id != $this->input->post('id'))
+				{
+					show_error($this->lang->line('error_csrf'));
+				}
+
+				// do we have the right userlevel?
+				if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+				{
+					$this->ion_auth->deactivate($id);
+				}
+
+			}
+			// redirect them back to the auth page
+			$this->session->set_flashdata('message',$this->ion_auth->messages());
+			redirect('users', 'refresh');
+		}
+	}
     
      public function Profile()
      {

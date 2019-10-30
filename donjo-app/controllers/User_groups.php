@@ -6,7 +6,7 @@ class User_groups extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		//Do your magic here
+		session_start();
 		$this->load->library(array('form_validation'));
 		$this->load->helper(array('html', 'language'));
 
@@ -108,6 +108,7 @@ class User_groups extends MY_Controller
 				// check to see if we are creating the group
 				// redirect them back to the admin page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
+                                $_SESSION['success'] = 1;
 				redirect("user_groups", 'refresh');
 			}
 		}
@@ -116,7 +117,7 @@ class User_groups extends MY_Controller
 			// display the create group form
 			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
-
+                        
 			$this->data['group_name'] = [
 				'name'  => 'group_name',
 				'id'    => 'group_name',
@@ -144,6 +145,7 @@ class User_groups extends MY_Controller
 			
 		// bail if no group id given
 		if (!$id || empty($id)) {
+                        $_SESSION['success'] = -1;
 			redirect('user_groups', 'refresh');
 		}
 
@@ -194,6 +196,8 @@ class User_groups extends MY_Controller
 					if (empty($privilegeData)) {
 						$msg = "Harus ada salah satu Hak Akses yang dipilih";
 						$this->session->set_flashdata('error', $msg);
+                                                $_SESSION['success'] = -1;
+                				$_SESSION['error_msg'] = "Harus ada salah satu Hak Akses yang dipilih";
 						redirect("user_groups/edit_group/" . $id, 'refresh');
 					}
                                          
@@ -272,9 +276,11 @@ class User_groups extends MY_Controller
 
 				if ($group_update) {
 					$this->session->set_flashdata('message', $this->lang->line('edit_group_saved'));
+                                        $_SESSION['success'] = 1;
 					redirect("user_groups", 'refresh');
 				} else {
 					$this->session->set_flashdata('message', $this->ion_auth->errors());
+                                        $_SESSION['success'] = -1;                                        
 				}
 			}
 		}
@@ -282,7 +288,7 @@ class User_groups extends MY_Controller
 		// set the flash data error message if there is one
 		$data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
 
-		// pass the user to the view
+                // pass the user to the view
 		$data['group'] = $group;
 		
                 $data['privileges'] = $privilege;
@@ -337,34 +343,24 @@ class User_groups extends MY_Controller
 		if ($returnhtml) return $view_html;//This will return html on 3rd argument being true
 	}
 
+	public function delete_group($group_id = '')
 
-        /*
-	 * Delete group
-	 */
-	public function delete_group()
 	{
-		// Chekck If user is admin
-		if (!$this->ion_auth->is_admin()) {
-			return show_error("You Must Be An Administrator To Delete This Page");
-		}
-
-		$group_id = $this->uri->segment(3);
-
-		//pass the right arguments and it's done
-		$group_delete = $this->ion_auth->delete_group($group_id);
-
-		if ($group_delete) {
-			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect('User_groups', 'refresh');
-		} else {
-			$msg = "You Can Not Delete Admin!";
-			$this->session->set_flashdata('error', $msg);
-			redirect('User_groups', 'refresh');
-		}
+		$this->ion_auth->delete_group($group_id);
+                redirect('User_groups', 'refresh');
 	}
 
-	
-	/*
+
+	public function delete_group_all()
+
+	{              
+                $this->ion_auth->delete_group_all();
+                redirect('User_groups', 'refresh');
+		
+	}
+
+
+       	/*
 	 * Add New Permissions
 	 */
 	public function permissions($value = '')
