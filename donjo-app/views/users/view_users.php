@@ -23,7 +23,7 @@
 				<div class="box box-info">
 					<div class="box-header with-border">
 						<a href="<?= site_url('users/create_user')?>" class="btn btn-social btn-flat btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-plus"></i> Tambah Pengguna Baru</a>
-						<a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform','<?=site_url("auth/delete_user/$p/$o")?>')" class="btn btn-social btn-flat btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i class='fa fa-trash-o'></i> Hapus Data Terpilih</a>
+						<a href="#confirm-delete" title="Hapus Data" onclick="deleteAllBox('mainform','<?=site_url("users/delete_user_all/")?>')" class="btn btn-social btn-flat btn-danger btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block hapus-terpilih"><i class='fa fa-trash-o'></i> Hapus Data Terpilih</a>
 					</div>
 					<div class="box-body">
 						<div class="row">
@@ -35,8 +35,8 @@
 											
 <select class="form-control input-sm" name="filter" onchange="formAction('mainform','<?=site_url('users/filter')?>')">
 														<option value="">Semua</option>
-														<?php foreach ($list_group AS $data): ?>
-															<option value="<?= $data['id']?>" <?php if ($filter == $data['id']): ?>selected<?php endif ?>><?= ucfirst($data['name'])?></option>
+														<?php foreach ($list_group AS $list): ?>
+															<option value="<?= $list['id']?>" <?php if ($filter == $list['id']): ?>selected<?php endif ?>><?= ucfirst($list['name'])?></option>
 														<?php endforeach;?>
 													</select>                                                                                        </div>
 											<div class="col-sm-6">
@@ -107,7 +107,7 @@
 
 <?php if ($data['active'] == '0'): ?>
 <a href="<?=site_url('users/activate/'.$data['id'])?>" class="btn bg-navy btn-flat btn-sm"  title="Aktifkan Pengguna"><i class="fa fa-lock">&nbsp;</i></a>
-<?php elseif ($data['active'] == '1'): ?>														<a href="<?=site_url('auth/deactivate/'.$data['id'])?>" class="btn bg-navy btn-flat btn-sm"  title="Non Aktifkan Pengguna"><i class="fa fa-unlock"></i></a>
+<?php elseif ($data['active'] == '1'): ?>														<a href="<?=site_url('users/deactivate/'.$data['id'])?>" class="btn bg-navy btn-flat btn-sm"  title="Non Aktifkan Pengguna"><i class="fa fa-unlock"></i></a>
 <?php endif; ?>
 
 <a href="#" data-href="<?=site_url("users/delete_user/$data[id]")?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
