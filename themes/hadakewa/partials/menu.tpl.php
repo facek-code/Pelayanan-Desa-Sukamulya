@@ -66,7 +66,11 @@ navigasi ke tautannya.
 				<?php }?>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+			<?php if ($this->db->table_exists('users')): ?>
 				<a href="<?php echo site_url('auth/login') ?>"><button class="btn btn-primary navbar-btn"><i class="fa fa-lock fa-lg"></i> Login Admin</button></a>
+			<?php else: ?>
+				<a href="<?php echo site_url('migrate_rbac') ?>"><button class="btn btn-primary navbar-btn"><i class="fa fa-lock fa-lg"></i> Login Admin</button></a>
+			<?php endif; ?>
 			</ul>
 		</div><!-- /.navbar-collapse -->
 	</div>
