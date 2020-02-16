@@ -9,7 +9,6 @@
 
 	public function autocomplete($cari='')
 	{
-
 		$this->db->select('t.nama')
 			->from('tweb_keluarga u')
 			->join('tweb_penduduk t', 'u.nik_kepala = t.id', 'left')
@@ -17,14 +16,8 @@
 		if ($cari) $this->db->where("t.nama like '%$cari%'");
 		$data = $this->db->get()->result_array();
 
-		$outp = '';
-		for ($i=0; $i<count($data); $i++)
-		{
-			$outp .= ',"'.$data[$i]['nama'].'"';
-		}
-		$outp = strtolower(substr($outp, 1));
-		$outp = '[' .$outp. ']';
-		return $outp;
+		$str = autocomplete_data_ke_str($data);
+		return $str;
 	}
 
 	private function sex_sql()
