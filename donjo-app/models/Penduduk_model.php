@@ -15,6 +15,7 @@
 	public function autocomplete($cari='')
 	{
 		$this->db->select('nama')
+			->distinct()
 			->from('tweb_penduduk');
 		if ($cari) $this->db->where("nama like '%$cari%'");
 		$data = $this->db->get()->result_array();

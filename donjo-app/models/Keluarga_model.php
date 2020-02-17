@@ -10,9 +10,9 @@
 	public function autocomplete($cari='')
 	{
 		$this->db->select('t.nama')
+			->distinct()
 			->from('tweb_keluarga u')
-			->join('tweb_penduduk t', 'u.nik_kepala = t.id', 'left')
-			->join('tweb_wil_clusterdesa c', 't.id_cluster = c.id');
+			->join('tweb_penduduk t', 'u.nik_kepala = t.id', 'left');
 		if ($cari) $this->db->where("t.nama like '%$cari%'");
 		$data = $this->db->get()->result_array();
 
