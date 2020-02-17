@@ -16,6 +16,7 @@
 	{
 		$this->db->select('nama')
 			->distinct()
+			->order_by('nama')
 			->from('tweb_penduduk');
 		if ($cari) $this->db->where("nama like '%$cari%'");
 		$data = $this->db->get()->result_array();

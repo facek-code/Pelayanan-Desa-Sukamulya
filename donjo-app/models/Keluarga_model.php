@@ -12,7 +12,8 @@
 		$this->db->select('t.nama')
 			->distinct()
 			->from('tweb_keluarga u')
-			->join('tweb_penduduk t', 'u.nik_kepala = t.id', 'left');
+			->join('tweb_penduduk t', 'u.nik_kepala = t.id', 'left')
+			->order_by('t.nama');
 		if ($cari) $this->db->where("t.nama like '%$cari%'");
 		$data = $this->db->get()->result_array();
 
