@@ -216,6 +216,10 @@ class Migrasi_2003_ke_2004 extends CI_model {
 			);
 			$this->dbforge->add_key('id', TRUE);
 			$this->dbforge->add_field($fields);
+			$this->dbforge->add_field("created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP");
+			$this->dbforge->add_field("created_by int(11) NOT NULL");
+			$this->dbforge->add_field("updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP");
+			$this->dbforge->add_field("updated_by int(11) NOT NULL");
 			$this->dbforge->create_table('cdesa');
 		}
 	}

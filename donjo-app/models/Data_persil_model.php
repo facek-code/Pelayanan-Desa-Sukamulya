@@ -96,11 +96,13 @@ class Data_persil_model extends CI_Model {
 
 	private function main_sql_c_desa()
 	{
-		$sql = " FROM data_persil_c_desa y
-				LEFT JOIN data_persil p ON p.id_c_desa = y.id
-				LEFT JOIN tweb_penduduk u ON u.id = y.id_pend
-				LEFT JOIN tweb_wil_clusterdesa w ON w.id = u.id_cluster
-				LEFT JOIN ref_persil_kelas x ON x.id = p.kelas
+		$sql = " FROM cdesa c
+				LEFT JOIN mutasi_cdesa m ON m.id_cdesa_masuk = c.id
+				LEFT JOIN persil p ON p.id = m.id_persil	
+				LEFT JOIN cdesa_penduduk cu ON cu.id_cdesa = c.id
+				LEFT JOIN tweb_penduduk u ON u.id = cu.id_pend
+				LEFT JOIN tweb_wil_clusterdesa w ON w.id = p.id_cluster
+				LEFT JOIN ref_persil_kelas k ON k.id = p.kelas
 				WHERE 1  ";
 		return $sql;
 	}
@@ -125,12 +127,12 @@ class Data_persil_model extends CI_Model {
 	public function list_c_desa($kat='', $mana=0, $offset, $per_page)
 	{
 		$data = [];		
-		$strSQL = "SELECT y.`id` AS id, y.`c_desa`, p.`id_c_desa`, x.`kode`, u.nik AS nik, p.`id_pend`, p.`id_clusterdesa`,  p.`jenis_pemilik`, u.`nama` as namapemilik, p.pemilik_luar, p.`alamat_luar`,COUNT(p.id_c_desa) AS jumlah,
-			p.`lokasi`, w.rt, w.rw, w.dusun, p.rdate as tanggal_daftar,
-			SUM(IF(x.`kode`LIke '%S%', p.`luas`,0)) as basah,
-			SUM(IF(x.`kode`LIke '%D%', p.`luas`,0)) as kering
+		$strSQL = "SELECT c.id AS id, c.nomor, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_cluster,  c.jenis_pemilik, u.nama as namapemilik, c.nama_pemilik_luar, c.alamat_pemilik_luar, COUNT(m.id_cdesa_masuk) AS jumlah,
+			p.`lokasi`, w.rt, w.rw, w.dusun, c.created_at as tanggal_daftar,
+			SUM(IF(k.kode LIke '%S%', m.luas, 0)) as basah,
+			SUM(IF(k.kode LIke '%D%', m.luas, 0)) as kering
 		".$this->main_sql_c_desa().$this->search_sql()." 
-		GROUP by c_desa";
+		GROUP by c.nomor";
 
 		$strSQL .= " LIMIT ".$offset.",".$per_page;
 		$query = $this->db->query($strSQL);
@@ -154,8 +156,8 @@ class Data_persil_model extends CI_Model {
 			}
 			$j++;
 		}
-		$persil = $this->list_c_desa_persil($kat, $mana, $offset, $per_page);
-		$luar = $this->list_c_desa_persil_luar($kat, $mana, $offset, $per_page);
+		// $persil = $this->list_c_desa_persil($kat, $mana, $offset, $per_page);
+		// $luar = $this->list_c_desa_persil_luar($kat, $mana, $offset, $per_page);
 		$data = array_merge($data, $persil, $luar);
 		return $data;
 	}
