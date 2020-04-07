@@ -373,7 +373,7 @@
 
 		$log['id_pend'] = 1;
 		$log['id_cluster'] = 1;
-		$log['tanggal'] = date("m-d-y");
+		$log['tanggal'] = date("Y-m-d H:i:s");
 		$outp = $this->db->insert('log_perubahan_penduduk', $log);
 
 		// Untuk statistik perkembangan keluarga
@@ -387,29 +387,31 @@
 			(2) Hapus keluarga
 			$id adalah id tweb_keluarga
 	*/
-	public function delete($id='')
+	public function delete($id='', $semua=false)
 	{
+		if (!$semua) $this->session->success = 1;
+		
 		$nik_kepala = $this->db->select('nik_kepala')->where('id',$id)->get('tweb_keluarga')->row()->nik_kepala;
 		$list_anggota = $this->db->select('id')->where('id_kk',$id)->get('tweb_penduduk')->result_array();
 		foreach ($list_anggota as $anggota)
 		{
 			$this->rem_anggota($id,$anggota['id']);
 		}
-		$this->db->where('id',$id)->delete('tweb_keluarga');
+		$outp = $this->db->where('id',$id)->delete('tweb_keluarga');
 		// Untuk statistik perkembangan keluarga
 		$this->log_keluarga($id, $nik_kepala, 2);
+
+		status_sukses($outp, $gagal_saja=true); //Tampilkan Pesan
 	}
 
 	public function delete_all()
 	{
-		$id_cb = $_POST['id_cb'];
+		$this->session->success = 1;
 
-		if (count($id_cb))
+		$id_cb = $_POST['id_cb'];
+		foreach ($id_cb as $id)
 		{
-			foreach ($id_cb as $id)
-			{
-				$this->delete($id);
-			}
+			$this->delete($id, $semua=true);
 		}
 	}
 

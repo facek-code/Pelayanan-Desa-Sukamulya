@@ -169,29 +169,24 @@
 		status_sukses($outp); //Tampilkan Pesan
 	}
 
-	public function delete($id='')
+	public function delete($id='', $semua=false)
 	{
-		$sql = "DELETE FROM lokasi WHERE id = ?";
-		$outp = $this->db->query($sql, array($id));
+		if (!$semua) $this->session->success = 1;
+		
+		$outp = $this->db->where('id', $id)->delete('lokasi');
 
-		status_sukses($outp); //Tampilkan Pesan
+		status_sukses($outp, $gagal_saja=true); //Tampilkan Pesan
 	}
 
 	public function delete_all()
 	{
+		$this->session->success = 1;
+
 		$id_cb = $_POST['id_cb'];
-
-		if (count($id_cb))
+		foreach ($id_cb as $id)
 		{
-			foreach ($id_cb as $id)
-			{
-				$sql = "DELETE FROM lokasi WHERE id = ?";
-				$outp = $this->db->query($sql, array($id));
-			}
+			$this->delete($id, $semua=true);
 		}
-		else $outp = false;
-
-		status_sukses($outp); //Tampilkan Pesan
 	}
 
 	public function list_point()
@@ -237,15 +232,15 @@
 
 	public function get_lokasi($id=0)
 	{
-		$sql = "SELECT * FROM lokasi WHERE id = ?";
-		$query = $this->db->query($sql, $id);
-		$data = $query->row_array();
+		$data = $this->db->where('id', $id)
+			->get('lokasi')->row_array();
 		return $data;
 	}
 
 	public function update_position($id=0)
 	{
-		$data = $_POST;
+		$data['lat'] = $this->input->post('lat');
+		$data['lng'] = $this->input->post('lng');
 		$this->db->where('id', $id);
 		$outp = $this->db->update('lokasi', $data);
 
