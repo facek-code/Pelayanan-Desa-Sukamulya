@@ -40,8 +40,40 @@ class Migrasi_2004_ke_2005 extends CI_model {
 		$this->buat_cdesa_penduduk();
 		$this->buat_persil();
 		$this->buat_mutasi_cdesa();
+		// Tambah controller
+		$this->tambah_modul();
 		// Pindahkan data lama ke tabel baru
 
+	}
+
+	private function tambah_modul()
+	{
+		// Tambah Modul Cdesa 
+		$data = array(
+				'id' => 206,
+				'modul' => 'C-Desa',
+				'url' => 'cdesa',
+				'aktif' => 1,
+				'ikon' => '',
+				'urut' => 10,
+				'level' => 4,
+				'hidden' => 2,
+				'ikon_kecil' => '',
+				'parent' => 7
+				);
+		$sql = $this->db->insert_string('setting_modul', $data);
+		$sql .= " ON DUPLICATE KEY UPDATE
+				modul = VALUES(modul),
+				url = VALUES(url),
+				aktif = VALUES(aktif),
+				ikon = VALUES(ikon),
+				urut = VALUES(urut),
+				level = VALUES(level),
+				hidden = VALUES(hidden),
+				ikon_kecil = VALUES(ikon_kecil),
+				parent = VALUES(parent)
+				";
+		$this->db->query($sql);
 	}
 
 	private function buat_ref_persil_kelas()
@@ -186,15 +218,20 @@ class Migrasi_2004_ke_2005 extends CI_model {
 				),
 				'jenis_pemilik' => array(
 					'type' => 'TINYINT',
-					'constraint' => 1
+					'constraint' => 1,
+					'default' => 0
 				),
 				'nama_pemilik_luar' => array(
 					'type' => 'VARCHAR',
-					'constraint' => 100
+					'constraint' => 100,
+					'null' => true,
+					'default' => null
 				),
 				'alamat_pemilik_luar' => array(
 					'type' => 'VARCHAR',
-					'constraint' => 200
+					'constraint' => 200,
+					'null' => true,
+					'default' => null
 				)
 			);
 			$this->dbforge->add_key('id', TRUE);
@@ -255,7 +292,7 @@ class Migrasi_2004_ke_2005 extends CI_model {
 					'type' => 'INT',
 					'constraint' => 5
 				),
-				'id_cluster' => array(
+				'id_wilayah' => array(
 					'type' => 'INT',
 					'constraint' => 11
 				),
@@ -335,11 +372,13 @@ class Migrasi_2004_ke_2005 extends CI_model {
 				),
 				'no_objek_pajak' => array(
 					'type' => 'VARCHAR',
-					'constraint' => 30
+					'constraint' => 30,
+					'null' => TRUE
 				),
 				'no_sppt_pbb' => array(
 					'type' => 'VARCHAR',
-					'constraint' => 30
+					'constraint' => 30,
+					'null' => TRUE
 				),
 				'path' => array(
 					'type' => 'TEXT',

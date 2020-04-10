@@ -1,5 +1,5 @@
 <?php
-class Data_persil_model extends CI_Model {
+class Cdesa_model extends CI_Model {
 
 	public function __construct()
 	{
@@ -127,7 +127,7 @@ class Data_persil_model extends CI_Model {
 	public function list_c_desa($kat='', $mana=0, $offset, $per_page)
 	{
 		$data = [];		
-		$strSQL = "SELECT c.id AS id, c.nomor, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_wilayah,  c.jenis_pemilik, u.nama as namapemilik, c.nama_pemilik_luar, c.alamat_pemilik_luar, COUNT(m.id_cdesa_masuk) AS jumlah,
+		$strSQL = "SELECT c.id, c.*, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_wilayah, u.nama as namapemilik, COUNT(m.id_cdesa_masuk) AS jumlah,
 			p.`lokasi`, w.rt, w.rw, w.dusun, c.created_at as tanggal_daftar,
 			SUM(IF(k.kode LIke '%S%', m.luas, 0)) as basah,
 			SUM(IF(k.kode LIke '%D%', m.luas, 0)) as kering
@@ -156,9 +156,10 @@ class Data_persil_model extends CI_Model {
 			}
 			$j++;
 		}
+
 		// $persil = $this->list_c_desa_persil($kat, $mana, $offset, $per_page);
 		// $luar = $this->list_c_desa_persil_luar($kat, $mana, $offset, $per_page);
-		$data = array_merge($data, $persil, $luar);
+		// $data = array_merge($data, $persil, $luar);
 		return $data;
 	}
 
@@ -255,28 +256,9 @@ class Data_persil_model extends CI_Model {
 
 	public function get_c_desa($id)
 	{
-		$data = false;
-		$strSQL = "SELECT y.`id` AS id, y.`id_pend`, y.`c_desa`, u.nik AS nik, p.`jenis_pemilik`, u.`nama` as namapemilik, p.pemilik_luar, p.`alamat_luar`,w.rt, w.rw, w.dusun
-		FROM data_persil_c_desa y
-		LEFT JOIN data_persil p ON p.id_c_desa = y.id
-		LEFT JOIN tweb_penduduk u ON u.id = y.id_pend
-		LEFT JOIN tweb_wil_clusterdesa w ON w.id = u.id_cluster
-		WHERE y.id =".$id ;
-		$query = $this->db->query($strSQL);
-		if ($query->num_rows() > 0)
-		{
-			$data = $query->row_array();
-		}
-		else
-		{
-			$_SESSION["pesan"]= $strSQL;
-		}
-
-		if ($data['jenis_pemilik'] == 2)
-		{
-			$data['namapemilik'] = $data['pemilik_luar'];
-			$data['nik'] = "-";
-		}
+		$data = $this->db->where('id', $id)
+			->get('cdesa')
+			->row_array();
 		return $data;
 	}
 
@@ -401,207 +383,65 @@ class Data_persil_model extends CI_Model {
 		return $data;
 	}
 
-	public function simpan_persil()
+	public function simpan_cdesa()
 	{
-		$hasil = false;
-		if (@$_POST["nik"])
-		{
-			//Update data Persil
-			if ($_POST["id"] > 0)
-			{
-				$data = array();
-				$data['nama'] = $_POST["nama"];
-				$data['jenis_pemilik'] = $_POST["jenis_pemilik"];
-				if ($data['jenis_pemilik'] == 2)
-					$data['pemilik_luar'] = strip_tags($_POST['nik']);
-				else
-				{
-					if ($_POST['nik'] <> $_POST['nik_lama'])
-					{
-						// Ambil id penduduk baru
-						$data['id_pend'] = $this->db->select('id')->
-							where('nik', $_POST['nik'])->
-							get('tweb_penduduk')->row()->id;
-					}
-				}
+		$data = array();
+		$data['nomor'] = $this->input->post('c_desa');
+		$data['nama_kepemilikan'] = $this->input->post('nama_kepemilikan');
+		$data['jenis_pemilik'] = $this->input->post('jenis_pemilik');
+		$data['created_by'] = $this->session->user;
+		$data['updated_by'] = $this->session->user;
+		$this->db->insert('cdesa', $data);
+		$id_cdesa = $this->db->insert_id();
 
-				$data['alamat_luar'] = strip_tags($_POST["alamat_luar"]);
-				$data['id_c_desa'] = $this->db->select('id')->
-							where('c_desa', ltrim($_POST['c_desa'], '0'))->
-							get('data_persil_c_desa')->row()->id;
-				$data['persil_jenis_id'] = $_POST["cid"];
-				$data['id_clusterdesa'] = $_POST["pid"];
-				$data['persil_peruntukan_id'] = $_POST["sid"];
-				$data['luas'] = $_POST["luas"];
-				$data['kelas'] = $_POST["kelas"];
-				$data['pajak'] = $_POST["pajak"];
-				$data['lokasi'] = strip_tags($_POST["lokasi"]);
-				$data['no_sppt_pbb'] = strip_tags($_POST["sppt"]);
-				$data['userID'] = $_SESSION['user'];
-				$outp = $this->db->where('id', $_POST['id'])->update('data_persil', $data);
-			}
-			else
-			{
-				//Insert data  C-Desa / Penambahan persil pada C-Desa
-				if (is_numeric($_POST["nik"]))
-				{
-					$data = array();
-					// Ambil id penduduk baru
-					$data['id_pend'] = $this->db->select('id')->
-						where('nik', $_POST['nik'])->
-						get('tweb_penduduk')->row()->id;
-
-					//Pengecekan No C-Desa Apakah sama dengan NIK
-					$query = $this->db->query("SELECT `id_pend` FROM `data_persil_c_desa` WHERE `id_pend` = ".$data['id_pend']);
-					if ($query->num_rows() > 0)
-					{
-						$arr['c_desa'] = $this->db->select(['id', 'c_desa'])->
-							where('id_pend', $data['id_pend'])->
-							get('data_persil_c_desa')->result_array();
-
-						if ( $arr['c_desa'][0]['c_desa'] <> ltrim($_POST['c_desa'], '0'))
-						{
-							$_SESSION["success"] = -1;
-							$_SESSION["pesan"] = "NIK Sudah ada, tetapi Nomor C-DESA tidak sama";
-						}
-						else
-						{
-							$data['id_c_desa'] = $arr['c_desa'][0]['id'];
-							$data['nama'] = $_POST["nama"];
-							$data['jenis_pemilik'] = $_POST["jenis_pemilik"];
-							$data['persil_jenis_id'] = $_POST["cid"];
-							$data['id_clusterdesa'] = $_POST["pid"];
-							$data['persil_peruntukan_id'] = $_POST["sid"];
-							$data['luas'] = $_POST["luas"];
-							$data['kelas'] = $_POST["kelas"];
-							$data['pajak'] = $_POST["pajak"];
-							$data['lokasi'] = $_POST["lokasi"];
-							$data['no_sppt_pbb'] = $_POST["sppt"];
-							$data['userID'] = $_SESSION['user'];
-							$outp = $this->db->insert('data_persil', $data);
-							$data_mutasi['id_persil'] = $this->db->insert_id();
-							$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
-							$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
-							$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
-							$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
-							$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
-							$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
-							$outp = $this->db->insert('data_persil_mutasi', $data_mutasi);
-						}
-					} 
-					else 
-					{
-						//penambahan C-Desa Awal
-						$datac['id_pend'] =$data['id_pend'];
-						$datac['c_desa'] = ltrim($_POST['c_desa'], '0');
-						$outp = $this->db->insert('data_persil_c_desa', $datac);
-						$data['id_c_desa'] = $this->db->insert_id();
-						$data['nama'] = $_POST["nama"];
-						$data['jenis_pemilik'] = $_POST["jenis_pemilik"];
-						$data['persil_jenis_id'] = $_POST["cid"];
-						$data['id_clusterdesa'] = $_POST["pid"];
-						$data['persil_peruntukan_id'] = $_POST["sid"];
-						$data['luas'] = $_POST["luas"];
-						$data['kelas'] = $_POST["kelas"];
-						$data['pajak'] = $_POST["pajak"];
-						$data['lokasi'] = strip_tags($_POST["lokasi"]);
-						$data['no_sppt_pbb'] = strip_tags($_POST["sppt"]);
-						$data['userID'] = $_SESSION['user'];
-						$outp = $this->db->insert('data_persil', $data);
-						$data_mutasi['id_persil'] = $this->db->insert_id();
-						$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
-						$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
-						$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
-						$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
-						$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
-						$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
-						$outp = $this->db->insert('data_persil_mutasi', $data_mutasi);
-						
-					}					
-				}
-				else
-				{
-					//Penambahan data Luar Desa
-					$data = array();
-					$datac['c_desa'] = ltrim($_POST['c_desa'], '0');
-
-					if ($_POST['id_c_desa'] > 0)
-						$data['id_c_desa'] = $_POST['id_c_desa'];
-					else 
-					{
-						$outp = $this->db->insert('data_persil_c_desa', $datac);
-						$data['id_c_desa'] = $this->db->insert_id();
-					}
-					$data['nama'] = strip_tags($_POST["nama"]);
-					$data['jenis_pemilik'] = $_POST["jenis_pemilik"];
-					$data['pemilik_luar'] = strip_tags($_POST['nik']);
-					$data['alamat_luar'] = strip_tags($_POST["alamat_luar"]);
-					$data['persil_jenis_id'] = $_POST["cid"];
-					$data['id_clusterdesa'] = $_POST["pid"];
-					$data['persil_peruntukan_id'] = $_POST["sid"];
-					$data['luas'] = $_POST["luas"];
-					$data['kelas'] = $_POST["kelas"];
-					$data['pajak'] = $_POST["pajak"];
-					$data['lokasi'] = strip_tags($_POST["lokasi"]);
-					$data['no_sppt_pbb'] = strip_tags($_POST["sppt"]);
-					$data['userID'] = $_SESSION['user'];
-					$outp = $this->db->insert('data_persil', $data);
-					$data_mutasi['id_persil'] = $this->db->insert_id();
-					$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
-					$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
-					$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
-					$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
-					$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
-					$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
-					$outp = $this->db->insert('data_persil_mutasi', $data_mutasi);
-				}
-			}
-
-			if ($outp)
-			{
-				$_SESSION["success"] = 1;
-				$_SESSION["pesan"] = "Data Persil telah DISIMPAN";
-				$hasil["hasil"] = true;
-				$hasil['id_c_desa'] = $data['id_c_desa'];
-			}
-		}
-		else
-		{
-			$_SESSION["success"] = -1;
-			$_SESSION["pesan"] = "Formulir belum/tidak terisi dengan benar";
-		}
-		
-		return $hasil;
+		if ($this->input->post('jenis_pemilik') == 1) 
+			$this->simpan_pemilik($id_cdesa, $this->input->post('id_pend'));
 	}
 
-	public function simpan_mutasi()
+	private function simpan_pemilik($id_cdesa, $id_pend)
 	{
-		if ($_POST["id"] > 0)
-		{
-			$data_mutasi['id_persil'] = $_POST["id_persil"];
-			$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
-			$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
-			$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
-			$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
-			$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
-			$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
+		$data = array();
+		$data['id_cdesa'] = $id_cdesa;
+		$data['id_pend'] = $id_pend;
+		$this->db->insert('cdesa_penduduk', $data);
+	}
 
-			$outp = $this->db->where('id', $_POST['id'])->update('data_persil_mutasi', $data_mutasi);
-		}
-		else
-		{
-			if ($_POST["id_persil"] > 0)
-			{
-				$data_mutasi['id_persil'] = $_POST["id_persil"];
-				$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
-				$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
-				$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
-				$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
-				$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
-				$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
-				$outp = $this->db->insert('data_persil_mutasi', $data_mutasi);
-			}
-		}
+	public function simpan_mutasi($id_cdesa)
+	{
+		$data = array();
+		$data['id_cdesa_masuk'] = $id_cdesa;
+		$data['no_bidang_persil'] = $this->input->post('no_bidang_persil');
+		$data['no_objek_pajak'] = $this->input->post('no_objek_pajak');
+		$data['no_sppt_pbb'] = $this->input->post('no_sppt_pbb');
+
+
+		$outp = $this->db->insert('mutasi_cdesa', $data);
+		// if ($_POST["id"] > 0)
+		// {
+		// 	$data_mutasi['id_persil'] = $_POST["id_persil"];
+		// 	$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
+		// 	$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
+		// 	$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
+		// 	$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
+		// 	$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
+		// 	$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
+
+		// 	$outp = $this->db->where('id', $_POST['id'])->update('data_persil_mutasi', $data_mutasi);
+		// }
+		// else
+		// {
+		// 	if ($_POST["id_persil"] > 0)
+		// 	{
+		// 		$data_mutasi['id_persil'] = $_POST["id_persil"];
+		// 		$data_mutasi['jenis_mutasi'] = strip_tags($_POST["jenis_mutasi"]);
+		// 		$data_mutasi['tanggalmutasi'] = tgl_indo_in($_POST["tanggalmutasi"]);
+		// 		$data_mutasi['sebabmutasi'] = strip_tags($_POST["sebabmutasi"]);
+		// 		$data_mutasi['luasmutasi'] = strip_tags($_POST["luasmutasi"]);
+		// 		$data_mutasi['no_c_desa'] = strip_tags($_POST["no_c_desa"]);
+		// 		$data_mutasi['keterangan'] = strip_tags($_POST["ket"]);
+		// 		$outp = $this->db->insert('data_persil_mutasi', $data_mutasi);
+		// 	}
+		// }
 		if ($outp)
 			{
 				$_SESSION["success"] = 1;
@@ -715,9 +555,21 @@ class Data_persil_model extends CI_Model {
 		return $query->result_array();
 	}
 
+	public function get_pemilik($id_cdesa)
+	{
+		$this->db->select('p.nik, p.nama, k.no_kk, w.rt, w.rw, w.dusun')
+			->from('cdesa c')
+			->join('cdesa_penduduk cp', 'c.id = cp.id_cdesa', 'left')
+			->join('tweb_penduduk p', 'p.id = cp.id_pend', 'left')
+			->join('tweb_keluarga k','k.id = p.id_kk', 'left')
+			->join('tweb_wil_clusterdesa w', 'w.id = p.id_cluster', 'left');
+		$data = $this->db->get()->row_array();
+		return $data;
+	}
+
 	public function get_penduduk($id, $nik=false)
 	{
-		$this->db->select('p.id, p.nik,p.nama,k.no_kk,w.rt,w.rw,w.dusun')
+		$this->db->select('p.nik,p.nama,k.no_kk,w.rt,w.rw,w.dusun')
 			->from('tweb_penduduk p')
 			->join('tweb_keluarga k','k.id = p.id_kk', 'left')
 			->join('tweb_wil_clusterdesa w', 'w.id = p.id_cluster', 'left');

@@ -69,52 +69,34 @@
 																<tr>
 																	<th>No</th>
 																	<th>Aksi</th>
+																	<th nowrap>No. C-DESA</th>
 																	<th>Nama Pemilik</th>
 																	<th>NIK</th>
-																	<th nowrap>No. C-DESA</th>
 																	<th nowrap>Jumlah Bidang</th>
 																</tr>
 															</thead>
 															<tbody>
-																<?php foreach ($persil as $item): ?>
+																<?php foreach ($cdesa as $item): ?>
 																	<tr>
 																		<td><?= $item['no']?></td>
 																		<td nowrap>
-																			<?php if ($item['id_persil']): ?>
-																				<?php if  ($item['jenis_pemilik'] == '2'): ?>
-																					<a href="<?= site_url("data_persil/detail/persil/".$item["id_persil"])?>" class="btn bg-purple btn-flat btn-sm"  title="Rincian"><i class="fa fa-bars"></i></a>
-																					<a href="" class="btn bg-green btn-flat btn-sm disabled"  title="Tambah Data"><i class="fa fa-plus"></i></a>
-																					<a href="<?= site_url("data_persil/detail_edit/persil/".$item["id_persil"])?>" class="btn bg-yellow btn-flat btn-sm"  title="Rincian"><i class="fa fa-edit"></i></a>
-																					<a href="#" data-href="<?= site_url("data_persil/hapus_persil/".$item["id_persil"])?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
-																				<?php else: ?>
-																					<a href="<?= site_url("data_persil/detail/id_pend/".$item["id_pend"])?>" class="btn bg-purple btn-flat btn-sm"  title="Rincian"><i class="fa fa-bars"></i></a>
-																					<a href="" class="btn bg-green btn-flat btn-sm disabled"  title="Tambah Data"><i class="fa fa-plus"></i></a>
-																					<a href="<?= site_url("data_persil/detail_edit/id_pend/".$item["id_pend"])?>" class="btn bg-yellow btn-flat btn-sm"  title="Rincian"><i class="fa fa-edit"></i></a>
-																					<a href="#" data-href="<?= site_url("data_persil/hapus/id_pend/".$item["id_pend"])?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
-																				<?php endif ?>
-																			<?php else: ?>
-																				<a href="<?= site_url("data_persil/detail/c_desa/".$item["id"])?>" class="btn bg-purple btn-flat btn-sm"  title="Rincian"><i class="fa fa-bars"></i></a>
-																					<?php if ($item['jenis_pemilik'] == '2'): ?>
-																						<a href="<?= site_url("data_persil/create_ext/add/".$item["id"])?>" class="btn bg-green btn-flat btn-sm"  title="Tambah Data"><i class="fa fa-plus"></i></a>
-																					<?php else: ?>
-																						<a href="<?= site_url("data_persil/create/add/".$item["id"])?>" class="btn bg-green btn-flat btn-sm"  title="Tambah Data"><i class="fa fa-plus"></i></a>
-																					<?php endif; ?>
-																				<a href="<?= site_url("data_persil/detail_edit/c_desa/".$item["id"])?>" class="btn bg-yellow btn-flat btn-sm"  title="Rincian"><i class="fa fa-edit"></i></a>
-																				<a href="#" data-href="<?= site_url("data_persil/hapus/c_desa/".$item["id"])?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
-																			<?php endif ?>
+																			<a href="<?= site_url("data_persil/detail/persil/".$item["id"])?>" class="btn bg-purple btn-flat btn-sm"  title="Rincian"><i class="fa fa-bars"></i></a>
+																			<a href="<?= site_url("cdesa/create_bidang/".$item["id"])?>" class="btn bg-green btn-flat btn-sm"  title="Tambah Data"><i class="fa fa-plus"></i></a>
+																			<a href="<?= site_url("data_persil/detail_edit/persil/".$item["id_persil"])?>" class="btn bg-yellow btn-flat btn-sm"  title="Rincian"><i class="fa fa-edit"></i></a>
+																			<a href="#" data-href="<?= site_url("data_persil/hapus_persil/".$item["id_persil"])?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
 																		</td>
-																			<td width="40%"><?= $item["namapemilik"] ?></td>
-																			<td><?= $item["nik"] ?></td>
-																			<td><?= sprintf("%04s", $item["c_desa"]) ?></td>
-																			<td><?= $item["jumlah"] ?></td>
-																		</tr>
-																	<?php endforeach; ?>
-																</tbody>
-															</table>
-														</div>
+																		<td><?= sprintf("%04s", $item["nomor"]) ?></td>
+																		<td width="40%"><?= $item["namapemilik"] ?></td>
+																		<td><?= $item["nik"] ?></td>
+																		<td><?= $item["jumlah"] ?></td>
+																	</tr>
+																<?php endforeach; ?>
+															</tbody>
+														</table>
 													</div>
 												</div>
-											</form>
+											</div>
+										</form>
 											<div class="row">
 												<div class="col-sm-6">
 													<div class="dataTables_length">

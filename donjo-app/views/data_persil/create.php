@@ -22,65 +22,160 @@
 									<form action="" id="main" name="main" method="POST" class="form-horizontal">
 										<div class="box-body">
 											<div class="form-group">
-												<label class="col-sm-3 control-label" >Cari Nama Pemilik</label>
+												<label class="col-sm-3 control-label" >Cari Nama Pemilik 1</label>
 												<div class="col-sm-8">
 													<select class="form-control input-sm select2" style="width: 100%;" id="nik" name="nik" onchange="$('#'+'main').submit();">
 														<option value>-- Silakan Masukan NIK / Nama --</option>
 														<?php foreach ($penduduk as $item): ?>
-															<option value="<?= $item['id']?>">Nama : <?= $item['nama']." Alamat : ".$item['info']?></option>
+															<option value="<?= $item['id']?>" <?php selected($pemilik['nik'], $item['id'])?>>Nama : <?= $item['nama']." Alamat : ".$item['info']?></option>
 														<?php endforeach;?>
 													</select>
 												</div>
 											</div>
+											<?php if ($pemilik): ?>
+												<div class="form-group">
+													<label for="nama" class="col-sm-3 control-label">Pemilik 1ww</label>
+													<div class="col-sm-8">
+														<div class="form-group">
+															<label class="col-sm-3 control-label">Nama Penduduk</label>
+															<div class="col-sm-9">
+																<input  class="form-control input-sm" type="text" placeholder="Nama Pemilik" value="<?= $pemilik["nama"] ?>" disabled >
+																<?php if ($mode === 'edit'): ?>
+																	<input type="hidden" name="id" value="<?= $persil_detail["id"] ?>"/>
+																<?php endif; ?>
+																	<input type="hidden" name="c_desa" value="<?= $persil_detail["c_desa"] ?>"/>															
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="col-sm-3 control-label">NIK Pemilik</label>
+															<div class="col-sm-9">
+																<input  class="form-control input-sm" type="text" placeholder="NIK Pemilik" value="<?= $pemilik["nik"] ?>" disabled >
+															</div>
+														</div>
+														<div class="form-group">
+															<label for="alamat"  class="col-sm-3 control-label">Alamat Pemilik</label>
+															<div class="col-sm-9">
+																<textarea  class="form-control input-sm" placeholder="Alamat Pemilik" disabled><?= "RT ".$pemilik["rt"]." / RT ".$pemilik["rw"]." - ".strtoupper($pemilik["dusun"]) ?></textarea>
+															</div>
+														</div>
+													</div>
+												</div>
+											<?php endif; ?>
 										</div>
 									</form>
 								<?php endif; ?>
-								<form name='mainform' action="<?= site_url('data_persil/simpan_persil')?>" method="POST"  id="validasi" class="form-horizontal">
+
+
+
+								<form name='mainform' action="<?= site_url('cdesa/simpan_cdesa')?>" method="POST"  id="validasi" class="form-horizontal">
 									<div class="box-body">
 										<input name="jenis_pemilik" type="hidden" value="1">
-										<?php if ($pemilik): ?>
+										<input type="hidden" name="nik_lama" value="<?= $pemilik["nik_lama"] ?>"/>
+										<input type="hidden" name="nik" value="<?= $pemilik["nik"] ?>"/>
+										<input type="hidden" name="id_pend" value="<?= $pemilik["id"] ?>"/>
+
 											<div class="form-group">
-												<label class="col-sm-3 control-label">Nama Penduduk</label>
+												<label for="c_desa"  class="col-sm-3 control-label">Nomor C-DESA</label>
 												<div class="col-sm-8">
-													<input  class="form-control input-sm" type="text" placeholder="Nama Pemilik" value="<?= $pemilik["nama"] ?>" disabled >
-													<input type="hidden" name="nik_lama" value="<?= $pemilik["nik_lama"] ?>"/>
-													<input type="hidden" name="nik" value="<?= $pemilik["nik"] ?>"/>
-													<?php if ($mode === 'edit'): ?>
-														<input type="hidden" name="id" value="<?= $persil_detail["id"] ?>"/>
-													<?php endif; ?>
-														<input type="hidden" name="c_desa" value="<?= $persil_detail["c_desa"] ?>"/>
-													
+													<input class="form-control input-sm angka required" type="text" placeholder="Nomor Surat C-DESA" name="c_desa" value="<?= ($persil_detail["c_desa"])?sprintf("%04s", $persil_detail["c_desa"]): NULL ?>" <?= ($mode !== 0 )? 'disabled': NULL ?>>
 												</div>
 											</div>
+
 											<div class="form-group">
-												<label class="col-sm-3 control-label">NIK Pemilik</label>
+												<label for="nama_kepemilikan"  class="col-sm-3 control-label">Nama Kepemilikan</label>
 												<div class="col-sm-8">
-													<input  class="form-control input-sm" type="text" placeholder="NIK Pemilik" value="<?= $pemilik["nik"] ?>" disabled >
+													<input class="form-control input-sm nama required" type="text" placeholder="Nama pemilik di Surat C-DESA" name="nama_kepemilikan" value="<?= ($persil_detail["nama_kepemilikan"])?sprintf("%04s", $persil_detail["nama_kepemilikan"]): NULL ?>" <?= ($mode !== 0 )? 'disabled': NULL ?>>
 												</div>
 											</div>
-											<div class="form-group">
-												<label for="alamat"  class="col-sm-3 control-label">Alamat Pemilik</label>
-												<div class="col-sm-8">
-													<textarea  class="form-control input-sm" placeholder="Alamat Pemilik" disabled><?= "RT ".$pemilik["rt"]." / RT ".$pemilik["rw"]." - ".strtoupper($pemilik["dusun"]) ?></textarea>
+
+
+
+											<div class="panel box box-default">
+												<div class="box-header with-border">
+													<h4 class="box-title">
+														<a data-toggle="collapse" data-parent="#accordion" href="#persil">Persil</a>
+													</h4>
 												</div>
-											</div>
-										<?php endif; ?>
-										<div class="form-group">
-											<label for="c_desa"  class="col-sm-3 control-label">Nomor C-DESA</label>
-											<div class="col-sm-8">
-												<input  id="c_desa" class="form-control input-sm angka required" type="text" placeholder="Nomor Surat C-DESA" name="c_desa" value="<?= ($persil_detail["c_desa"])?sprintf("%04s", $persil_detail["c_desa"]): NULL ?>" <?= ($mode !== 0 )? 'disabled': NULL ?>>
+												<div id="persil" class="panel-collapse">
+													<div class="box-body">
+
+
+																	<div class="form-group">
+																		<label for="nama"  class="col-sm-3 control-label">Nomor Persil</label>
+																		<div class="col-sm-8">
+																			<input  id="nama" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil_detail["nopersil"] ?>">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label for="kelas"  class="col-sm-3 control-label">Tipe Tanah</label>
+																		<div class="col-sm-4">
+																			<select class="form-control input-sm" id="tipe" name="tipe"  type="text"  placeholder="Tuliskan Kelas Tanah" >
+																				<option value>-- Pilih Tipe Tanah--</option>
+																				<option value="BASAH" <?php if ('BASAH'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Basah</option>
+																				<option value="KERING" <?php if ('KERING'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Kering</option>
+																				</select>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label for="kelas"  class="col-sm-3 control-label">Kelas Tanah</label>
+																		<div class="col-sm-4">
+																			<select class="form-control input-sm" id="kelas" name="kelas"  type="text"  placeholder="Tuliskan Kelas Tanah" >
+																				<option value>-- Pilih Jenis Kelas--</option>
+																				<?php foreach ($persil_kelas  as $item): ?>
+																					<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil_detail["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
+																				<?php endforeach;?>
+																			</select>
+																		</div>
+																	</div>
+
+																	<div class="form-group ">
+																		<label for="pid"  class="col-sm-3 control-label">Lokasi Tanah</label>
+																		<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
+																			<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil_detail["lokasi"]?NULL : 'active'  ?>">
+																				<input type="radio"  name="pilihan" class="form-check-input" type="radio" value="1"  autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
+																			</label>
+																			<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label  <?= $persil_detail["lokasi"]?'active' : NULL  ?>">
+																				<input type="radio"  name="pilihan" class="form-check-input" type="radio" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
+																			</label>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label"></label>
+																		<div id= "pilih" <?= $persil_detail["lokasi"]?'style="display:none"' : NULL  ?>>
+																			<div class="col-sm-4" >
+																				<select class="form-control  input-sm select2" id="pid" name="pid" >
+																					<option width="100%" value >-- Pilih Lokasi Tanah--</option>
+																					<?php foreach ($persil_lokasi as $key=>$item): ?>
+																						<option value="<?= $item["id"] ?>" <?php if ($item["id"]==$persil_detail["id_clusterdesa"]): ?>selected<?php endif; ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
+																					<?php endforeach;?>
+																				</select>
+																			</div>
+																		</div>
+																		<div id= "manual" <?= $persil_detail["lokasi"]?NULL: 'style="display:none"' ?> >
+																			<div class="col-sm-8">
+																				<textarea  id="lokasi" class="form-control input-sm" type="text" placeholder="Lokasi" name="lokasi" ><?= $persil_detail["lokasi"] ?></textarea>
+																			</div>
+																		</div>
+																	</div>
+
+
 											</div>
 										</div>
-										<div class="form-group">
-											<label for="nama"  class="col-sm-3 control-label">Nomor Persil</label>
-											<div class="col-sm-8">
-												<input  id="nama" class="form-control input-sm angka required" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil_detail["nopersil"] ?>">
-											</div>
+									</div>
+									<div class="panel box box-default">
+										<div class="box-header with-border">
+											<h4 class="box-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#mutasi">Mutasi</a>
+											</h4>
 										</div>
+										<div id="mutasi" class="panel-collapse collapse">
+											<div class="box-body">
+
+
 										<div class="form-group">
-											<label for="cid"  class="col-sm-3 control-label required">Jenis Tanah</label>
+											<label for="cid"  class="col-sm-3 control-label">Jenis Tanah</label>
 											<div class="col-sm-4">
-												<select class="form-control input-sm required" id="cid" name="cid" >
+												<select class="form-control input-sm" id="cid" name="cid" >
 													<option value>-- Pilih Jenis Tanah--</option>
 													<?php foreach ($persil_jenis as $key => $item): ?>
 														<option value="<?= $item['id'] ?>" <?php selected($key, $persil_detail["persil_jenis_id"]) ?>><?= $item['nama']?></option>
@@ -89,42 +184,9 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="kelas"  class="col-sm-3 control-label required">Tipe Tanah</label>
+											<label for="luas_tanah"  class="col-sm-3 control-label">Nomor Bidang Tanah</label>
 											<div class="col-sm-4">
-												<select class="form-control input-sm required" id="tipe" name="tipe"  type="text"  placeholder="Tuliskan Kelas Tanah" >
-													<option value>-- Pilih Tipe Tanah--</option>
-													<option value="BASAH" <?php if ('BASAH'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Basah</option>
-													<option value="KERING" <?php if ('KERING'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Kering</option>
-													</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="kelas"  class="col-sm-3 control-label required">Kelas Tanah</label>
-											<div class="col-sm-4">
-												<select class="form-control input-sm required" id="kelas" name="kelas"  type="text"  placeholder="Tuliskan Kelas Tanah" >
-													<option value>-- Pilih Jenis Kelas--</option>
-													<?php foreach ($persil_kelas  as $item): ?>
-														<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil_detail["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
-													<?php endforeach;?>
-												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="luas_tanah"  class="col-sm-3 control-label">Luas Tanah (M<sup>2</sup>)</label>
-											<div class="col-sm-4">
-												<input  id="luas" name="luas"  type="text"  class="form-control input-sm luas required" placeholder="Luas" value="<?= $persil_detail["luas"] ?>">
-											</div>
-										</div>
-										<div class="form-group">
-											<label for=""  class="col-sm-3 control-label"></label>
-											<div class="col-sm-8">
-												<p class="help-block"><code>Gunakan tanda titik (.) untuk bilangan pecahan</code></p>
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="nama"  class="col-sm-3 control-label">Pajak</label>
-											<div class="col-sm-8">
-												<input  id="pajak" class="form-control input-sm angka" type="text" placeholder="Pajak" name="pajak" value="<?= $persil_detail["pajak"] ?>">
+												<input  id="luas" name="luas"  type="text"  class="form-control input-sm luas" placeholder="Luas" value="<?= $persil_detail["luas"] ?>">
 											</div>
 										</div>
 										
@@ -161,6 +223,12 @@
 														<input  name="luasmutasi"  type="text"  class="form-control input-sm luas" placeholder="Luas Mutasi" value="">
 													</div>
 												</div>
+										<div class="form-group">
+											<label for=""  class="col-sm-3 control-label"></label>
+											<div class="col-sm-8">
+												<p class="help-block"><code>Gunakan tanda titik (.) untuk bilangan pecahan</code></p>
+											</div>
+										</div>
 												<div class="form-group">
 													<label for="nama"  class="col-sm-3 control-label">Perolehan Dari</label>
 													<div class="col-sm-9">
@@ -177,7 +245,7 @@
 											</div>
 											<?php else : ?>
 												<div class="form-group">
-												<label for="nama"  class="col-sm-3 control-label">Sebab Dan Tanggal Perubahan</label>
+												<label for="nama"  class="col-sm-3 control-label">Sebaba Dan Tanggal Perubahan</label>
 													<div class="col-sm-8">
 													<?php $no =1; foreach($persil_mutasi as $item) : ?>
 														 <div class="form-group">
@@ -200,7 +268,7 @@
 												<div class="form-group">
 													<label for="nama"  class="col-sm-3 control-label"></label>
 													<div class="col-sm-8">
-														<a href="<?= site_url("data_persil/mutasi/".$persil_detail["id"]) ?>" class="btn btn-social btn-flat btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Tambah Data"><i class="fa fa-plus"></i> Sebab Dan Tanggal Perubahan</a>
+														<a href="<?= site_url("data_persil/mutasi/".$persil_detail["id"]) ?>" class="btn btn-social btn-flat btn-success btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Tambah Data"><i class="fa fa-plus"></i> Sebabx Dan Tanggal Perubahan</a>
 													</div>
 												</div>
 												<?php endif; ?>
@@ -215,33 +283,12 @@
 												</select>
 											</div>
 										</div>
-										<div class="form-group ">
-											<label for="pid"  class="col-sm-3 control-label">Lokasi Tanah</label>
-											<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
-												<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil_detail["lokasi"]?NULL : 'active'  ?>">
-													<input type="radio"  name="pilihan" class="form-check-input" type="radio" value="1"  autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
-												</label>
-												<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label  <?= $persil_detail["lokasi"]?'active' : NULL  ?>">
-													<input type="radio"  name="pilihan" class="form-check-input" type="radio" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
-												</label>
-											</div>
-										</div>
+
+
 										<div class="form-group">
-											<label class="col-sm-3 control-label"></label>
-											<div id= "pilih" <?= $persil_detail["lokasi"]?'style="display:none"' : NULL  ?>>
-												<div class="col-sm-4" >
-													<select class="form-control  input-sm select2" id="pid" name="pid" >
-														<option width="100%" value >-- Pilih Lokasi Tanah--</option>
-														<?php foreach ($persil_lokasi as $key=>$item): ?>
-															<option value="<?= $item["id"] ?>" <?php if ($item["id"]==$persil_detail["id_clusterdesa"]): ?>selected<?php endif; ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
-														<?php endforeach;?>
-													</select>
-												</div>
-											</div>
-											<div id= "manual" <?= $persil_detail["lokasi"]?NULL: 'style="display:none"' ?> >
-												<div class="col-sm-8">
-													<textarea  id="lokasi" class="form-control input-sm" type="text" placeholder="Lokasi" name="lokasi" ><?= $persil_detail["lokasi"] ?></textarea>
-												</div>
+											<label for="nama"  class="col-sm-3 control-label">Nomor Objek Pajak</label>
+											<div class="col-sm-8">
+												<input  id="pajak" class="form-control input-sm angka" type="text" placeholder="Pajak" name="pajak" value="<?= $persil_detail["pajak"] ?>">
 											</div>
 										</div>
 										<div class="form-group">
@@ -251,6 +298,12 @@
 											</div>
 										</div>
 									</div>
+
+
+				</div>
+			</div>
+		</div>
+
 									<div class="box-footer">
 										<div class="col-xs-12">
 											<button type="reset" class="btn btn-social btn-flat btn-danger btn-sm"><i class="fa fa-times"></i> Batal</button>
