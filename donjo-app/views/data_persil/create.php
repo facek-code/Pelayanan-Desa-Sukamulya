@@ -16,6 +16,9 @@
 			<div class="col-md-9">
 				<div class="box box-info">
 					<div class="box-body">
+						<div class="box-header with-border">
+							<a href="<?= site_url('cdesa/clear')?>" class="btn btn-social btn-flat btn-primary btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar C-Desa"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar C-Desa</a>
+						</div>
 						<div class="row">
 							<div class="col-sm-12">
 								<form action="" id="main" name="main" method="POST" class="form-horizontal">

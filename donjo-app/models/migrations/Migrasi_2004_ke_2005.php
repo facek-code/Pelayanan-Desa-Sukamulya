@@ -51,7 +51,7 @@ class Migrasi_2004_ke_2005 extends CI_model {
 	{
 		// Tambah Modul Cdesa 
 		$data = array(
-				'id' => 206,
+				'id' => 207,
 				'modul' => 'C-Desa',
 				'url' => 'cdesa',
 				'aktif' => 1,
@@ -295,7 +295,8 @@ class Migrasi_2004_ke_2005 extends CI_model {
 				),
 				'id_wilayah' => array(
 					'type' => 'INT',
-					'constraint' => 11
+					'constraint' => 11,
+					'null' =>TRUE
 				),
 				'lokasi' => array(
 					'type' => 'TEXT',

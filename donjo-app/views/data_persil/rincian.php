@@ -114,7 +114,7 @@
 															<th>No</th>
 															<th>Aksi</th>
 															<th>No. Persil</th>
-															<th>Kelas Desa</th>
+															<th>Kelas Tanah</th>
 															<th>Lokasi</th>
 															<th>Luas (M2)</th>
 															<th>Tipe Persil</th>
@@ -131,15 +131,15 @@
 																<tr>
 																	<td class="text-center"><?= $nomer?></td>
 																	<td nowrap class="text-center">
-																		<a href="<?= site_url("program_bantuan/edit_peserta_form/$item[id]")?>" class="btn bg-orange btn-flat btn-sm"  title="Ubah" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Ubah Data Peserta"><i class="fa fa-edit"></i></a>
-																		<a href="#" data-href="<?= site_url("program_bantuan/hapus_peserta/$detail[id]/$item[id]")?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
+																		<a href="<?= site_url("cdesa/create_bidang/$cdesa[id]/$item[id]")?>" class="btn bg-orange btn-flat btn-sm" title="Ubah"><i class="fa fa-edit"></i></a>
+																		<a href="#" data-href="<?= site_url("cdesa/hapus_bidang/$cdesa[id]/$item[id]")?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
 																	</td>
-																	<td><?= $item['no_persil']?></td>
-																	<td><?= $item['no_persil']?></td>
-																	<td><?= $item['no_persil']?></td>
+																	<td><?= $item['nomor']?></td>
+																	<td><?= $item['kelas_tanah']?></td>
+																	<td><?= $item['lokasi']?></td>
 																	<td><?= $item['luas']?></td>
-																	<td><?= $item['no_persil']?></td>
-																	<td><?= $item['no_persil']?></td>
+																	<td><?= $item['jenis_persil']?></td>
+																	<td><?= $item['peruntukan']?></td>
 																	<td><?= $item['no_objek_pajak']?></td>
 																	<td><?= $item['no_sppt_pbb']?></td>
 																	<td><?= $item['keterangan']?></td>																	

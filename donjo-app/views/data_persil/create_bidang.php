@@ -50,7 +50,7 @@
 									</div>
 								<?php endif; ?>
 
-								<form name='mainform' action="<?= site_url('cdesa/simpan_mutasi/'.$cdesa['id'])?>" method="POST"  id="validasi" class="form-horizontal">
+								<form name='mainform' action="<?= site_url('cdesa/simpan_bidang/'.$cdesa['id'])?>" method="POST"  id="validasi" class="form-horizontal">
 									<div class="box-body">
 										<input name="jenis_pemilik" type="hidden" value="1">
 										<input type="hidden" name="nik_lama" value="<?= $pemilik["nik_lama"] ?>"/>
@@ -86,7 +86,7 @@
 												<div class="form-group">
 													<label for="no_persil" class="col-sm-3 control-label">Nomor Persil</label>
 													<div class="col-sm-8">
-														<input  id="no_persil" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $cdesa["no_persil"] ?>">
+														<input name="no_persil" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $cdesa["no_persil"] ?>">
 													</div>
 												</div>
 												<div class="form-group">
@@ -125,7 +125,7 @@
 													<label class="col-sm-3 control-label"></label>
 													<div id= "pilih" <?= $persil_detail["lokasi"]?'style="display:none"' : NULL  ?>>
 														<div class="col-sm-4" >
-															<select class="form-control  input-sm select2" id="pid" name="pid" >
+															<select class="form-control input-sm select2" name="id_wilayah" >
 																<option width="100%" value >-- Pilih Lokasi Tanah--</option>
 																<?php foreach ($persil_lokasi as $key=>$item): ?>
 																	<option value="<?= $item["id"] ?>" <?php if ($item["id"]==$persil_detail["id_clusterdesa"]): ?>selected<?php endif; ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
@@ -164,7 +164,7 @@
 												<div class="form-group">
 													<label for="no_bidang_persil" class="col-sm-3 control-label">Nomor Bidang Persil</label>
 													<div class="col-sm-4">
-														<input name="no_bidang_persil" type="text" class="form-control input-sm luas" placeholder="Nomor Bidang Persil" value="<?= $mutasi["no_bidang_persil"] ?>">
+														<input name="no_bidang_persil" type="text" class="form-control input-sm luas" placeholder="Nomor Bidang Persil" value="<?= $bidang["no_bidang_persil"] ?>">
 													</div>
 												</div>												
 												<div class="form-group">
@@ -181,13 +181,13 @@
 												<div class="form-group">
 													<label for="no_objek_pajak" class="col-sm-3 control-label">Nomor Objek Pajak</label>
 													<div class="col-sm-8">
-														<input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak" value="<?= $mutasi["no_objek_pajak"] ?>">
+														<input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak" value="<?= $bidang["no_objek_pajak"] ?>">
 													</div>
 												</div>
 												<div class="form-group">
 													<label for="no_sppt_pbb" class="col-sm-3 control-label">Nomor SPPT PBB</label>
 													<div class="col-sm-8">
-														<input name="no_sppt_pbb" type="text" class="form-control input-sm" placeholder="Tuliskan Nomor SPPT PBB" value="<?= $mutasi["no_sppt_pbb"] ?>">
+														<input name="no_sppt_pbb" type="text" class="form-control input-sm" placeholder="Tuliskan Nomor SPPT PBB" value="<?= $bidang["no_sppt_pbb"] ?>">
 													</div>
 												</div>
 											</div>
