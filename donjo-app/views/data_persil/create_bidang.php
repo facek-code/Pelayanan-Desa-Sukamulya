@@ -58,14 +58,14 @@
 										<input type="hidden" name="id_pend" value="<?= $pemilik["id"] ?>"/>
 
 										<div class="form-group">
-											<label for="c_desa"  class="col-sm-3 control-label">Nomor C-DESA</label>
+											<label for="c_desa" class="col-sm-3 control-label">Nomor C-DESA</label>
 											<div class="col-sm-8">
 												<input class="form-control input-sm angka required" type="text" placeholder="Nomor Surat C-DESA" name="c_desa" value="<?= ($cdesa['nomor'])?sprintf("%04s", $cdesa["nomor"]): NULL ?>" disabled >
 											</div>
 										</div>
 
 										<div class="form-group">
-											<label for="nama_kepemilikan"  class="col-sm-3 control-label">Nama Kepemilikan</label>
+											<label for="nama_kepemilikan" class="col-sm-3 control-label">Nama Kepemilikan</label>
 											<div class="col-sm-8">
 												<input class="form-control input-sm nama required" type="text" placeholder="Nama pemilik di Surat C-DESA" name="nama_kepemilikan" value="<?= ($cdesa["nama_kepemilikan"])?sprintf("%04s", $cdesa["nama_kepemilikan"]): NULL ?>" disabled >
 											</div>
@@ -84,15 +84,15 @@
 										<div id="persil" class="panel-collapse">
 											<div class="box-body">
 												<div class="form-group">
-													<label for="nama"  class="col-sm-3 control-label">Nomor Persil</label>
+													<label for="no_persil" class="col-sm-3 control-label">Nomor Persil</label>
 													<div class="col-sm-8">
-														<input  id="nama" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil_detail["nopersil"] ?>">
+														<input  id="no_persil" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $cdesa["no_persil"] ?>">
 													</div>
 												</div>
 												<div class="form-group">
 													<label for="kelas"  class="col-sm-3 control-label">Tipe Tanah</label>
 													<div class="col-sm-4">
-														<select class="form-control input-sm" id="tipe" name="tipe"  type="text"  placeholder="Tuliskan Kelas Tanah" >
+														<select class="form-control input-sm" id="tipe" name="tipe" type="text" placeholder="Tuliskan Kelas Tanah" >
 															<option value>-- Pilih Tipe Tanah--</option>
 															<option value="BASAH" <?php if ('BASAH'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Basah</option>
 															<option value="KERING" <?php if ('KERING'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Kering</option>
@@ -100,9 +100,9 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label for="kelas"  class="col-sm-3 control-label">Kelas Tanah</label>
+													<label for="kelas" class="col-sm-3 control-label">Kelas Tanah</label>
 													<div class="col-sm-4">
-														<select class="form-control input-sm" id="kelas" name="kelas"  type="text"  placeholder="Tuliskan Kelas Tanah" >
+														<select class="form-control input-sm" id="kelas" name="kelas" type="text" placeholder="Tuliskan Kelas Tanah" >
 															<option value>-- Pilih Jenis Kelas--</option>
 															<?php foreach ($persil_kelas  as $item): ?>
 																<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil_detail["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
@@ -110,15 +110,14 @@
 														</select>
 													</div>
 												</div>
-
 												<div class="form-group ">
-													<label for="pid"  class="col-sm-3 control-label">Lokasi Tanah</label>
+													<label for="pid" class="col-sm-3 control-label">Lokasi Tanah</label>
 													<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
 														<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil_detail["lokasi"]?NULL : 'active'  ?>">
-															<input type="radio"  name="pilihan" class="form-check-input" type="radio" value="1"  autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
+															<input type="radio" name="pilihan" class="form-check-input" type="radio" value="1" autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
 														</label>
 														<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label  <?= $persil_detail["lokasi"]?'active' : NULL  ?>">
-															<input type="radio"  name="pilihan" class="form-check-input" type="radio" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
+															<input type="radio" name="pilihan" class="form-check-input" type="radio" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
 														</label>
 													</div>
 												</div>
@@ -152,9 +151,9 @@
 										<div id="bidang_persil" class="panel-collapse">
 											<div class="box-body">
 												<div class="form-group">
-													<label for="cid"  class="col-sm-3 control-label">Jenis Tanah</label>
+													<label for="jenis_bidang_persil" class="col-sm-3 control-label">Jenis Tanah</label>
 													<div class="col-sm-4">
-														<select class="form-control input-sm" id="cid" name="cid" >
+														<select class="form-control input-sm" name="jenis_bidang_persil" >
 															<option value>-- Pilih Jenis Tanah--</option>
 															<?php foreach ($persil_jenis as $key => $item): ?>
 																<option value="<?= $item['id'] ?>" <?php selected($key, $persil_detail["persil_jenis_id"]) ?>><?= $item['nama']?></option>
@@ -163,15 +162,15 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label for="no_bidang_persil"  class="col-sm-3 control-label">Nomor Bidang Tanah</label>
+													<label for="no_bidang_persil" class="col-sm-3 control-label">Nomor Bidang Persil</label>
 													<div class="col-sm-4">
-														<input name="no_bidang_persil"  type="text"  class="form-control input-sm luas" placeholder="Luas" value="<?= $mutasi["no_bidang_persil"] ?>">
+														<input name="no_bidang_persil" type="text" class="form-control input-sm luas" placeholder="Nomor Bidang Persil" value="<?= $mutasi["no_bidang_persil"] ?>">
 													</div>
 												</div>												
 												<div class="form-group">
-													<label for="sid"  class="col-sm-3 control-label">Peruntukan</label>
+													<label for="sid" class="col-sm-3 control-label">Peruntukan</label>
 													<div class="col-sm-4">
-														<select class="form-control  input-sm select2" id="sid" name="sid">
+														<select class="form-control input-sm select2" id="peruntukan" name="peruntukan">
 															<option value >-- Pilih Peruntukan--</option>
 															<?php foreach ($persil_peruntukan as $key=>$item): ?>
 																<option value="<?= $key?>" <?php if ($key==$persil_detail["persil_peruntukan_id"]): ?>selected<?php endif; ?>><?= $item[0]?></option>
@@ -180,15 +179,15 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label for="no_objek_pajak"  class="col-sm-3 control-label">Nomor Objek Pajak</label>
+													<label for="no_objek_pajak" class="col-sm-3 control-label">Nomor Objek Pajak</label>
 													<div class="col-sm-8">
-														<input class="form-control input-sm angka" type="text" placeholder="Nomor Object Pajak" name="no_objek_pajak" value="<?= $mutasi["no_objek_pajak"] ?>">
+														<input class="form-control input-sm angka" type="text" placeholder="Nomor Objek Pajak" name="no_objek_pajak" value="<?= $mutasi["no_objek_pajak"] ?>">
 													</div>
 												</div>
 												<div class="form-group">
-													<label for="no_sppt_pbb"  class="col-sm-3 control-label">Nomor SPPT PBB</label>
+													<label for="no_sppt_pbb" class="col-sm-3 control-label">Nomor SPPT PBB</label>
 													<div class="col-sm-8">
-														<input name="no_sppt_pbb"  type="text"  class="form-control input-sm" placeholder="Tuliskan Nomor SPPT PBB" value="<?= $mutasi["no_sppt_pbb"] ?>">
+														<input name="no_sppt_pbb" type="text" class="form-control input-sm" placeholder="Tuliskan Nomor SPPT PBB" value="<?= $mutasi["no_sppt_pbb"] ?>">
 													</div>
 												</div>
 											</div>
@@ -203,24 +202,23 @@
 										<div id="mutasi" class="panel-collapse">
 											<div class="box-body">										
 												<div class="form-group">
-													<label for="nama"  class="col-sm-3 control-label">Sebab Dan Tanggal Perubahan</label>
-													<input name="jenis_mutasi" type="hidden" value="1">
+													<label for="perubahan" class="col-sm-3 control-label">Sebab Dan Tanggal Perubahan</label>
 													<div class="col-sm-8">
 														<div class="form-group">
-															<label for="nama"  class="col-sm-3 control-label">Tanggal Perubahan</label>
+															<label for="tanggal_mutasi" class="col-sm-3 control-label">Tanggal Perubahan</label>
 															<div class="col-sm-4">
 																<div class="input-group input-group-sm date">
 																	<div class="input-group-addon">
 																		<i class="fa fa-calendar"></i>
 																	</div>
-																	<input class="form-control input-sm pull-right" id="tgl_1" name="tanggalmutasi" type="text" value="">
+																	<input class="form-control input-sm pull-right tgl_indo" name="tanggal_mutasi" type="text" value="">
 																</div>
 															</div>
 														</div>
 														<div class="form-group">
-															<label for="nama"  class="col-sm-3 control-label">Sebab Mutasi</label>
+															<label for="jenis_mutasi" class="col-sm-3 control-label">Sebab Mutasi</label>
 															<div class="col-sm-4">
-																<select class="form-control input-sm" name="sebabmutasi" >
+																<select class="form-control input-sm" name="jenis_mutasi" >
 																	<option value>-- Pilih Sebab Mutasi--</option>
 																	<?php foreach ($persil_sebab_mutasi as $key => $item): ?>
 																		<option value="<?= $item['id'] ?>"><?= $item['nama']?></option>
@@ -229,27 +227,27 @@
 															</div>
 														</div>
 														<div class="form-group">
-															<label for="nama"  class="col-sm-3 control-label">Luas Mutasi</label>
+															<label for="luas" class="col-sm-3 control-label">Luas Mutasi (m2)</label>
 															<div class="col-sm-9">
-																<input  name="luasmutasi"  type="text"  class="form-control input-sm luas" placeholder="Luas Mutasi" value="">
+																<input name="luas" type="text" class="form-control input-sm luas" placeholder="Luas Mutasi (m2)" value="">
 															</div>
 														</div>
 														<div class="form-group">
-															<label for=""  class="col-sm-3 control-label"></label>
+															<label for="" class="col-sm-3 control-label"></label>
 															<div class="col-sm-8">
 																<p class="help-block"><code>Gunakan tanda titik (.) untuk bilangan pecahan</code></p>
 															</div>
 														</div>
 														<div class="form-group">
-															<label for="nama"  class="col-sm-3 control-label">Perolehan Dari</label>
+															<label for="id_cdesa_keluar" class="col-sm-3 control-label">Perolehan Dari</label>
 															<div class="col-sm-9">
-																<input name="no_c_desa"  type="text"  class="form-control input-sm angka" placeholder="Nomor C-DESA" value="">
+																<input name="id_cdesa_keluar" type="text" class="form-control input-sm angka" placeholder="Nomor C-DESA dari mana bidang persil ini dimutasikan" value="">
 															</div>
 														</div>
 														<div class="form-group">
-															<label for="nama"  class="col-sm-3 control-label">Keterangan</label>
+															<label for="keterangan" class="col-sm-3 control-label">Keterangan</label>
 															<div class="col-sm-9">
-																<textarea  id="ket" class="form-control input-sm" type="text" placeholder="Sebab Dan Tanggal Perubahan" name="ket" ></textarea>
+																<textarea  name="keterangan" class="form-control input-sm" type="text" placeholder="Keterangan" name="ket" ></textarea>
 															</div>
 														</div>
 													</div>
@@ -257,7 +255,6 @@
 											</div>
 										</div>
 									</div>
-
 									<div class="box-footer">
 										<div class="col-xs-12">
 											<button type="reset" class="btn btn-social btn-flat btn-danger btn-sm"><i class="fa fa-times"></i> Batal</button>

@@ -341,10 +341,6 @@ class Migrasi_2004_ke_2005 extends CI_model {
 					'type' => 'DATE',
 					'null' => TRUE
 				),
-				'sebab' => array(
-					'type' => 'TINYINT',
-					'constraint' => 5
-				),
 				'keterangan' => array(
 					'type' => 'TEXT',
 					'null' => TRUE	

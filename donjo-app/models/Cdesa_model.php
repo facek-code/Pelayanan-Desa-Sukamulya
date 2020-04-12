@@ -254,7 +254,7 @@ class Cdesa_model extends CI_Model {
 		return $data;
 	}
 
-	public function get_c_desa($id)
+	public function get_cdesa($id)
 	{
 		$data = $this->db->where('id', $id)
 			->get('cdesa')
@@ -389,30 +389,55 @@ class Cdesa_model extends CI_Model {
 		$data['nomor'] = $this->input->post('c_desa');
 		$data['nama_kepemilikan'] = $this->input->post('nama_kepemilikan');
 		$data['jenis_pemilik'] = $this->input->post('jenis_pemilik');
-		$data['created_by'] = $this->session->user;
-		$data['updated_by'] = $this->session->user;
-		$this->db->insert('cdesa', $data);
-		$id_cdesa = $this->db->insert_id();
+		if ($id_cdesa = $this->input->post('id'))
+		{
+			$data['updated_by'] = $this->session->user;
+			$this->db->where('id', $id_cdesa)
+				->update('cdesa', $data);
+		}
+		else
+		{
+			$data['created_by'] = $this->session->user;
+			$data['updated_by'] = $this->session->user;
+			$this->db->insert('cdesa', $data);
+			$id_cdesa = $this->db->insert_id();
+		}
 
 		if ($this->input->post('jenis_pemilik') == 1) 
 			$this->simpan_pemilik($id_cdesa, $this->input->post('id_pend'));
+		return $id_cdesa;
 	}
 
 	private function simpan_pemilik($id_cdesa, $id_pend)
 	{
+		// Hapus pemilik lama
+		$this->db->where('id_cdesa', $id_cdesa)
+			->delete('cdesa_penduduk');
+		// Tambahkan pemiliki baru
 		$data = array();
 		$data['id_cdesa'] = $id_cdesa;
 		$data['id_pend'] = $id_pend;
 		$this->db->insert('cdesa_penduduk', $data);
 	}
 
-	public function simpan_mutasi($id_cdesa)
+	public function simpan_mutasi($id_cdesa, $post)
 	{
 		$data = array();
+
+		$data['id_persil'] = '99'; // TODO
+
 		$data['id_cdesa_masuk'] = $id_cdesa;
-		$data['no_bidang_persil'] = $this->input->post('no_bidang_persil');
-		$data['no_objek_pajak'] = $this->input->post('no_objek_pajak');
-		$data['no_sppt_pbb'] = $this->input->post('no_sppt_pbb');
+		$data['jenis_bidang_persil'] = $post['jenis_bidang_persil'];
+		$data['no_bidang_persil'] = $post['no_bidang_persil'];
+		$data['peruntukan'] = $post['peruntukan'];
+		$data['no_objek_pajak'] = $post['no_objek_pajak'];
+		$data['no_sppt_pbb'] = $post['no_sppt_pbb'];
+
+		$data['tanggal_mutasi'] = tgl_indo_in($post['tanggal_mutasi']);
+		$data['jenis_mutasi'] = $post['jenis_mutasi'];
+		$data['luas'] = $post['luas'];
+		$data['id_cdesa_keluar'] = $post['id_cdesa_keluar'];
+		$data['keterangan'] = strip_tags($post['keterangan']);
 
 
 		$outp = $this->db->insert('mutasi_cdesa', $data);
@@ -453,83 +478,56 @@ class Cdesa_model extends CI_Model {
 		return $data;
 	}
 
-	public function simpan_c_desa()
-	{
-		$data = array();
-		if ($_POST['id_persil'] > 0)
-		{
-			$datac['c_desa'] = ltrim($_POST['c_desa'], '0');
-			$query = $this->db->get_where('data_persil_c_desa', array('c_desa' => $datac['c_desa']));
-			if ($query->num_rows() <= 0)
-			{
-				$outp = $this->db->insert('data_persil_c_desa', $datac);
-				$data['id_c_desa'] = $this->db->insert_id();
-			}
-			else
-			{
-				$data['id_c_desa'] = $this->db->result()->id;
-			}
-			$outp = $this->db->where('id', $_POST['id_persil'])->update('data_persil', $data);
-		}
-		elseif ($_POST['id_pend'] > 0)
-		{
-			$datac['id_pend'] =$_POST['id_pend'];
-			$datac['c_desa'] = ltrim($_POST['c_desa'], '0');
-			$outp = $this->db->insert('data_persil_c_desa', $datac);
-			$data['id_c_desa'] = $this->db->insert_id();
-			$outp = $this->db->where('id_pend', $_POST['id_pend'])->update('data_persil', $data);
-		}
-		else
-		{
-			$data['c_desa'] = ltrim($_POST['c_desa'], '0');
-			$outp = $this->db->where('id', $_POST['id_c_desa'])->update('data_persil_c_desa', $data);
-		}
+	// public function simpan_c_desa()
+	// {
+	// 	$data = array();
+	// 	if ($_POST['id_persil'] > 0)
+	// 	{
+	// 		$datac['c_desa'] = ltrim($_POST['c_desa'], '0');
+	// 		$query = $this->db->get_where('data_persil_c_desa', array('c_desa' => $datac['c_desa']));
+	// 		if ($query->num_rows() <= 0)
+	// 		{
+	// 			$outp = $this->db->insert('data_persil_c_desa', $datac);
+	// 			$data['id_c_desa'] = $this->db->insert_id();
+	// 		}
+	// 		else
+	// 		{
+	// 			$data['id_c_desa'] = $this->db->result()->id;
+	// 		}
+	// 		$outp = $this->db->where('id', $_POST['id_persil'])->update('data_persil', $data);
+	// 	}
+	// 	elseif ($_POST['id_pend'] > 0)
+	// 	{
+	// 		$datac['id_pend'] =$_POST['id_pend'];
+	// 		$datac['c_desa'] = ltrim($_POST['c_desa'], '0');
+	// 		$outp = $this->db->insert('data_persil_c_desa', $datac);
+	// 		$data['id_c_desa'] = $this->db->insert_id();
+	// 		$outp = $this->db->where('id_pend', $_POST['id_pend'])->update('data_persil', $data);
+	// 	}
+	// 	else
+	// 	{
+	// 		$data['c_desa'] = ltrim($_POST['c_desa'], '0');
+	// 		$outp = $this->db->where('id', $_POST['id_c_desa'])->update('data_persil_c_desa', $data);
+	// 	}
 
-		if ($outp)
-		{
-			$_SESSION["success"] = 1;
-			$_SESSION["pesan"] = "Data Persil telah DISIMPAN";
-			$hasil = true;
-		}
-		else
-		{
-			$_SESSION["success"] = -1;
-			$_SESSION["pesan"] = "Gagal Menyimpan data";
-		}
-	}
+	// 	if ($outp)
+	// 	{
+	// 		$_SESSION["success"] = 1;
+	// 		$_SESSION["pesan"] = "Data Persil telah DISIMPAN";
+	// 		$hasil = true;
+	// 	}
+	// 	else
+	// 	{
+	// 		$_SESSION["success"] = -1;
+	// 		$_SESSION["pesan"] = "Gagal Menyimpan data";
+	// 	}
+	// }
 
-	public function hapus_c_desa($id, $mana)
+	public function hapus_cdesa($id)
 	{
-		if($mana === 'id_pend')
-		{
-			$strSQL = "DELETE FROM  data_persil WHERE id_pend = ".$id;
-			$hasil = $this->db->query($strSQL);
-		}	
-		else
-		{
-			$strSQL = "SELECT * FROM data_persil WHERE id_c_desa = ".$id;
-			$query = $this->db->query($strSQL);
-			if ($query->num_rows() > 0)
-			{
-				$strSQL = "DELETE  a, b FROM data_persil_c_desa a , data_persil b WHERE a.id = ".$id." AND b.id_c_desa = ".$id;
-				$hasil = $this->db->query($strSQL);
-			}
-			else
-			{
-				$strSQL = "DELETE FROM data_persil_c_desa WHERE id = ".$id;
-				$hasil = $this->db->query($strSQL);
-			}
-			if ($hasil)
-			{
-				$_SESSION["success"] = 1;
-				$_SESSION["pesan"] = "Data Persil telah dihapus";
-			}
-			else
-			{
-				$_SESSION["success"] = -1;
-				$_SESSION["pesan"] = "Gagal menghapus data persil";
-			}
-		}	
+		$outp = $this->db->where('id', $id)
+			->delete('cdesa');
+		status_sukses($outp);
 	}
 
 	public function hapus_persil($id)
@@ -557,13 +555,26 @@ class Cdesa_model extends CI_Model {
 
 	public function get_pemilik($id_cdesa)
 	{
-		$this->db->select('p.nik, p.nama, k.no_kk, w.rt, w.rw, w.dusun')
+		$this->db->select('p.id, p.nik, p.nama, k.no_kk, w.rt, w.rw, w.dusun')
+			->select('CONCAT("RT ", rt, " / RW ", rw, " - ", dusun) as alamat')
 			->from('cdesa c')
 			->join('cdesa_penduduk cp', 'c.id = cp.id_cdesa', 'left')
 			->join('tweb_penduduk p', 'p.id = cp.id_pend', 'left')
 			->join('tweb_keluarga k','k.id = p.id_kk', 'left')
-			->join('tweb_wil_clusterdesa w', 'w.id = p.id_cluster', 'left');
+			->join('tweb_wil_clusterdesa w', 'w.id = p.id_cluster', 'left')
+			->where('c.id', $id_cdesa);
 		$data = $this->db->get()->row_array();
+		return $data;
+	}
+
+	public function get_bidang($id_cdesa)
+	{
+		$this->db->select()
+			->from('mutasi_cdesa m')
+			->join('cdesa c', 'c.id = m.id_cdesa_masuk', 'left')
+			->join('persil p', 'p.id = m.id_persil', 'left')
+			->where('m.id_cdesa_masuk', $id_cdesa);
+		$data = $this->db->get()->result_array();
 		return $data;
 	}
 

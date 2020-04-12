@@ -278,6 +278,11 @@ $(document).ready(function()
 		useCurrent: false,
 		locale:'id'
 	});
+	$('.tgl_indo').datetimepicker(
+	{
+		format: 'DD-MM-YYYY',
+		locale:'id'
+	});
 	$('#tgl_1').datetimepicker(
 	{
 		format: 'DD-MM-YYYY',
