@@ -12,6 +12,7 @@ class Cdesa extends Admin_Controller {
 		$this->load->model('data_persil_model');
 		$this->load->model('cdesa_model');
 		$this->load->model('penduduk_model');
+		$this->load->model('referensi_model');
 		$this->modul_ini = 7;
 	}
 
@@ -395,17 +396,18 @@ class Cdesa extends Admin_Controller {
 
 		if ($id_bidang)
 		{ 
-			$data["persil"] = $this->cdesa_model->get_persil($id);
-			$data["bidang"] = $this->cdesa_model->get_bidang($id);
+			$data["persil"] = $this->cdesa_model->get_persil($id_bidang);
+			$data["bidang"] = $this->cdesa_model->get_bidang($id_bidang);
 		}
 		$data['cdesa'] = $this->cdesa_model->get_cdesa($id_cdesa);
 		$data['pemilik'] = $this->cdesa_model->get_pemilik($id_cdesa);
 
 		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$data["persil_sebab_mutasi"] = $this->data_persil_model->list_persil_sebab_mutasi();
+		$data["persil_peruntukan"] = $this->cdesa_model->list_persil_peruntukan();
+		$data["persil_jenis"] = $this->cdesa_model->list_persil_jenis();
+		$data["persil_kelas"] = $this->referensi_model->list_by_id('ref_persil_kelas');
+		$data["persil_sebab_mutasi"] = $this->referensi_model->list_by_id('ref_persil_mutasi');
+
 		$this->load->view('header', $header);
 		$this->load->view('nav', $nav);
 		$this->load->view('data_persil/create_bidang', $data);
@@ -649,10 +651,10 @@ class Cdesa extends Admin_Controller {
 		$this->load->view('footer');
 	}
 
-	public function simpan_bidang($id_cdesa)
+	public function simpan_bidang($id_cdesa, $id_bidang='')
 	{
 		$post = $this->input->post();
-		$data = $this->cdesa_model->simpan_mutasi($id_cdesa, $this->input->post());
+		$data = $this->cdesa_model->simpan_mutasi($id_cdesa, $id_bidang, $this->input->post());
 		redirect("cdesa/rincian/$id_cdesa");
 	}
 

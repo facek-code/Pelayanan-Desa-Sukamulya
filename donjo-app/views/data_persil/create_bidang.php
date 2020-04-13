@@ -5,6 +5,7 @@
 		<ol class="breadcrumb">
 			<li><a href="<?=site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
 			<li><a href="<?=site_url('cdesa/clear')?>"> Daftar C-Desa</a></li>
+			<li><a href="<?=site_url('cdesa/rincian/'. $cdesa[id])?>"> Rincian C-Desa</a></li>
 			<li class="active">Pengelolaan Data C-Desa</li>
 		</ol>
 	</section>
@@ -17,7 +18,7 @@
 				<div class="box box-info">
 					<div class="box-body">
 						<div class="box-header with-border">
-							<a href="<?= site_url('cdesa/clear')?>" class="btn btn-social btn-flat btn-primary btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar C-Desa"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar C-Desa</a>
+							<a href="<?= site_url('cdesa/rincian/'. $cdesa[id])?>" class="btn btn-social btn-flat btn-primary btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Rincian C-Desa"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Rincian C-Desa</a>
 						</div>
 						<div class="row">
 							<div class="col-sm-12">
@@ -50,7 +51,7 @@
 									</div>
 								<?php endif; ?>
 
-								<form name='mainform' action="<?= site_url('cdesa/simpan_bidang/'.$cdesa['id'])?>" method="POST"  id="validasi" class="form-horizontal">
+								<form name='mainform' action="<?= site_url('cdesa/simpan_bidang/'.$cdesa['id'].'/'.$bidang['id'])?>" method="POST"  id="validasi" class="form-horizontal">
 									<div class="box-body">
 										<input name="jenis_pemilik" type="hidden" value="1">
 										<input type="hidden" name="nik_lama" value="<?= $pemilik["nik_lama"] ?>"/>
@@ -83,10 +84,11 @@
 										</div>
 										<div id="persil" class="panel-collapse">
 											<div class="box-body">
+												<input type="hidden" name="id_persil" value="<?= $persil['id']?>">
 												<div class="form-group">
 													<label for="no_persil" class="col-sm-3 control-label">Nomor Persil</label>
 													<div class="col-sm-8">
-														<input name="no_persil" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $cdesa["no_persil"] ?>">
+														<input name="no_persil" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil["nomor"] ?>">
 													</div>
 												</div>
 												<div class="form-group">
@@ -94,8 +96,8 @@
 													<div class="col-sm-4">
 														<select class="form-control input-sm" id="tipe" name="tipe" type="text" placeholder="Tuliskan Kelas Tanah" >
 															<option value>-- Pilih Tipe Tanah--</option>
-															<option value="BASAH" <?php if ('BASAH'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Basah</option>
-															<option value="KERING" <?php if ('KERING'==$persil_detail["tipe"]): ?>selected<?php endif; ?>>Tanah Kering</option>
+															<option value="BASAH" <?php selected('BASAH', $persil_kelas[$persil['kelas']]["tipe"]) ?>>Tanah Basah</option>
+															<option value="KERING" <?php selected('KERING', $persil_kelas[$persil['kelas']]["tipe"]) ?>>Tanah Kering</option>
 															</select>
 													</div>
 												</div>
@@ -105,7 +107,7 @@
 														<select class="form-control input-sm" id="kelas" name="kelas" type="text" placeholder="Tuliskan Kelas Tanah" >
 															<option value>-- Pilih Jenis Kelas--</option>
 															<?php foreach ($persil_kelas  as $item): ?>
-																<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil_detail["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
+																<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
 															<?php endforeach;?>
 														</select>
 													</div>
@@ -128,7 +130,7 @@
 															<select class="form-control input-sm select2" name="id_wilayah" >
 																<option width="100%" value >-- Pilih Lokasi Tanah--</option>
 																<?php foreach ($persil_lokasi as $key=>$item): ?>
-																	<option value="<?= $item["id"] ?>" <?php if ($item["id"]==$persil_detail["id_clusterdesa"]): ?>selected<?php endif; ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
+																	<option value="<?= $item["id"] ?>" <?php selected($item["id"], $persil["id_wilayah"]) ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
 																<?php endforeach;?>
 															</select>
 														</div>
@@ -156,7 +158,7 @@
 														<select class="form-control input-sm" name="jenis_bidang_persil" >
 															<option value>-- Pilih Jenis Tanah--</option>
 															<?php foreach ($persil_jenis as $key => $item): ?>
-																<option value="<?= $item['id'] ?>" <?php selected($key, $persil_detail["persil_jenis_id"]) ?>><?= $item['nama']?></option>
+																<option value="<?= $item['id'] ?>" <?php selected($key, $bidang["jenis_bidang_persil"]) ?>><?= $item['nama']?></option>
 															<?php endforeach;?>
 														</select>
 													</div>
@@ -164,7 +166,7 @@
 												<div class="form-group">
 													<label for="no_bidang_persil" class="col-sm-3 control-label">Nomor Bidang Persil</label>
 													<div class="col-sm-4">
-														<input name="no_bidang_persil" type="text" class="form-control input-sm luas" placeholder="Nomor Bidang Persil" value="<?= $bidang["no_bidang_persil"] ?>">
+														<input name="no_bidang_persil" type="text" class="form-control input-sm digits" placeholder="Nomor Bidang Persil" maxlength="2" value="<?= $bidang["no_bidang_persil"] ?>">
 													</div>
 												</div>												
 												<div class="form-group">
@@ -172,8 +174,8 @@
 													<div class="col-sm-4">
 														<select class="form-control input-sm select2" id="peruntukan" name="peruntukan">
 															<option value >-- Pilih Peruntukan--</option>
-															<?php foreach ($persil_peruntukan as $key=>$item): ?>
-																<option value="<?= $key?>" <?php if ($key==$persil_detail["persil_peruntukan_id"]): ?>selected<?php endif; ?>><?= $item[0]?></option>
+															<?php foreach ($persil_peruntukan as $key => $item): ?>
+																<option value="<?= $key?>" <?php selected($key, $bidang["peruntukan"]) ?>><?= $item['nama']?></option>
 															<?php endforeach;?>
 														</select>
 													</div>
@@ -211,7 +213,7 @@
 																	<div class="input-group-addon">
 																		<i class="fa fa-calendar"></i>
 																	</div>
-																	<input class="form-control input-sm pull-right tgl_indo" name="tanggal_mutasi" type="text" value="">
+																	<input class="form-control input-sm pull-right tgl_indo" name="tanggal_mutasi" type="text" value="<?= tgl_indo_out($bidang['tanggal_mutasi'])?>">
 																</div>
 															</div>
 														</div>
@@ -221,15 +223,15 @@
 																<select class="form-control input-sm" name="jenis_mutasi" >
 																	<option value>-- Pilih Sebab Mutasi--</option>
 																	<?php foreach ($persil_sebab_mutasi as $key => $item): ?>
-																		<option value="<?= $item['id'] ?>"><?= $item['nama']?></option>
+																		<option value="<?= $item['id'] ?>" <?php selected($key, $bidang['jenis_mutasi'])?>><?= $item['nama']?></option>
 																	<?php endforeach;?>
 																</select>
 															</div>
 														</div>
 														<div class="form-group">
-															<label for="luas" class="col-sm-3 control-label">Luas Mutasi (m2)</label>
+															<label for="luas" class="col-sm-3 control-label">Luas Mutasi (M2)</label>
 															<div class="col-sm-9">
-																<input name="luas" type="text" class="form-control input-sm luas" placeholder="Luas Mutasi (m2)" value="">
+																<input name="luas" type="text" class="form-control input-sm luas" placeholder="Luas Mutasi (M2)" value="<?= $bidang['luas']?>">
 															</div>
 														</div>
 														<div class="form-group">
@@ -241,13 +243,13 @@
 														<div class="form-group">
 															<label for="id_cdesa_keluar" class="col-sm-3 control-label">Perolehan Dari</label>
 															<div class="col-sm-9">
-																<input name="id_cdesa_keluar" type="text" class="form-control input-sm angka" placeholder="Nomor C-DESA dari mana bidang persil ini dimutasikan" value="">
+																<input name="id_cdesa_keluar" type="text" class="form-control input-sm angka" placeholder="Nomor C-DESA dari mana bidang persil ini dimutasikan" value="<?= $bidang['cdesa_keluar'] || ''?>">
 															</div>
 														</div>
 														<div class="form-group">
 															<label for="keterangan" class="col-sm-3 control-label">Keterangan</label>
 															<div class="col-sm-9">
-																<textarea  name="keterangan" class="form-control input-sm" type="text" placeholder="Keterangan" name="ket" ></textarea>
+																<textarea  name="keterangan" class="form-control input-sm" type="text" placeholder="Keterangan" name="ket" ><?= $bidang['keterangan']?></textarea>
 															</div>
 														</div>
 													</div>
@@ -292,6 +294,7 @@
 			});
 			return false;
 		}); 
+		$('#tipe').change();
 	});
 
 	function pilih_lokasi(pilih)

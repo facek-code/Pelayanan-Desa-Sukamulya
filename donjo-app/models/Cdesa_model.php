@@ -243,9 +243,12 @@ class Cdesa_model extends CI_Model {
 
 	public function get_bidang($id_bidang)
 	{
-		$data = $this->db->select('*')
-			->get('mutasi_cdesa')
-			->array_result();
+		$data = $this->db->select('m.*, c.nomor as cdesa_keluar')
+			->from('mutasi_cdesa m')
+			->join('cdesa c', 'c.id = m.id_cdesa_keluar', 'left')
+			->where('m.id', $id_bidang)
+			->get('')
+			->row_array();
 		return $data;
 	}
 
@@ -442,19 +445,32 @@ class Cdesa_model extends CI_Model {
 	private function simpan_persil($post)
 	{
 		$data = array();
-		$data['nomor'] = $post['no_persil'];
 		$data['kelas'] = $post['kelas'];
 		$data['id_wilayah'] = $post['id_wilayah'];
-		$sql = $this->db->insert_string('persil', $data);
-		$sql .= " ON DUPLICATE KEY UPDATE
-				nomor = VALUES(nomor),
-				kelas = VALUES(kelas),
-				id_wilayah = VALUES(id_wilayah)";
-		$this->db->query($sql);
-		return $this->db->insert_id();
+		$id_persil = $post['id_persil'] ?: $this->get_persil_by_nomor($post['no_persil']);
+		if ($id_persil)
+		{
+			$this->db->where('id', $id_persil)
+				->update('persil', $data);
+		}
+		else
+		{
+			$data['nomor'] = $post['no_persil'];
+			$this->db->insert('persil', $data);
+			$id_persil = 	$this->db->insert_id();		
+		}
+		return $id_persil;
  	}
 
-	public function simpan_mutasi($id_cdesa, $post)
+ 	private function get_persil_by_nomor($nomor)
+ 	{
+ 		$id = $this->db->select('id')
+ 			->where('nomor', $nomor)
+ 			->get('persil')->row()->id;
+ 		return $id;
+ 	}
+
+	public function simpan_mutasi($id_cdesa, $id_bidang, $post)
 	{
 		$data = array();
 		$data['id_persil'] = $this->simpan_persil($post);
@@ -471,8 +487,10 @@ class Cdesa_model extends CI_Model {
 		$data['id_cdesa_keluar'] = $post['id_cdesa_keluar'] || NULL;
 		$data['keterangan'] = strip_tags($post['keterangan']);
 
-
-		$outp = $this->db->insert('mutasi_cdesa', $data);
+		if ($id_bidang)
+			$outp = $this->db->where('id', $id_bidang)->update('mutasi_cdesa', $data);
+		else
+			$outp = $this->db->insert('mutasi_cdesa', $data);
 		// if ($_POST["id"] > 0)
 		// {
 		// 	$data_mutasi['id_persil'] = $_POST["id_persil"];
@@ -664,18 +682,11 @@ class Cdesa_model extends CI_Model {
 
 	public function list_persil_peruntukan()
 	{
-		$data = false;
-		$strSQL = "SELECT id,nama,ndesc FROM data_persil_peruntukan WHERE 1";
-		$query = $this->db->query($strSQL);
-		if ($query->num_rows()>0)
-		{
-			$data = array();
-			foreach ($query->result() as $row)
-			{
-				$data[$row->id] = array($row->nama,$row->ndesc);
-			}
-		}
-		return $data;
+		$data = $this->db->order_by('nama')
+			->get('data_persil_peruntukan')
+			->result_array();
+		$result = array_combine(array_column($data, 'id'), $data);
+		return $result;
 	}
 
 	public function get_persil_peruntukan($id=0)
@@ -805,8 +816,6 @@ class Cdesa_model extends CI_Model {
 		}
 	}
 
-
-
 	public function list_persil_kelas($table='')
 	{
 		if($table)
@@ -830,16 +839,6 @@ class Cdesa_model extends CI_Model {
 	{
 		$data = $this->db->order_by('id')
 		->get('ref_persil_jenis_mutasi')
-		->result_array();
-		$data = array_combine(array_column($data, 'id'), $data);
-		
-		return $data;
-	}
-
-	public function list_persil_sebab_mutasi($table='')
-	{
-		$data = $this->db->order_by('id')
-		->get('ref_persil_mutasi')
 		->result_array();
 		$data = array_combine(array_column($data, 'id'), $data);
 		
