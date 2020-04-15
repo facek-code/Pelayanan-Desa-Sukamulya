@@ -30,14 +30,11 @@ class Data_persil extends Admin_Controller {
 		redirect('data_persil/persil');
 	}
 
-	public function index($kat=0, $mana=0, $page=1, $o=0)
+	public function index($page=1, $o=0)
 	{
 		$header = $this->header_model->get_data();
-		$data['kat'] = $kat;
-		$data['mana'] = $mana;
 		$header['minsidebar'] = 1;
-
-		$this->load->view('header', $header);
+		$this->tab_ini = 13;
 
 		if (isset($_SESSION['cari']))
 			$data['cari'] = $_SESSION['cari'];
@@ -48,16 +45,45 @@ class Data_persil extends Admin_Controller {
 		$data['per_page'] = $_SESSION['per_page'];
 
 		$data["desa"] = $this->config_model->get_data();
-		$data['paging']  = $this->cdesa_model->paging_c_desa($kat, $mana, $page);
-		$data["cdesa"] = $this->cdesa_model->list_c_desa($kat, $mana, $data['paging']->offset, $data['paging']->per_page);
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
+		$data['paging']  = $this->data_persil_model->paging($page);
+		$data["persil"] = $this->data_persil_model->list_data($data['paging']->offset, $data['paging']->per_page);
 		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
 		$data['keyword'] = $this->data_persil_model->autocomplete();
+
+		$this->load->view('header', $header);
 		$this->load->view('nav', $nav);
-		$this->load->view('data_persil/c_desa', $data);
+		$this->load->view('data_persil/persil', $data);
 		$this->load->view('footer');
 	}
+
+	// public function index($kat=0, $mana=0, $page=1, $o=0)
+	// {
+	// 	$header = $this->header_model->get_data();
+	// 	$data['kat'] = $kat;
+	// 	$data['mana'] = $mana;
+	// 	$header['minsidebar'] = 1;
+
+	// 	$this->load->view('header', $header);
+
+	// 	if (isset($_SESSION['cari']))
+	// 		$data['cari'] = $_SESSION['cari'];
+	// 	else $data['cari'] = '';
+
+	// 	if (isset($_POST['per_page']))
+	// 		$_SESSION['per_page']=$_POST['per_page'];
+	// 	$data['per_page'] = $_SESSION['per_page'];
+
+	// 	$data["desa"] = $this->config_model->get_data();
+	// 	$data['paging']  = $this->cdesa_model->paging_c_desa($kat, $mana, $page);
+	// 	$data["cdesa"] = $this->cdesa_model->list_c_desa($kat, $mana, $data['paging']->offset, $data['paging']->per_page);
+	// 	$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
+	// 	$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
+	// 	$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
+	// 	$data['keyword'] = $this->data_persil_model->autocomplete();
+	// 	$this->load->view('nav', $nav);
+	// 	$this->load->view('data_persil/c_desa', $data);
+	// 	$this->load->view('footer');
+	// }
 
 	public function persil($kat=0, $mana=0, $page=1, $o=0)
 	{
@@ -142,7 +168,7 @@ class Data_persil extends Admin_Controller {
 		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
 		$nav['act'] = 7;
 		$this->load->view('nav',$nav);
-		$this->load->view('data_persil/detail', $data);
+		$this->load->view('data_persil/rincian', $data);
 		$this->load->view('footer');
 	}
 
@@ -174,22 +200,60 @@ class Data_persil extends Admin_Controller {
 		$this->load->view('footer');
 	}
 
-	public function detail_persil($id=0)
+	public function rincian($id=0)
 	{
 		$header = $this->header_model->get_data();
 		$header['minsidebar'] = 1;
-		$this->load->view('header', $header);
+		$this->tab_ini = 13;
 
-		$data["persil_detail"] = $this->data_persil_model->get_persil($id);
-		$data["persil_mutasi"] = $this->data_persil_model->list_persil_mutasi($id);
-		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$nav['act'] = 7;
+		$data['persil'] = $this->data_persil_model->get_persil($id);
+		$data['bidang'] = $this->data_persil_model->get_list_bidang($id);
+		$this->load->view('header', $header);
 		$this->load->view('nav',$nav);
-		$this->load->view('data_persil/detail_persil', $data);
+		$this->load->view('data_persil/rincian_persil', $data);
 		$this->load->view('footer');
+	}
+
+	// public function detail_persil($id=0)
+	// {
+	// 	$header = $this->header_model->get_data();
+	// 	$header['minsidebar'] = 1;
+	// 	$this->load->view('header', $header);
+
+	// 	$data["persil_detail"] = $this->data_persil_model->get_persil($id);
+	// 	$data["persil_mutasi"] = $this->data_persil_model->list_persil_mutasi($id);
+	// 	$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
+	// 	$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
+	// 	$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
+	// 	$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
+	// 	$nav['act'] = 7;
+	// 	$this->load->view('nav',$nav);
+	// 	$this->load->view('data_persil/detail_persil', $data);
+	// 	$this->load->view('footer');
+	// }
+
+	public function form($id)
+	{
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('nama', 'Nama Jenis Tanah', 'required');
+
+		$header = $this->header_model->get_data();
+		$header['minsidebar'] = 1;
+		$this->tab_ini = 13;
+
+		$data["persil"] = $this->data_persil_model->get_persil($id);
+		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
+		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
+		$this->load->view('header', $header);
+		$this->load->view('nav', $nav);
+		$this->load->view('data_persil/form_persil', $data);
+		$this->load->view('footer');
+	}
+
+	public function update($id)
+	{
+
 	}
 
 	public function create_hapus($mode=0, $id=0)
@@ -424,18 +488,18 @@ class Data_persil extends Admin_Controller {
 		redirect("data_persil/persil_peruntukan");
 	}
 
-	public function hapus($mana, $id)
-	{
-		$this->redirect_hak_akses('h', "data_persil");
-		$this->data_persil_model->hapus_c_desa($id, $mana);
-		redirect("data_persil");
-	}
+	// public function hapus($mana, $id)
+	// {
+	// 	$this->redirect_hak_akses('h', "data_persil");
+	// 	$this->data_persil_model->hapus_c_desa($id, $mana);
+	// 	redirect("data_persil");
+	// }
 
-		public function hapus_persil($id)
+	public function hapus($id)
 	{
 		$this->redirect_hak_akses('h', "data_persil");
-		$this->data_persil_model->hapus_persil($id);
-		redirect("data_persil/persil");
+		$this->data_persil_model->hapus($id);
+		redirect("data_persil/clear");
 	}
 
 	public function import_proses()

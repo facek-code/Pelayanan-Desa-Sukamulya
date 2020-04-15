@@ -30,11 +30,11 @@
 </style>
 <div class="content-wrapper">
 	<section class="content-header">
-		<h1>Rincian C-DESA</h1>
+		<h1>Rincian Persil</h1>
 		<ol class="breadcrumb">
 			<li><a href="<?= site_url('hom_sid')?>"><i class="fa fa-home"></i> Home</a></li>
-			<li><a href="<?= site_url('cdesa')?>"> Daftar C-DESA</a></li>
-			<li class="active">Rincian C-DESA</li>
+			<li><a href="<?= site_url('data_persil/clear')?>"> Daftar Persil</a></li>
+			<li class="active">Rincian Persil</li>
 		</ol>
 	</section>
 	<section class="content" id="maincontent">
@@ -42,13 +42,7 @@
 			<div class="col-md-12">
 				<div class="box box-info">
 					<div class="box-header with-border">
-						<a href="<?=site_url("cdesa/create_bidang/".$cdesa['id'])?>" class="btn btn-social btn-flat btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"  title="Tambah Bidang Persil">
-							<i class="fa fa-plus"></i>Tambah Bidang Persil
-						</a>
-						 <a href="<?=site_url("program_bantuan/unduhsheet/$detail[id]/")?>" class="btn btn-social btn-flat bg-navy btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Unduh Data" target="_blank">
-							<i class="fa fa-download"></i>Unduh
-            </a>
-						<a href="<?=site_url('cdesa')?>" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar C-DESA"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar C-DESA</a>
+						<a href="<?=site_url('data_persil/clear')?>" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar PersilA"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar Persil</a>
 					</div>
 					<div class="box-body">
 						<div class="row">
@@ -59,30 +53,22 @@
 									<div class="row">
 										<div class="col-sm-12">
 											<div class="box-header with-border">
-												<h3 class="box-title">Rincian C-DESA</h3>
+												<h3 class="box-title">Rincian Persil</h3>
 											</div>
 											<div class="box-body">
 												<table class="table table-bordered  table-striped table-hover" >
 													<tbody>
 														<tr>
-															<td nowrap>Nama Pemilik</td>
-															<td> : <?= $pemilik["nama"]?></td>
+															<td nowrap>Nomor Persil</td>
+															<td> : <?= $persil['nomor']?></td>
 														</tr>
 														<tr>
-															<td nowrap>NIK</td>
-															<td> :  <?= $pemilik["nik"]?></td>
+															<td nowrap>Kelas Tanah</td>
+															<td> :  <?= $persil["kode"].' - '.$persil["ndesc"]?></td>
 														</tr>
 														<tr>
 															<td nowrap>Alamat</td>
-															<td> :  <?= $pemilik["alamat"]?></td>
-														</tr>
-														<tr>
-															<td nowrap>Nomor C-DESA</td>
-															<td> : <?= $cdesa['nomor']?></td>
-														</tr>
-														<tr>
-															<td nowrap>Nama Kepemilikan</td>
-															<td> : <?= $cdesa["nama_kepemilikan"]?></td>
+															<td> :  <?= $persil["alamat"] ?: $persil["lokasi"]?></td>
 														</tr>
 													</tbody>
 												</table>
@@ -112,10 +98,7 @@
 													<thead class="bg-gray disabled color-palette">
 														<tr>
 															<th>No</th>
-															<th>Aksi</th>
-															<th>No. Persil</th>
-															<th>Kelas Tanah</th>
-															<th>Lokasi</th>
+															<th>C-Desa</th>
 															<th>Luas (M2)</th>
 															<th>Tipe Persil</th>
 															<th>Peruntukan</th>
@@ -129,13 +112,7 @@
 														<?php foreach ($bidang as $key=>$item): $nomer++;?>
 															<tr>
 																<td class="text-center"><?= $nomer?></td>
-																<td nowrap class="text-center">
-																	<a href="<?= site_url("cdesa/create_bidang/$cdesa[id]/$item[id]")?>" class="btn bg-orange btn-flat btn-sm" title="Ubah"><i class="fa fa-edit"></i></a>
-																	<a href="#" data-href="<?= site_url("cdesa/hapus_bidang/$cdesa[id]/$item[id]")?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
-																</td>
-																<td><a href="<?= site_url("data_persil/rincian/".$item["id_persil"])?>"><?= $item['nomor']?></a></td>
-																<td><?= $item['kelas_tanah']?></td>
-																<td><?= $item['lokasi']?></td>
+																<td><a href="<?= site_url("cdesa/rincian/".$item["id_cdesa_masuk"])?>"><?= $item['cdesa_masuk']?></a></td>
 																<td><?= $item['luas']?></td>
 																<td><?= $item['jenis_persil']?></td>
 																<td><?= $item['peruntukan']?></td>

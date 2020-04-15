@@ -35,7 +35,7 @@
 				<div class="col-md-8 col-lg-9">
 					<div class="box box-info">
 						<div class="box-header">
-							<h4 class="text-center"><strong>DATA PERSIL <?= strtoupper(str_replace("0", "", $title)) ; ?> </strong></h4>
+							<h4 class="text-center"><strong>DAFTAR PERSIL</strong></h4>
 						</div>							
 						<div class="box-body">
 							<div class="row">
@@ -69,14 +69,10 @@
 																<tr>
 																	<th>No</th>
 																	<th>Aksi</th>
-																	<th>Nama Pemilik</th>
-																	<th>NIK</th>
-																	<th nowrap>No. C-DESA</th>
-																	<th nowrap>No. Persil</th>
-																	<th>Tipe</th>
-																	<th>Kelas</th>
-																	<th>Luas</th>
+																	<th>Nomor Persil</th>
+																	<th>Kelas Tanah</th>
 																	<th>Lokasi</th>
+																	<th>Jumlah Bidang</th>
 																</tr>
 															</thead>
 															<tbody>
@@ -84,25 +80,22 @@
 																	<tr>
 																		<td><?= $item['no']?></td>
 																		<td nowrap>
-																			<a href="<?= site_url("data_persil/detail_persil/".$item["id"])?>" class="btn bg-purple btn-flat btn-sm"  title="Rincian"><i class="fa fa-bars"></i></a>
-																			<?php if ($item['jenis_pemilik'] == '2'): ?>
-																				<a href="<?= site_url("data_persil/create_ext/edit/".$item["id"])?>" class="btn bg-orange btn-flat btn-sm"  title="Ubah Data"><i class="fa fa-edit"></i></a>
-																				<?php else: ?>
-																					<a href="<?= site_url("data_persil/create/edit/".$item["id"])?>" class="btn bg-orange btn-flat btn-sm"  title="Ubah Data"><i class="fa fa-edit"></i></a>
-																				<?php endif; ?>
-
-																				<a href="#" data-href="<?= site_url("data_persil/hapus_persil/".$item["id"])?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
+																			<?php if ($item['jml_bidang'] > 0): ?>
+																				<a href="<?= site_url("data_persil/rincian/".$item["id"])?>" class="btn bg-purple btn-flat btn-sm" title="Rincian"><i class="fa fa-bars"></i></a>
+																			<?php else: ?>
+																				<a class="btn bg-purple btn-flat btn-sm" disabled title="Rincian"><i class="fa fa-bars"></i></a>
+																			<?php endif ?>
+																			<a href="<?= site_url("data_persil/form/".$item["id"])?>" class="btn bg-orange btn-flat btn-sm"  title="Ubah Data"><i class="fa fa-edit"></i></a>
+																			<?php if ($item['jml_bidang'] == 0): ?>
+																				<a href="#" data-href="<?= site_url("data_persil/hapus/".$item["id"])?>" class="btn bg-maroon btn-flat btn-sm" title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
+																			<?php else: ?>
+																				<a class="btn bg-maroon btn-flat btn-sm" disabled><i class="fa fa-trash-o"></i></a>
+																			<?php endif ?>
 																			</td>
-																			<td width="25%"><?= $item["namapemilik"] ?></td>
-																			<td><?= $item["nik"] ?></td>
-																			<td><?= sprintf("%04s", $item["c_desa"]) ?></td>
-																			<td><?= sprintf("%04s", $item["nopersil"]) ?></td>
-																			<td><?= $persil_jenis[$item["persil_jenis_id"]]['nama']?></td>
+																			<td><?= $item['nomor']?></td>
 																			<td><?= $persil_kelas[$item["kelas"]]['kode']?></td>
-																			<td><?= $item["luas"] ?></td>
-																			<td><?= ($item["lokasi"])?: "RT: ".$item["rt"]." RW: ".$item["rw"]." Dusun ".strtoupper($item["dusun"]) ?></td>
-
-
+																			<td><?= $item['alamat'] ?: $item['lokasi']?></td>
+																			<td><?= $item['jml_bidang']?></td>
 																		</tr>
 																	<?php endforeach; ?>
 																</tbody>
