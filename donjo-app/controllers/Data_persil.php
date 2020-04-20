@@ -203,7 +203,6 @@ class Data_persil extends Admin_Controller {
 	public function rincian($id=0)
 	{
 		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
 		$this->tab_ini = 13;
 
 		$data['persil'] = $this->data_persil_model->get_persil($id);

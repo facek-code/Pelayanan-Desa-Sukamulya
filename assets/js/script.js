@@ -563,6 +563,10 @@ function modalBox()
 		var modal = $(this)
 		modal.find('.modal-title').text(title)
 		$(this).find('.fetched-data').load(link.attr('href'));
+		setTimeout(function() {
+			// tambahkan csrf token
+			addCsrfField(modal.find("form")[0]);		
+		}, 500);
 	});
 	return false;
 }
@@ -714,5 +718,4 @@ $('document').ready(function()
     $(this).css("padding-bottom", 0);
   })
 });
-
 
