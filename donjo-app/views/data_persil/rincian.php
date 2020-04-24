@@ -135,7 +135,7 @@
 																</td>
 																<td><a href="<?= site_url("data_persil/rincian/".$item["id_persil"])?>"><?= $item['nomor']?></a></td>
 																<td><?= $item['kelas_tanah']?></td>
-																<td><?= $item['lokasi']?></td>
+																<td><?= $item['alamat'] ?: $item['lokasi']?></td>
 																<td><?= $item['luas']?></td>
 																<td><?= $item['jenis_persil']?></td>
 																<td><?= $item['peruntukan']?></td>

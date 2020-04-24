@@ -112,31 +112,31 @@
 													</div>
 												</div>
 												<div class="form-group ">
-													<label for="pid" class="col-sm-3 control-label">Lokasi Tanah</label>
+													<label for="jenis_lokasi" class="col-sm-3 control-label">Lokasi Tanah</label>
 													<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
-														<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil_detail["lokasi"]?NULL : 'active'  ?>">
-															<input type="radio" name="pilihan" class="form-check-input" type="radio" value="1" autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
+														<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil["lokasi"] ? NULL : 'active' ?>">
+															<input type="radio" name="jenis_lokasi" class="form-check-input" value="1" autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
 														</label>
-														<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label  <?= $persil_detail["lokasi"]?'active' : NULL  ?>">
-															<input type="radio" name="pilihan" class="form-check-input" type="radio" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
+														<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil["lokasi"] ? 'active' : NULL ?>">
+															<input type="radio" name="jenis_lokasi" class="form-check-input" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
 														</label>
 													</div>
 												</div>
 												<div class="form-group">
 													<label class="col-sm-3 control-label"></label>
-													<div id= "pilih" <?= $persil_detail["lokasi"]?'style="display:none"' : NULL  ?>>
+													<div id="pilih">
 														<div class="col-sm-4" >
-															<select class="form-control input-sm select2 required" name="id_wilayah" >
-																<option width="100%" value >-- Pilih Lokasi Tanah--</option>
+															<select class="form-control input-sm select2 required" id="id_wilayah" name="id_wilayah" style="width:100%">
+																<option value='' >-- Pilih Lokasi Tanah--</option>
 																<?php foreach ($persil_lokasi as $key=>$item): ?>
 																	<option value="<?= $item["id"] ?>" <?php selected($item["id"], $persil["id_wilayah"]) ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
 																<?php endforeach;?>
 															</select>
 														</div>
 													</div>
-													<div id= "manual" <?= $persil_detail["lokasi"]?NULL: 'style="display:none"' ?> >
+													<div id="manual">
 														<div class="col-sm-8">
-															<textarea  id="lokasi" class="form-control input-sm" type="text" placeholder="Lokasi" name="lokasi" ><?= $persil_detail["lokasi"] ?></textarea>
+															<textarea id="lokasi" class="form-control input-sm required" type="text" placeholder="Lokasi" name="lokasi" ><?= $persil["lokasi"] ?></textarea>
 														</div>
 													</div>
 												</div>
@@ -273,10 +273,30 @@
 </section>
 </div>
 <script>
+	function pilih_lokasi(pilih)
+	{
+		if (pilih == 1)
+		{
+			$('#lokasi').val('');
+			$('#lokasi').removeClass('required');
+			$("#manual").hide();
+			$("#pilih").show();
+			$('#id_wilayah').addClass('required');
+		}
+		else
+		{
+			$('#id_wilayah').val('');
+			$('#id_wilayah').trigger('change', true);
+			$('#id_wilayah').removeClass('required');
+			$("#manual").show();
+			$('#lokasi').addClass('required');
+			$("#pilih").hide();
+		}
+	}
+
 	$(document).ready(function(){
 		$('#tipe').change(function(){ 
 			var id=$(this).val();
-			if (!id) return;
 			$.ajax({
 				url : "<?=site_url('data_persil/kelasid')?>",
 				method : "POST",
@@ -293,22 +313,9 @@
 				}
 			});
 			return false;
-		}); 
+		});
+		pilih_lokasi(<?= empty($persil['lokasi']) ? 1 : 2?>);
 	});
 
-	function pilih_lokasi(pilih)
-	{
-		if (pilih == 1)
-		{
-			$("#manual").hide();
-			$("#pilih").show();
-		}
-		else
-		{
-			$("#manual").removeClass('hidden');
-			$("#manual").show();
-			$("#pilih").hide();
-		}
-	}
 </script>
 

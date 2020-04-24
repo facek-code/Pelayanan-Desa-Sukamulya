@@ -598,7 +598,7 @@ class Cdesa_model extends CI_Model {
 	{
 		$this->db
 			->select('m.*, p.nomor, rk.kode as kelas_tanah, dp.nama as peruntukan, dj.nama as jenis_persil')
-			->select('CONCAT("RT ", rt, " / RW ", rw, " - ", dusun) as lokasi')
+			->select('CONCAT("RT ", rt, " / RW ", rw, " - ", dusun) as lokasi, p.lokasi as alamat')
 			->from('mutasi_cdesa m')
 			->join('cdesa c', 'c.id = m.id_cdesa_masuk', 'left')
 			->join('persil p', 'p.id = m.id_persil', 'left')
