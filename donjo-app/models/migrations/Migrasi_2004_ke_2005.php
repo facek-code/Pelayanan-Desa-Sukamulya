@@ -366,6 +366,7 @@ class Migrasi_2004_ke_2005 extends CI_model {
 				'jenis_mutasi' => array(
 					'type' => 'TINYINT',
 					'constraint' => 2,
+					'null' => TRUe
 				),
 				'tanggal_mutasi' => array(
 					'type' => 'DATE',

@@ -88,7 +88,7 @@
 												<div class="form-group">
 													<label for="no_persil" class="col-sm-3 control-label">Nomor Persil</label>
 													<div class="col-sm-8">
-														<input name="no_persil" class="form-control input-sm angka" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil["nomor"] ?>">
+														<input name="no_persil" class="form-control input-sm angka required" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil["nomor"] ?>">
 													</div>
 												</div>
 												<div class="form-group">
@@ -104,8 +104,8 @@
 												<div class="form-group">
 													<label for="kelas" class="col-sm-3 control-label">Kelas Tanah</label>
 													<div class="col-sm-4">
-														<select class="form-control input-sm" id="kelas" name="kelas" type="text" placeholder="Tuliskan Kelas Tanah" >
-															<option value>-- Pilih Jenis Kelas--</option>
+														<select class="form-control input-sm required" id="kelas" name="kelas" type="text" placeholder="Tuliskan Kelas Tanah" >
+															<option value="">-- Pilih Jenis Kelas--</option>
 															<?php foreach ($persil_kelas  as $item): ?>
 																<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
 															<?php endforeach;?>
@@ -127,7 +127,7 @@
 													<label class="col-sm-3 control-label"></label>
 													<div id= "pilih" <?= $persil_detail["lokasi"]?'style="display:none"' : NULL  ?>>
 														<div class="col-sm-4" >
-															<select class="form-control input-sm select2" name="id_wilayah" >
+															<select class="form-control input-sm select2 required" name="id_wilayah" >
 																<option width="100%" value >-- Pilih Lokasi Tanah--</option>
 																<?php foreach ($persil_lokasi as $key=>$item): ?>
 																	<option value="<?= $item["id"] ?>" <?php selected($item["id"], $persil["id_wilayah"]) ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
@@ -155,7 +155,7 @@
 												<div class="form-group">
 													<label for="jenis_bidang_persil" class="col-sm-3 control-label">Jenis Tanah</label>
 													<div class="col-sm-4">
-														<select class="form-control input-sm" name="jenis_bidang_persil" >
+														<select class="form-control input-sm required" name="jenis_bidang_persil" >
 															<option value>-- Pilih Jenis Tanah--</option>
 															<?php foreach ($persil_jenis as $key => $item): ?>
 																<option value="<?= $item['id'] ?>" <?php selected($key, $bidang["jenis_bidang_persil"]) ?>><?= $item['nama']?></option>
@@ -166,13 +166,13 @@
 												<div class="form-group">
 													<label for="no_bidang_persil" class="col-sm-3 control-label">Nomor Bidang Persil</label>
 													<div class="col-sm-4">
-														<input name="no_bidang_persil" type="text" class="form-control input-sm digits" placeholder="Nomor Bidang Persil" maxlength="2" value="<?= $bidang["no_bidang_persil"] ?>">
+														<input name="no_bidang_persil" type="text" class="form-control input-sm digits required" placeholder="Nomor Bidang Persil" maxlength="2" value="<?= $bidang["no_bidang_persil"] ?>">
 													</div>
 												</div>												
 												<div class="form-group">
 													<label for="sid" class="col-sm-3 control-label">Peruntukan</label>
 													<div class="col-sm-4">
-														<select class="form-control input-sm select2" id="peruntukan" name="peruntukan">
+														<select class="form-control input-sm select2 required" id="peruntukan" name="peruntukan">
 															<option value >-- Pilih Peruntukan--</option>
 															<?php foreach ($persil_peruntukan as $key => $item): ?>
 																<option value="<?= $key?>" <?php selected($key, $bidang["peruntukan"]) ?>><?= $item['nama']?></option>
@@ -189,7 +189,7 @@
 												<div class="form-group">
 													<label for="no_sppt_pbb" class="col-sm-3 control-label">Nomor SPPT PBB</label>
 													<div class="col-sm-8">
-														<input name="no_sppt_pbb" type="text" class="form-control input-sm" placeholder="Tuliskan Nomor SPPT PBB" value="<?= $bidang["no_sppt_pbb"] ?>">
+														<input name="no_sppt_pbb" type="text" class="form-control input-sm required" placeholder="Tuliskan Nomor SPPT PBB" value="<?= $bidang["no_sppt_pbb"] ?>">
 													</div>
 												</div>
 											</div>
@@ -277,6 +277,7 @@
 	$(document).ready(function(){
 		$('#tipe').change(function(){ 
 			var id=$(this).val();
+			if (!id) return;
 			$.ajax({
 				url : "<?=site_url('data_persil/kelasid')?>",
 				method : "POST",
@@ -294,7 +295,6 @@
 			});
 			return false;
 		}); 
-		$('#tipe').change();
 	});
 
 	function pilih_lokasi(pilih)

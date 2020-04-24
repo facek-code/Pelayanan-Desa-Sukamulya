@@ -251,6 +251,10 @@ class Cdesa extends Admin_Controller {
 		{ 
 			$data['cdesa'] = $this->cdesa_model->get_cdesa($id);
 			$data['pemilik'] = $this->cdesa_model->get_pemilik($id);
+			if ($_POST['nik'] and $data['pemilik']['nik'] != $_POST['nik'])
+			{
+				$data['pemilik'] = $this->data_persil_model->get_penduduk($_POST['nik'], $nik=true);
+			}
 		}
 		else
 		{
@@ -360,7 +364,8 @@ class Cdesa extends Admin_Controller {
 			$this->load->view('header', $header);
 
 			$id_cdesa = $this->cdesa_model->simpan_cdesa();
-			redirect("cdesa/create_bidang/$id_cdesa");
+			if ($this->input->post('id')) redirect("cdesa");
+			else redirect("cdesa/create_bidang/$id_cdesa");
 		}
 		else
 		{
@@ -371,7 +376,7 @@ class Cdesa extends Admin_Controller {
 			if ($jenis_pemilik == 1) 
 			{
 				if($id)
-					redirect("cdesa/create_bidang/".$id);
+					redirect("cdesa/create/edit/".$id);
 				else
 					redirect("cdesa/create");
 			}
@@ -421,14 +426,20 @@ class Cdesa extends Admin_Controller {
 		redirect("cdesa/rincian/$cdesa");
 	}
 
-	public function cek_nomor($str)
+	public function cek_nomor($nomor)
 	{
-		$ada = $this->db->where('nomor', $str)
+		$id_cdesa = $this->input->post('id');
+		if ($id_cdesa) $this->db->where('id <>', $id_cdesa);
+		$ada = $this->db
+			->group_start()
+				->where('nomor', $nomor)
+				->or_where('nama_kepemilikan', $this->input->post('nama_kepemilikan'))
+			->group_end()
 			->get('cdesa')->num_rows();
 
 		if ($ada)
 		{
-			$this->form_validation->set_message('cek_nomor', 'Nomor C-Desa itu sudah ada');
+			$this->form_validation->set_message('cek_nomor', 'Nomor C-Desa atau Nama Kepemilikan itu sudah ada');
 			return FALSE;
 		}
 		else

@@ -413,6 +413,10 @@ class Cdesa_model extends CI_Model {
 		$data['jenis_pemilik'] = $this->input->post('jenis_pemilik');
 		if ($id_cdesa = $this->input->post('id'))
 		{
+			$data_lama = $this->db->where('id', $id_c_desa)
+				->get('cdesa')->row_array();
+			if ($data['nomor'] == $data_lama['nomor']) unset($data['nomor']);
+			if ($data['nama_kepemilikan'] == $data_lama['nama_kepemilikan']) unset($data['nama_kepemilikan']);
 			$data['updated_by'] = $this->session->user;
 			$this->db->where('id', $id_cdesa)
 				->update('cdesa', $data);
@@ -447,7 +451,7 @@ class Cdesa_model extends CI_Model {
 		$data = array();
 		$data['kelas'] = $post['kelas'];
 		$data['id_wilayah'] = $post['id_wilayah'];
-		$id_persil = $post['id_persil'] ?: $this->get_persil_by_nomor($post['no_persil']);
+		$id_persil = $this->get_persil_by_nomor($post['no_persil']);
 		if ($id_persil)
 		{
 			$this->db->where('id', $id_persil)
@@ -481,11 +485,11 @@ class Cdesa_model extends CI_Model {
 		$data['no_objek_pajak'] = $post['no_objek_pajak'];
 		$data['no_sppt_pbb'] = $post['no_sppt_pbb'];
 
-		$data['tanggal_mutasi'] = tgl_indo_in($post['tanggal_mutasi']);
-		$data['jenis_mutasi'] = $post['jenis_mutasi'];
-		$data['luas'] = $post['luas'];
+		$data['tanggal_mutasi'] = $post['tanggal_mutasi'] ? tgl_indo_in($post['tanggal_mutasi']) : NULL;
+		$data['jenis_mutasi'] = $post['jenis_mutasi'] ?: NULL;
+		$data['luas'] = $post['luas'] ?: NULL;
 		$data['id_cdesa_keluar'] = $post['id_cdesa_keluar'] || NULL;
-		$data['keterangan'] = strip_tags($post['keterangan']);
+		$data['keterangan'] = strip_tags($post['keterangan']) ?: NULL;
 
 		if ($id_bidang)
 			$outp = $this->db->where('id', $id_bidang)->update('mutasi_cdesa', $data);
