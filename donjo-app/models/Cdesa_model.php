@@ -4,6 +4,7 @@ class Cdesa_model extends CI_Model {
 	public function __construct()
 	{
 		$this->load->database();
+		$this->load->model('data_persil_model');
 	}
 
 	public function autocomplete($cari='')
@@ -446,38 +447,10 @@ class Cdesa_model extends CI_Model {
 		$this->db->insert('cdesa_penduduk', $data);
 	}
 
-	private function simpan_persil($post)
-	{
-		$data = array();
-		$data['kelas'] = $post['kelas'];
-		$data['id_wilayah'] = $post['id_wilayah'];
-		$id_persil = $this->get_persil_by_nomor($post['no_persil']);
-		if ($id_persil)
-		{
-			$this->db->where('id', $id_persil)
-				->update('persil', $data);
-		}
-		else
-		{
-			$data['nomor'] = $post['no_persil'];
-			$this->db->insert('persil', $data);
-			$id_persil = 	$this->db->insert_id();		
-		}
-		return $id_persil;
- 	}
-
- 	private function get_persil_by_nomor($nomor)
- 	{
- 		$id = $this->db->select('id')
- 			->where('nomor', $nomor)
- 			->get('persil')->row()->id;
- 		return $id;
- 	}
-
 	public function simpan_mutasi($id_cdesa, $id_bidang, $post)
 	{
 		$data = array();
-		$data['id_persil'] = $this->simpan_persil($post);
+		$data['id_persil'] = $this->data_persil_model->simpan_persil($post);
 		$data['id_cdesa_masuk'] = $id_cdesa;
 		$data['jenis_bidang_persil'] = $post['jenis_bidang_persil'];
 		$data['no_bidang_persil'] = $post['no_bidang_persil'];

@@ -21,66 +21,63 @@
 						</div>
 						<div class="row">
 							<div class="col-sm-12">
-								<form action="" id="main" name="main" method="POST" class="form-horizontal">
+								<form name='mainform' action="<?= site_url('data_persil/simpan_persil')?>" method="POST"  id="validasi" class="form-horizontal">
 									<div class="box-body">
+										<input type="hidden" name="id_persil" value="<?= $persil['id']?>">
 										<div class="form-group">
-											<label class="col-sm-3 control-label" >Cari Nama Pemilik 1</label>
+											<label for="no_persil" class="col-sm-3 control-label">Nomor Persil</label>
 											<div class="col-sm-8">
-												<select class="form-control input-sm select2" style="width: 100%;" id="nik" name="nik" onchange="$('#'+'main').submit();">
-													<option value>-- Silakan Masukan NIK / Nama --</option>
-													<?php foreach ($penduduk as $item): ?>
-														<option value="<?= $item['id']?>" <?php selected($pemilik['nik'], $item['id'])?>>Nama : <?= $item['nama']." Alamat : ".$item['info']?></option>
+												<input name="no_persil" class="form-control input-sm angka required" type="text" placeholder="Nomor Surat Persil" name="nama" value="<?= $persil["nomor"] ?>">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="kelas"  class="col-sm-3 control-label">Tipe Tanah</label>
+											<div class="col-sm-4">
+												<select class="form-control input-sm" id="tipe" name="tipe" type="text" placeholder="Tuliskan Kelas Tanah" >
+													<option value>-- Pilih Tipe Tanah--</option>
+													<option value="BASAH" <?php selected('BASAH', $persil_kelas[$persil['kelas']]["tipe"]) ?>>Tanah Basah</option>
+													<option value="KERING" <?php selected('KERING', $persil_kelas[$persil['kelas']]["tipe"]) ?>>Tanah Kering</option>
+													</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="kelas" class="col-sm-3 control-label">Kelas Tanah</label>
+											<div class="col-sm-4">
+												<select class="form-control input-sm required" id="kelas" name="kelas" type="text" placeholder="Tuliskan Kelas Tanah" >
+													<option value="">-- Pilih Jenis Kelas--</option>
+													<?php foreach ($persil_kelas  as $item): ?>
+														<option value="<?= $item['id'] ?>" <?php selected($item['id'], $persil["kelas"]); ?>><?= $item['kode'].' '.$item['ndesc']?></option>
 													<?php endforeach;?>
 												</select>
 											</div>
 										</div>
-										<?php if ($pemilik): ?>
-											<div class="form-group">
-												<label for="nama" class="col-sm-3 control-label">Pemilik</label>
-												<div class="col-sm-8">
-													<div class="form-group">
-														<label class="col-sm-3 control-label">Nama Penduduk</label>
-														<div class="col-sm-9">
-															<input  class="form-control input-sm" type="text" placeholder="Nama Pemilik" value="<?= $pemilik["nama"] ?>" disabled >
-														</div>
-													</div>
-													<div class="form-group">
-														<label class="col-sm-3 control-label">NIK Pemilik</label>
-														<div class="col-sm-9">
-															<input  class="form-control input-sm" type="text" placeholder="NIK Pemilik" value="<?= $pemilik["nik"] ?>" disabled >
-														</div>
-													</div>
-													<div class="form-group">
-														<label for="alamat"  class="col-sm-3 control-label">Alamat Pemilik</label>
-														<div class="col-sm-9">
-															<textarea  class="form-control input-sm" placeholder="Alamat Pemilik" disabled><?= "RT ".$pemilik["rt"]." / RT ".$pemilik["rw"]." - ".strtoupper($pemilik["dusun"]) ?></textarea>
-														</div>
-													</div>
-												</div>
-											</div>
-										<?php endif; ?>
-									</div>
-								</form>
-								<form name='mainform' action="<?= site_url('cdesa/simpan_cdesa')?>" method="POST"  id="validasi" class="form-horizontal">
-									<div class="box-body">
-										<input name="jenis_pemilik" type="hidden" value="1">
-										<input type="hidden" name="nik_lama" value="<?= $pemilik["nik_lama"] ?>"/>
-										<input type="hidden" name="nik" value="<?= $pemilik["nik"] ?>"/>
-										<input type="hidden" name="id_pend" value="<?= $pemilik["id"] ?>"/>
-										<?php if ($cdesa): ?>
-											<input type="hidden" name="id" value="<?= $cdesa["id"] ?>"/>
-										<?php endif; ?>
-										<input type="hidden" name="c_desa" value="<?= $cdesa["c_desa"] ?>"/>
-										<div class="form-group">
-											<label for="c_desa"  class="col-sm-3 control-label">Nomor C-DESA</label>
-											<div class="col-sm-8">
-												<input class="form-control input-sm angka required" type="text" placeholder="Nomor Surat C-DESA" name="c_desa" value="<?= ($cdesa["nomor"])?>" <?php !$pemilik and print('disabled') ?>>
+										<div class="form-group ">
+											<label for="jenis_lokasi" class="col-sm-3 control-label">Lokasi Tanah</label>
+											<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
+												<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil["lokasi"] ? NULL : 'active' ?>">
+													<input type="radio" name="jenis_lokasi" class="form-check-input" value="1" autocomplete="off" onchange="pilih_lokasi(this.value);"> Pilih Lokasi
+												</label>
+												<label  class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $persil["lokasi"] ? 'active' : NULL ?>">
+													<input type="radio" name="jenis_lokasi" class="form-check-input" value="2" autocomplete="off" onchange="pilih_lokasi(this.value);"> Tulis Manual
+												</label>
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="nama_kepemilikan"  class="col-sm-3 control-label">Nama Kepemilikan</label>
-											<div class="col-sm-8">
-												<input class="form-control input-sm nama required" type="text" placeholder="Nama pemilik di Surat C-DESA" name="nama_kepemilikan" value="<?= ($cdesa["nama_kepemilikan"])?sprintf("%04s", $cdesa["nama_kepemilikan"]): NULL ?>" <?php !$pemilik and print('disabled') ?>>
+											<label class="col-sm-3 control-label"></label>
+											<div id="pilih">
+												<div class="col-sm-4" >
+													<select class="form-control input-sm select2 required" id="id_wilayah" name="id_wilayah" style="width:100%">
+														<option value='' >-- Pilih Lokasi Tanah--</option>
+														<?php foreach ($persil_lokasi as $key=>$item): ?>
+															<option value="<?= $item["id"] ?>" <?php selected($item["id"], $persil["id_wilayah"]) ?>><?= strtoupper($item["dusun"])." - RW ".$item["rw"]." / RT ".$item["rt"] ?></option>
+														<?php endforeach;?>
+													</select>
+												</div>
+											</div>
+											<div id="manual">
+												<div class="col-sm-8">
+													<textarea id="lokasi" class="form-control input-sm required" type="text" placeholder="Lokasi" name="lokasi" ><?= $persil["lokasi"] ?></textarea>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -100,6 +97,27 @@
 	</section>
 </div>
 <script>
+	function pilih_lokasi(pilih)
+	{
+		if (pilih == 1)
+		{
+			$('#lokasi').val('');
+			$('#lokasi').removeClass('required');
+			$("#manual").hide();
+			$("#pilih").show();
+			$('#id_wilayah').addClass('required');
+		}
+		else
+		{
+			$('#id_wilayah').val('');
+			$('#id_wilayah').trigger('change', true);
+			$('#id_wilayah').removeClass('required');
+			$("#manual").show();
+			$('#lokasi').addClass('required');
+			$("#pilih").hide();
+		}
+	}
+
 	$(document).ready(function(){
 		$('#tipe').change(function(){ 
 			var id=$(this).val();
@@ -119,22 +137,9 @@
 				}
 			});
 			return false;
-		}); 
+		});
+		pilih_lokasi(<?= empty($persil['lokasi']) ? 1 : 2?>);
 	});
 
-	function pilih_lokasi(pilih)
-	{
-		if (pilih == 1)
-		{
-			$("#manual").hide();
-			$("#pilih").show();
-		}
-		else
-		{
-			$("#manual").removeClass('hidden');
-			$("#manual").show();
-			$("#pilih").hide();
-		}
-	}
 </script>
 

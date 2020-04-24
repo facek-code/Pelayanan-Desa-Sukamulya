@@ -233,10 +233,6 @@ class Data_persil extends Admin_Controller {
 
 	public function form($id)
 	{
-		$this->load->helper('form');
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('nama', 'Nama Jenis Tanah', 'required');
-
 		$header = $this->header_model->get_data();
 		$header['minsidebar'] = 1;
 		$this->tab_ini = 13;
@@ -337,48 +333,20 @@ class Data_persil extends Admin_Controller {
 	{
 		$this->load->helper('form');
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('c_desa','Nomor Surat C-DESA','required|trim|numeric');
-		$this->form_validation->set_rules('nama','Nomor Surat Persil','required|trim|numeric');
-		$this->form_validation->set_rules('luas','Luas','required|trim|numeric');
-		$this->form_validation->set_rules('pajak','pajak','trim|numeric');
+		$this->form_validation->set_rules('no_persil','Nomor Surat Persil','required|trim|numeric');
+		$this->form_validation->set_rules('kelas','Kelas Tanah','required|trim|numeric');
 
-		if($this->form_validation->run() != false)
+		if ($this->form_validation->run() != false)
 		{
-			$header = $this->header_model->get_data();
-			$header['minsidebar'] = 1;
-			$this->load->view('header', $header);
-
-			$data = $this->data_persil_model->simpan_persil();
-			$id = $data["id_c_desa"];
-			if($id)
-			{
-				redirect("data_persil/detail/c_desa/".$id);
-			}
-			else
-			{
-				redirect("data_persil/clear");
-			}
+			$this->data_persil_model->simpan_persil($this->input->post());
+			redirect("data_persil");
 		}
 		else
 		{
 			$_SESSION["success"] = -1;
 			$_SESSION["error_msg"] = trim(strip_tags(validation_errors()));
-			$jenis_pemilik = $this->input->post('jenis_pemilik');
-			$id	= $this->input->post('id');
-			if ($jenis_pemilik == 1) 
-			{
-				if($id)
-					redirect("data_persil/create/edit/".$id);
-				else
-					redirect("data_persil/create");
-			}
-			else
-			{
-				if($id)
-					redirect("data_persil/create_ext/edit/".$id);
-				else
-					redirect("data_persil/create_ext");
-			}
+			$id	= $this->input->post('id_persil');
+			redirect("data_persil/form/".$id);
 		}
 	}
 

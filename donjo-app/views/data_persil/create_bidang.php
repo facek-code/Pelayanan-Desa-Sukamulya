@@ -84,7 +84,6 @@
 										</div>
 										<div id="persil" class="panel-collapse">
 											<div class="box-body">
-												<input type="hidden" name="id_persil" value="<?= $persil['id']?>">
 												<div class="form-group">
 													<label for="no_persil" class="col-sm-3 control-label">Nomor Persil</label>
 													<div class="col-sm-8">
