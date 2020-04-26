@@ -23,42 +23,59 @@
 							<div class="col-sm-12">
 								<form action="" id="main" name="main" method="POST" class="form-horizontal">
 									<div class="box-body">
-										<div class="form-group">
-											<label class="col-sm-3 control-label" >Cari Nama Pemilik 1</label>
-											<div class="col-sm-8">
-												<select class="form-control input-sm select2" style="width: 100%;" id="nik" name="nik" onchange="$('#'+'main').submit();">
-													<option value>-- Silakan Masukan NIK / Nama --</option>
-													<?php foreach ($penduduk as $item): ?>
-														<option value="<?= $item['id']?>" <?php selected($pemilik['nik'], $item['id'])?>>Nama : <?= $item['nama']." Alamat : ".$item['info']?></option>
-													<?php endforeach;?>
-												</select>
+
+										<div class="form-group ">
+											<label for="jenis_lokasi" class="col-sm-3 control-label">Jenis Pemilik</label>
+											<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
+												<label class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $cdesa["jenis_pemilik"] ? NULL : 'active' ?>">
+													<input type="radio" name="jenis_pemilik" class="form-check-input" value="1" autocomplete="off" onchange="pilih_pemilik(this.value);">Warga Desa
+												</label>
+												<label class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $cdesa["jenis_pemilik"] ? 'active' : NULL ?>">
+													<input type="radio" name="jenis_pemilik" class="form-check-input" value="2" autocomplete="off" onchange="pilih_pemilik(this.value);">Warga Luar Desa
+												</label>
 											</div>
 										</div>
-										<?php if ($pemilik): ?>
+
+										<div id="warga_desa">
 											<div class="form-group">
-												<label for="nama" class="col-sm-3 control-label">Pemilik</label>
+												<label class="col-sm-3 control-label" >Cari Nama Pemilik 1</label>
 												<div class="col-sm-8">
-													<div class="form-group">
-														<label class="col-sm-3 control-label">Nama Penduduk</label>
-														<div class="col-sm-9">
-															<input  class="form-control input-sm" type="text" placeholder="Nama Pemilik" value="<?= $pemilik["nama"] ?>" disabled >
+													<select class="form-control input-sm select2" style="width: 100%;" id="nik" name="nik" onchange="$('#'+'main').submit();">
+														<option value="">-- Silakan Masukan NIK / Nama --</option>
+														<?php foreach ($penduduk as $item): ?>
+															<option value="<?= $item['id']?>" <?php selected($pemilik['nik'], $item['id'])?>>Nama : <?= $item['nama']." Alamat : ".$item['info']?></option>
+														<?php endforeach;?>
+													</select>
+												</div>
+											</div>
+											<?php if ($pemilik): ?>
+												<div class="form-group">
+													<label for="nama" class="col-sm-3 control-label">Pemilik</label>
+													<div class="col-sm-8">
+														<div class="form-group">
+															<label class="col-sm-3 control-label">Nama Penduduk</label>
+															<div class="col-sm-9">
+																<input  class="form-control input-sm" type="text" placeholder="Nama Pemilik" value="<?= $pemilik["nama"] ?>" disabled >
+															</div>
 														</div>
-													</div>
-													<div class="form-group">
-														<label class="col-sm-3 control-label">NIK Pemilik</label>
-														<div class="col-sm-9">
-															<input  class="form-control input-sm" type="text" placeholder="NIK Pemilik" value="<?= $pemilik["nik"] ?>" disabled >
+														<div class="form-group">
+															<label class="col-sm-3 control-label">NIK Pemilik</label>
+															<div class="col-sm-9">
+																<input  class="form-control input-sm" type="text" placeholder="NIK Pemilik" value="<?= $pemilik["nik"] ?>" disabled >
+															</div>
 														</div>
-													</div>
-													<div class="form-group">
-														<label for="alamat"  class="col-sm-3 control-label">Alamat Pemilik</label>
-														<div class="col-sm-9">
-															<textarea  class="form-control input-sm" placeholder="Alamat Pemilik" disabled><?= "RT ".$pemilik["rt"]." / RT ".$pemilik["rw"]." - ".strtoupper($pemilik["dusun"]) ?></textarea>
+														<div class="form-group">
+															<label for="alamat"  class="col-sm-3 control-label">Alamat Pemilik</label>
+															<div class="col-sm-9">
+																<textarea  class="form-control input-sm" placeholder="Alamat Pemilik" disabled><?= "RT ".$pemilik["rt"]." / RT ".$pemilik["rw"]." - ".strtoupper($pemilik["dusun"]) ?></textarea>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										<?php endif; ?>
+											<?php endif; ?>
+										</div>
+
+
 									</div>
 								</form>
 								<form name='mainform' action="<?= site_url('cdesa/simpan_cdesa')?>" method="POST"  id="validasi" class="form-horizontal">
@@ -71,6 +88,22 @@
 											<input type="hidden" name="id" value="<?= $cdesa["id"] ?>"/>
 										<?php endif; ?>
 										<input type="hidden" name="c_desa" value="<?= $cdesa["c_desa"] ?>"/>
+
+										<div id="warga_luar_desa">
+											<div class="form-group">
+												<label for="c_desa"  class="col-sm-3 control-label">Nama Pemilik</label>
+												<div class="col-sm-8">
+													<input class="form-control input-sm angka required" type="text" placeholder="Nama Pemilik Luar" id="nama_pemilik_luar" name="nama_pemilik_luar" value="<?= ($cdesa["nama_pemilik_luar"])?>" <?php $pemilik and print('disabled') ?>>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="c_desa"  class="col-sm-3 control-label">Alamat Pemilik</label>
+												<div class="col-sm-8">
+													<input class="form-control input-sm angka required" type="text" placeholder="Alamat Pemilik Luar" id="alamat_pemilik_luar" name="alamat_pemilik_luar" value="<?= ($cdesa["alamat_pemilik_luar"])?>" <?php $pemilik and print('disabled') ?>>
+												</div>
+											</div>
+										</div>
+
 										<div class="form-group">
 											<label for="c_desa"  class="col-sm-3 control-label">Nomor C-DESA</label>
 											<div class="col-sm-8">
@@ -136,5 +169,31 @@
 			$("#pilih").hide();
 		}
 	}
+
+	function pilih_pemilik(pilih)
+	{
+		if (pilih == 1)
+		{
+			$('#nama_pemilik_luar').val('');
+			$('#nama_pemilik_luar').removeClass('required');
+			$('#alamat_pemilik_luar').val('');
+			$('#alamat_pemilik_luar').removeClass('required');
+			$("#warga_luar_desa").hide();
+			$('#nik').addClass('required');
+			$("#warga_desa").show();
+		}
+		else
+		{
+			$('#nik').val('');
+			$('#nik').change();
+			$('#nik').removeClass('required');
+			$("#warga_desa").hide();
+			$("#warga_luar_desa").show();
+			$('#nama_pemilik_luar').addClass('required');
+			$('#alamat_pemilik_luar').addClass('required');
+		}
+	}
+	pilih_pemilik(<?= $cdesa['jenis_pemilik'] ?: 1?>);
+
 </script>
 
