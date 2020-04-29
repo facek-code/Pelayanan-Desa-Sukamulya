@@ -70,6 +70,7 @@
 																	<th>No</th>
 																	<th>Aksi</th>
 																	<th nowrap>No. C-DESA</th>
+																	<th>Nama di C-Desa</th>
 																	<th>Nama Pemilik</th>
 																	<th>NIK</th>
 																	<th nowrap>Jumlah Bidang</th>
@@ -86,7 +87,8 @@
 																			<a href="#" data-href="<?= site_url("cdesa/hapus/".$item["id"])?>" class="btn bg-maroon btn-flat btn-sm"  title="Hapus" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash-o"></i></a>
 																		</td>
 																		<td><?= sprintf("%04s", $item["nomor"]) ?></td>
-																		<td width="40%"><?= $item["namapemilik"] ?></td>
+																		<td><?= $item['nama_kepemilikan'] ?>
+																		<td><?= $item["namapemilik"] ?></td>
 																		<td><?= $item["nik"] ?></td>
 																		<td><?= $item["jumlah"] ?></td>
 																	</tr>

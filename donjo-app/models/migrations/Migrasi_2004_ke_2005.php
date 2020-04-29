@@ -294,6 +294,7 @@ class Migrasi_2004_ke_2005 extends CI_model {
 				),
 				'id_cdesa' => array(
 					'type' => 'INT',
+					'unsigned' => TRUE,
 					'constraint' => 5,
 				),
 				'id_pend' => array(
@@ -304,6 +305,10 @@ class Migrasi_2004_ke_2005 extends CI_model {
 			$this->dbforge->add_key('id', TRUE);
 			$this->dbforge->add_field($fields);
 			$this->dbforge->create_table('cdesa_penduduk');
+			$this->db->query("ALTER TABLE `cdesa_penduduk` ADD INDEX `id_cdesa` (`id_cdesa`)");
+			$this->dbforge->add_column('cdesa_penduduk', array(
+	    	'CONSTRAINT `cdesa_penduduk_fk` FOREIGN KEY (`id_cdesa`) REFERENCES `cdesa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
+			));
 		}
 	}
 
@@ -362,11 +367,13 @@ class Migrasi_2004_ke_2005 extends CI_model {
 				),
 				'id_cdesa_masuk' => array(
 					'type' => 'INT',
+					'unsigned' => TRUE,
 					'constraint' => 5,
 					'null' => TRUE
 				),
 				'id_cdesa_keluar' => array(
 					'type' => 'INT',
+					'unsigned' => TRUE,
 					'constraint' => 5,
 					'null' => TRUE
 				),
@@ -422,6 +429,9 @@ class Migrasi_2004_ke_2005 extends CI_model {
 			$this->dbforge->add_key('id', TRUE);
 			$this->dbforge->add_field($fields);
 			$this->dbforge->create_table('mutasi_cdesa');
+			$this->dbforge->add_column('mutasi_cdesa', array(
+	    	'CONSTRAINT `cdesa_mutasi_fk` FOREIGN KEY (`id_cdesa_masuk`) REFERENCES `cdesa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE'
+			));
 		}
 	}
 	
