@@ -128,7 +128,7 @@ class Cdesa_model extends CI_Model {
 	public function list_c_desa($kat='', $mana=0, $offset, $per_page)
 	{
 		$data = [];		
-		$strSQL = "SELECT c.id, c.*, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_wilayah, u.nama as namapemilik, COUNT(m.id_cdesa_masuk) AS jumlah,
+		$strSQL = "SELECT c.id, c.*, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_wilayah, COUNT(m.id_cdesa_masuk) AS jumlah, u.nama as namapemilik,
 			p.`lokasi`, w.rt, w.rw, w.dusun, c.created_at as tanggal_daftar,
 			SUM(IF(k.kode LIke '%S%', m.luas, 0)) as basah,
 			SUM(IF(k.kode LIke '%D%', m.luas, 0)) as kering
@@ -152,7 +152,7 @@ class Cdesa_model extends CI_Model {
 			$data[$i]['no'] = $j + 1;
 			if (($data[$i]['jenis_pemilik']) == 2)
 			{
-				$data[$i]['namapemilik'] = $data[$i]['pemilik_luar'];
+				$data[$i]['namapemilik'] = $data[$i]['nama_pemilik_luar'];
 				$data[$i]['nik'] = "-";
 			}
 			$j++;
@@ -409,9 +409,11 @@ class Cdesa_model extends CI_Model {
 	public function simpan_cdesa()
 	{
 		$data = array();
-		$data['nomor'] = $this->input->post('c_desa');
-		$data['nama_kepemilikan'] = $this->input->post('nama_kepemilikan');
+		$data['nomor'] = bilangan_spasi($this->input->post('c_desa'));
+		$data['nama_kepemilikan'] = nama($this->input->post('nama_kepemilikan'));
 		$data['jenis_pemilik'] = $this->input->post('jenis_pemilik');
+		$data['nama_pemilik_luar'] = nama($this->input->post('nama_pemilik_luar'));
+		$data['alamat_pemilik_luar'] = strip_tags($this->input->post('alamat_pemilik_luar'));
 		if ($id_cdesa = $this->input->post('id'))
 		{
 			$data_lama = $this->db->where('id', $id_c_desa)
@@ -430,16 +432,27 @@ class Cdesa_model extends CI_Model {
 			$id_cdesa = $this->db->insert_id();
 		}
 
-		if ($this->input->post('jenis_pemilik') == 1) 
+		if ($this->input->post('jenis_pemilik') == 1)
+		{
 			$this->simpan_pemilik($id_cdesa, $this->input->post('id_pend'));
+		} 
+		else
+		{
+			$this->hapus_pemilik($id_cdesa);			
+		}
 		return $id_cdesa;
+	}
+
+	private function hapus_pemilik($id_cdesa)
+	{
+		$this->db->where('id_cdesa', $id_cdesa)
+			->delete('cdesa_penduduk');
 	}
 
 	private function simpan_pemilik($id_cdesa, $id_pend)
 	{
 		// Hapus pemilik lama
-		$this->db->where('id_cdesa', $id_cdesa)
-			->delete('cdesa_penduduk');
+		$this->hapus_pemilik($id_cdesa);
 		// Tambahkan pemiliki baru
 		$data = array();
 		$data['id_cdesa'] = $id_cdesa;

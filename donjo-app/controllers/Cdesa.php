@@ -35,9 +35,8 @@ class Cdesa extends Admin_Controller {
 		$header = $this->header_model->get_data();
 		$data['kat'] = $kat;
 		$data['mana'] = $mana;
+		$this->tab_ini = 12;
 		$header['minsidebar'] = 1;
-
-		$this->load->view('header', $header);
 
 		if (isset($_SESSION['cari']))
 			$data['cari'] = $_SESSION['cari'];
@@ -54,6 +53,8 @@ class Cdesa extends Admin_Controller {
 		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
 		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
 		$data['keyword'] = $this->data_persil_model->autocomplete();
+
+		$this->load->view('header', $header);
 		$this->load->view('nav', $nav);
 		$this->load->view('data_persil/c_desa', $data);
 		$this->load->view('footer');
@@ -242,31 +243,68 @@ class Cdesa extends Admin_Controller {
 
 		$header = $this->header_model->get_data();
 		$header['minsidebar'] = 1;
-		$this->tab_ini = 10;
-		$this->load->view('header', $header);
+		$this->tab_ini = empty($mode) ? 10 : 12;
 
+		$post = $this->input->post();
+		$data = array();
 		$data["mode"] = $mode;
 		$data["penduduk"] = $this->data_persil_model->list_penduduk();
 		if ($mode === 'edit')
 		{ 
 			$data['cdesa'] = $this->cdesa_model->get_cdesa($id);
-			$data['pemilik'] = $this->cdesa_model->get_pemilik($id);
-			if ($_POST['nik'] and $data['pemilik']['nik'] != $_POST['nik'])
-			{
-				$data['pemilik'] = $this->data_persil_model->get_penduduk($_POST['nik'], $nik=true);
-			}
+			$this->ubah_pemilik($id, $data, $post);
 		}
 		else
 		{
-			if (isset($_POST['nik']))
+			switch ($post['jenis_pemilik']) 
 			{
-				$data['pemilik'] = $this->data_persil_model->get_penduduk($_POST['nik'], $nik=true);
+				case '1':
+					# Pemilik desa
+					if (!empty($post['nik']))
+					{
+						$data['pemilik'] = $this->data_persil_model->get_penduduk($post['nik'], $nik=true);
+					}
+					break;
+				case '2':
+					# Pemilik luar desa
+					$data['cdesa']['jenis_pemilik'] = 2;
+					break;
 			}
 		}
-		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
+
+		$this->load->view('header', $header);
 		$this->load->view('nav', $nav);
 		$this->load->view('data_persil/create', $data);
 		$this->load->view('footer');
+	}
+
+	private function ubah_pemilik($id, &$data, $post)
+	{
+		$jenis_pemilik_baru = $post['jenis_pemilik'] ?: 0;
+
+		switch ($jenis_pemilik_baru) 
+		{
+			case '0':
+				// Buka form ubah pertama kali
+				if ($data['cdesa']['jenis_pemilik'] == 1)
+				{
+					$data['pemilik'] = $this->cdesa_model->get_pemilik($id);					
+				}
+				break;
+			case '1':
+				// Ubah atau ambil pemilik desa
+				$data['pemilik'] = $this->cdesa_model->get_pemilik($id);
+				if ($post['nik'] and $$data['pemilik']['nik'] != $post['nik'])
+				{
+					$data['pemilik'] = $this->data_persil_model->get_penduduk($post['nik'], $nik=true);
+				}
+				$data['cdesa']['jenis_pemilik'] = $jenis_pemilik_baru;
+				break;
+			case '2':
+				// Ubah pemilik luar
+				$data['cdesa']['jenis_pemilik'] = $jenis_pemilik_baru;
+				break;
+		}
 	}
 
 	public function create_delete($mode=0, $id=0)
@@ -357,7 +395,7 @@ class Cdesa extends Admin_Controller {
 		// $this->form_validation->set_rules('luas','Luas','required|trim|numeric');
 		// $this->form_validation->set_rules('pajak','pajak','trim|numeric');
 
-		if($this->form_validation->run() != false)
+		if ($this->form_validation->run() != false)
 		{
 			$header = $this->header_model->get_data();
 			$header['minsidebar'] = 1;
@@ -375,17 +413,17 @@ class Cdesa extends Admin_Controller {
 			$id	= $this->input->post('id');
 			if ($jenis_pemilik == 1) 
 			{
-				if($id)
+				if ($id)
 					redirect("cdesa/create/edit/".$id);
 				else
 					redirect("cdesa/create");
 			}
 			else
 			{
-				if($id)
-					redirect("cdesa/create_ext/edit/".$id);
+				if ($id)
+					redirect("cdesa/create/edit/".$id);
 				else
-					redirect("cdesa/create_ext");
+					redirect("cdesa/create");
 			}
 		}
 	}

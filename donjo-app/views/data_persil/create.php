@@ -25,13 +25,13 @@
 									<div class="box-body">
 
 										<div class="form-group ">
-											<label for="jenis_lokasi" class="col-sm-3 control-label">Jenis Pemilik</label>
+											<label for="jenis_pemilik" class="col-sm-3 control-label">Jenis Pemilik</label>
 											<div class="btn-group col-sm-8 kiri" data-toggle="buttons">
-												<label class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $cdesa["jenis_pemilik"] ? NULL : 'active' ?>">
-													<input type="radio" name="jenis_pemilik" class="form-check-input" value="1" autocomplete="off" onchange="pilih_pemilik(this.value);">Warga Desa
+												<label class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?php (empty($cdesa) or $cdesa["jenis_pemilik"] == 1) and print('active') ?>">
+													<input type="radio" name="jenis_pemilik" class="form-check-input" value="1" autocomplete="off" <?php selected((empty($cdesa) or $cdesa["jenis_pemilik"] == 1), true, true)?> onchange="pilih_pemilik(this.value);">Warga Desa
 												</label>
-												<label class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= $cdesa["jenis_pemilik"] ? 'active' : NULL ?>">
-													<input type="radio" name="jenis_pemilik" class="form-check-input" value="2" autocomplete="off" onchange="pilih_pemilik(this.value);">Warga Luar Desa
+												<label class="btn btn-info btn-flat btn-sm col-sm-3 form-check-label <?= ($cdesa["jenis_pemilik"] == 2) and print('active') ?>">
+													<input type="radio" name="jenis_pemilik" class="form-check-input" value="2" autocomplete="off" <?php selected(($cdesa["jenis_pemilik"] == 2), true, true)?> onchange="pilih_pemilik(this.value);">Warga Luar Desa
 												</label>
 											</div>
 										</div>
@@ -40,7 +40,7 @@
 											<div class="form-group">
 												<label class="col-sm-3 control-label" >Cari Nama Pemilik 1</label>
 												<div class="col-sm-8">
-													<select class="form-control input-sm select2" style="width: 100%;" id="nik" name="nik" onchange="$('#'+'main').submit();">
+													<select class="form-control input-sm select2" style="width: 100%;" id="nik" name="nik" onchange="ubah_pemilik($('#jenis_pemilik').val());">
 														<option value="">-- Silakan Masukan NIK / Nama --</option>
 														<?php foreach ($penduduk as $item): ?>
 															<option value="<?= $item['id']?>" <?php selected($pemilik['nik'], $item['id'])?>>Nama : <?= $item['nama']." Alamat : ".$item['info']?></option>
@@ -74,13 +74,11 @@
 												</div>
 											<?php endif; ?>
 										</div>
-
-
 									</div>
 								</form>
 								<form name='mainform' action="<?= site_url('cdesa/simpan_cdesa')?>" method="POST"  id="validasi" class="form-horizontal">
 									<div class="box-body">
-										<input name="jenis_pemilik" type="hidden" value="1">
+										<input id="jenis_pemilik" name="jenis_pemilik" type="hidden" value="1">
 										<input type="hidden" name="nik_lama" value="<?= $pemilik["nik_lama"] ?>"/>
 										<input type="hidden" name="nik" value="<?= $pemilik["nik"] ?>"/>
 										<input type="hidden" name="id_pend" value="<?= $pemilik["id"] ?>"/>
@@ -93,13 +91,13 @@
 											<div class="form-group">
 												<label for="c_desa"  class="col-sm-3 control-label">Nama Pemilik</label>
 												<div class="col-sm-8">
-													<input class="form-control input-sm angka required" type="text" placeholder="Nama Pemilik Luar" id="nama_pemilik_luar" name="nama_pemilik_luar" value="<?= ($cdesa["nama_pemilik_luar"])?>" <?php $pemilik and print('disabled') ?>>
+													<input class="form-control input-sm required" type="text" placeholder="Nama Pemilik Luar" id="nama_pemilik_luar" name="nama_pemilik_luar" value="<?= ($cdesa["nama_pemilik_luar"])?>" <?php $pemilik and print('disabled') ?>>
 												</div>
 											</div>
 											<div class="form-group">
 												<label for="c_desa"  class="col-sm-3 control-label">Alamat Pemilik</label>
 												<div class="col-sm-8">
-													<input class="form-control input-sm angka required" type="text" placeholder="Alamat Pemilik Luar" id="alamat_pemilik_luar" name="alamat_pemilik_luar" value="<?= ($cdesa["alamat_pemilik_luar"])?>" <?php $pemilik and print('disabled') ?>>
+													<input class="form-control input-sm required" type="text" placeholder="Alamat Pemilik Luar" id="alamat_pemilik_luar" name="alamat_pemilik_luar" value="<?= ($cdesa["alamat_pemilik_luar"])?>" <?php $pemilik and print('disabled') ?>>
 												</div>
 											</div>
 										</div>
@@ -107,13 +105,13 @@
 										<div class="form-group">
 											<label for="c_desa"  class="col-sm-3 control-label">Nomor C-DESA</label>
 											<div class="col-sm-8">
-												<input class="form-control input-sm angka required" type="text" placeholder="Nomor Surat C-DESA" name="c_desa" value="<?= ($cdesa["nomor"])?>" <?php !$pemilik and print('disabled') ?>>
+												<input class="form-control input-sm angka required" type="text" placeholder="Nomor Surat C-DESA" name="c_desa" value="<?= ($cdesa["nomor"])?>" <?php !($pemilik or $cdesa['jenis_pemilik'] == 2) and print('disabled') ?>>
 											</div>
 										</div>
 										<div class="form-group">
 											<label for="nama_kepemilikan"  class="col-sm-3 control-label">Nama Kepemilikan</label>
 											<div class="col-sm-8">
-												<input class="form-control input-sm nama required" type="text" placeholder="Nama pemilik di Surat C-DESA" name="nama_kepemilikan" value="<?= ($cdesa["nama_kepemilikan"])?sprintf("%04s", $cdesa["nama_kepemilikan"]): NULL ?>" <?php !$pemilik and print('disabled') ?>>
+												<input class="form-control input-sm nama required" type="text" placeholder="Nama pemilik di Surat C-DESA" name="nama_kepemilikan" value="<?= ($cdesa["nama_kepemilikan"])?sprintf("%04s", $cdesa["nama_kepemilikan"]): NULL ?>" <?php !($pemilik or $cdesa['jenis_pemilik'] == 2) and print('disabled') ?>>
 											</div>
 										</div>
 									</div>
@@ -153,6 +151,9 @@
 			});
 			return false;
 		}); 
+
+		pilih_pemilik(<?= $cdesa['jenis_pemilik'] ?: 1?>);
+
 	});
 
 	function pilih_lokasi(pilih)
@@ -172,8 +173,14 @@
 
 	function pilih_pemilik(pilih)
 	{
+		$('#jenis_pemilik').val(pilih);
 		if (pilih == 1)
 		{
+			if ($('#nik').val() == '')
+			{
+				$('input[name=c_desa]').attr('disabled','disabled');
+				$('input[name=nama_kepemilikan]').attr('disabled','disabled');
+			}
 			$('#nama_pemilik_luar').val('');
 			$('#nama_pemilik_luar').removeClass('required');
 			$('#alamat_pemilik_luar').val('');
@@ -184,16 +191,24 @@
 		}
 		else
 		{
-			$('#nik').val('');
-			$('#nik').change();
 			$('#nik').removeClass('required');
 			$("#warga_desa").hide();
 			$("#warga_luar_desa").show();
 			$('#nama_pemilik_luar').addClass('required');
 			$('#alamat_pemilik_luar').addClass('required');
+			$('input[name=c_desa]').removeAttr('disabled');
+			$('input[name=nama_kepemilikan]').removeAttr('disabled');
+			if ($('#nik').val() != '')
+			{
+				$('#nik').val('');
+				$('#nik').change();
+			}
 		}
 	}
-	pilih_pemilik(<?= $cdesa['jenis_pemilik'] ?: 1?>);
 
+	function ubah_pemilik(jenis_pemilik)
+	{
+		$('#main').submit();
+	}
 </script>
 
