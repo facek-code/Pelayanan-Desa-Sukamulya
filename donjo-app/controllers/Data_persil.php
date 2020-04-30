@@ -23,11 +23,10 @@ class Data_persil extends Admin_Controller {
 		redirect('data_persil');
 	}
 
-	public function persil_clear()
-	{
-		unset($_SESSION['cari']);
-		$_SESSION['per_page'] = 20;
-		redirect('data_persil/persil');
+	public function search(){
+		$_SESSION['cari'] = $this->input->post('cari');
+		if ($_SESSION['cari'] == '') unset($_SESSION['cari']);
+		redirect('data_persil');
 	}
 
 	public function index($page=1, $o=0)
@@ -36,12 +35,8 @@ class Data_persil extends Admin_Controller {
 		$header['minsidebar'] = 1;
 		$this->tab_ini = 13;
 
-		if (isset($_SESSION['cari']))
-			$data['cari'] = $_SESSION['cari'];
-		else $data['cari'] = '';
-
-		if (isset($_POST['per_page']))
-			$_SESSION['per_page']=$_POST['per_page'];
+		$data['cari'] = isset($_SESSION['cari']) ? $_SESSION['cari'] : '';
+		$_SESSION['per_page'] = $_POST['per_page'] ?: null;
 		$data['per_page'] = $_SESSION['per_page'];
 
 		$data["desa"] = $this->config_model->get_data();
@@ -138,14 +133,6 @@ class Data_persil extends Admin_Controller {
 	{
 		$data['form_action'] = site_url("data_persil/import_proses");
 		$this->load->view('data_persil/import', $data);
-	}
-
-	public function search(){
-		$cari = $this->input->post('cari');
-		if ($cari != '')
-			$_SESSION['cari']=$cari;
-		else unset($_SESSION['cari']);
-		redirect('data_persil');
 	}
 
 	public function detail($mode='', $id=0)

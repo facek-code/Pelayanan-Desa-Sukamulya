@@ -23,36 +23,29 @@ class Cdesa extends Admin_Controller {
 		redirect($this->controller);
 	}
 
-	public function persil_clear()
-	{
-		unset($_SESSION['cari']);
-		$_SESSION['per_page'] = 20;
-		redirect('data_persil/persil');
+	public function search(){
+		$_SESSION['cari'] = $this->input->post('cari');
+		if ($_SESSION['cari'] == '') unset($_SESSION['cari']);
+		redirect('cdesa');
 	}
 
-	public function index($kat=0, $mana=0, $page=1, $o=0)
+	public function index($page=1, $o=0)
 	{
 		$header = $this->header_model->get_data();
-		$data['kat'] = $kat;
-		$data['mana'] = $mana;
 		$this->tab_ini = 12;
 		$header['minsidebar'] = 1;
 
-		if (isset($_SESSION['cari']))
-			$data['cari'] = $_SESSION['cari'];
-		else $data['cari'] = '';
-
-		if (isset($_POST['per_page']))
-			$_SESSION['per_page']=$_POST['per_page'];
+		$data['cari'] = isset($_SESSION['cari']) ? $_SESSION['cari'] : '';
+		$_SESSION['per_page'] = $_POST['per_page'] ?: null;
 		$data['per_page'] = $_SESSION['per_page'];
 
-		$data["desa"] = $this->config_model->get_data();
 		$data['paging']  = $this->cdesa_model->paging_c_desa($kat, $mana, $page);
+		$data['keyword'] = $this->data_persil_model->autocomplete();
+		$data["desa"] = $this->config_model->get_data();
 		$data["cdesa"] = $this->cdesa_model->list_c_desa($kat, $mana, $data['paging']->offset, $data['paging']->per_page);
 		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
 		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
 		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$data['keyword'] = $this->data_persil_model->autocomplete();
 
 		$this->load->view('header', $header);
 		$this->load->view('nav', $nav);
@@ -142,14 +135,6 @@ class Cdesa extends Admin_Controller {
 	{
 		$data['form_action'] = site_url("data_persil/import_proses");
 		$this->load->view('data_persil/import', $data);
-	}
-
-	public function search(){
-		$cari = $this->input->post('cari');
-		if ($cari != '')
-			$_SESSION['cari']=$cari;
-		else unset($_SESSION['cari']);
-		redirect('data_persil');
 	}
 
 	public function rincian($id)

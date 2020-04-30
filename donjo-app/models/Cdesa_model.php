@@ -36,20 +36,10 @@ class Cdesa_model extends CI_Model {
 			$cari = $_SESSION['cari'];
 			$kw = $this->db->escape_like_str($cari);
 			$kw = '%' .$kw. '%';
-			$search_sql= " AND (u.nama LIKE '$kw' OR p.pemilik_luar like '$kw' OR y.c_desa LIKE '$kw')";
-			return $search_sql;
+			$sql= " AND (u.nama LIKE '$kw' OR c.nama_pemilik_luar like '$kw' OR c.nama_kepemilikan like '$kw' OR c.nomor LIKE '$kw')";
+			return $sql;
 			}
 		}
-
-	private function main_sql()
-	{
-		$sql = " FROM `data_persil` p
-				LEFT JOIN tweb_penduduk u ON u.id = p.id_pend
-				LEFT JOIN tweb_wil_clusterdesa w ON w.id = p.id_cluster
-				LEFT JOIN data_persil_c_desa y ON y.id = p.id_c_desa
-			 	WHERE 1 ";
-		return $sql;
-	}
 
 	private function filtered_sql($kat='', $mana=0)
 	{
@@ -105,13 +95,14 @@ class Cdesa_model extends CI_Model {
 				LEFT JOIN tweb_wil_clusterdesa w ON w.id = p.id_wilayah
 				LEFT JOIN ref_persil_kelas k ON k.id = p.kelas
 				WHERE 1  ";
+		$sql .= $this->search_sql();
 		return $sql;
 	}
 
 	public function paging_c_desa($kat='', $mana=0, $p=1)
 	{
 		
-		$sql = "SELECT COUNT(*) AS jml ".$this->main_sql_c_desa().$this->search_sql();
+		$sql = "SELECT COUNT(*) AS jml ".$this->main_sql_c_desa();
 		$query = $this->db->query($sql);
 		$row = $query->row_array();
 		$jml_data = $row['jml'];
@@ -128,23 +119,16 @@ class Cdesa_model extends CI_Model {
 	public function list_c_desa($kat='', $mana=0, $offset, $per_page)
 	{
 		$data = [];		
-		$strSQL = "SELECT c.id, c.*, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_wilayah, COUNT(m.id_cdesa_masuk) AS jumlah, u.nama as namapemilik,
+		$sql = "SELECT c.id, c.*, m.id_cdesa_masuk, k.kode, u.nik AS nik, cu.id_pend, p.id_wilayah, COUNT(m.id_cdesa_masuk) AS jumlah, u.nama as namapemilik,
 			p.`lokasi`, w.rt, w.rw, w.dusun, c.created_at as tanggal_daftar,
 			SUM(IF(k.kode LIke '%S%', m.luas, 0)) as basah,
 			SUM(IF(k.kode LIke '%D%', m.luas, 0)) as kering
-		".$this->main_sql_c_desa().$this->search_sql()." 
-		GROUP by c.nomor";
-
-		$strSQL .= " LIMIT ".$offset.",".$per_page;
-		$query = $this->db->query($strSQL);
-		if ($query->num_rows() > 0)
-		{
-			$data = $query->result_array();
-		}
-		else
-		{
-			$_SESSION["pesan"]= $strSQL;
-		}
+		";
+		$sql .= $this->main_sql_c_desa();
+		$sql .= " GROUP BY c.nomor ";
+		$sql .= " LIMIT ".$offset.",".$per_page;
+		$query = $this->db->query($sql);
+		$data = $query->result_array();
 
 		$j = $offset;
 		for ($i=0; $i<count($data); $i++)

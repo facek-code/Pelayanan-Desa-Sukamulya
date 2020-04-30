@@ -35,11 +35,10 @@ class Data_persil_model extends CI_Model {
 			$cari = $_SESSION['cari'];
 			$kw = $this->db->escape_like_str($cari);
 			$kw = '%' .$kw. '%';
-			$search_sql= " AND (u.nama LIKE '$kw' OR p.pemilik_luar like '$kw' OR y.c_desa LIKE '$kw')";
-			return $search_sql;
-			}
+			$this->db->where("p.nomor like '$kw'");
 		}
-
+	}
+	
 	private function filtered_sql($kat='', $mana=0)
 	{
 		$sql = $this->main_sql();
@@ -89,6 +88,7 @@ class Data_persil_model extends CI_Model {
 			->join('tweb_wil_clusterdesa w', 'w.id = p.id_wilayah', 'left')
 			->join('mutasi_cdesa m', 'p.id = m.id_persil', 'left')
 			->group_by('p.nomor');
+		$this->search_sql();
 	}
 
 	public function list_data($offset, $per_page)
