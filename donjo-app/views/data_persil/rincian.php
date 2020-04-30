@@ -45,9 +45,6 @@
 						<a href="<?=site_url("cdesa/create_bidang/".$cdesa['id'])?>" class="btn btn-social btn-flat btn-success btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"  title="Tambah Bidang Persil">
 							<i class="fa fa-plus"></i>Tambah Bidang Persil
 						</a>
-						 <a href="<?=site_url("program_bantuan/unduhsheet/$detail[id]/")?>" class="btn btn-social btn-flat bg-navy btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Unduh Data" target="_blank">
-							<i class="fa fa-download"></i>Unduh
-            </a>
 						<a href="<?=site_url('cdesa')?>" class="btn btn-social btn-flat btn-info btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar C-DESA"><i class="fa fa-arrow-circle-o-left"></i> Kembali Ke Daftar C-DESA</a>
 					</div>
 					<div class="box-body">

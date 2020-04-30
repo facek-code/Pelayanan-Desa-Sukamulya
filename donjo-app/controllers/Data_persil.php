@@ -23,6 +23,12 @@ class Data_persil extends Admin_Controller {
 		redirect('data_persil');
 	}
 
+	public function autocomplete()
+	{
+		$data = $this->data_persil_model->autocomplete($this->input->post('cari'));
+		echo json_encode($data);
+	}
+
 	public function search(){
 		$_SESSION['cari'] = $this->input->post('cari');
 		if ($_SESSION['cari'] == '') unset($_SESSION['cari']);
@@ -51,35 +57,7 @@ class Data_persil extends Admin_Controller {
 		$this->load->view('footer');
 	}
 
-	// public function index($kat=0, $mana=0, $page=1, $o=0)
-	// {
-	// 	$header = $this->header_model->get_data();
-	// 	$data['kat'] = $kat;
-	// 	$data['mana'] = $mana;
-	// 	$header['minsidebar'] = 1;
-
-	// 	$this->load->view('header', $header);
-
-	// 	if (isset($_SESSION['cari']))
-	// 		$data['cari'] = $_SESSION['cari'];
-	// 	else $data['cari'] = '';
-
-	// 	if (isset($_POST['per_page']))
-	// 		$_SESSION['per_page']=$_POST['per_page'];
-	// 	$data['per_page'] = $_SESSION['per_page'];
-
-	// 	$data["desa"] = $this->config_model->get_data();
-	// 	$data['paging']  = $this->cdesa_model->paging_c_desa($kat, $mana, $page);
-	// 	$data["cdesa"] = $this->cdesa_model->list_c_desa($kat, $mana, $data['paging']->offset, $data['paging']->per_page);
-	// 	$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-	// 	$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-	// 	$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-	// 	$data['keyword'] = $this->data_persil_model->autocomplete();
-	// 	$this->load->view('nav', $nav);
-	// 	$this->load->view('data_persil/c_desa', $data);
-	// 	$this->load->view('footer');
-	// }
-
+	// Cek untuk dihapus
 	public function persil($kat=0, $mana=0, $page=1, $o=0)
 	{
 		$header = $this->header_model->get_data();
@@ -135,58 +113,6 @@ class Data_persil extends Admin_Controller {
 		$this->load->view('data_persil/import', $data);
 	}
 
-	public function detail($mode='', $id=0)
-	{
-		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
-		$this->load->view('header', $header);
-
-		if ($mode === 'persil')
-			$data["c_desa_detail"] = $this->data_persil_model->get_c_desa_persil($id);
-		elseif ($mode === 'id_pend')
-			$data["c_desa_detail"] = $this->data_persil_model->get_c_desa_id_pend($id);
-		else
-			$data["c_desa_detail"] = $this->data_persil_model->get_c_desa($id);
-
-		$data["persil_detail"] = $this->data_persil_model->list_detail_c_desa($mode, $id);
-		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$nav['act'] = 7;
-		$this->load->view('nav',$nav);
-		$this->load->view('data_persil/rincian', $data);
-		$this->load->view('footer');
-	}
-
-	public function detail_edit($mode='', $id=0)
-	{
-		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
-		$this->load->view('header', $header);
-		
-		if ($mode === 'persil')
-			$data["c_desa_detail"] = $this->data_persil_model->get_c_desa_persil($id);
-		elseif ($mode === 'id_pend')
-			$data["c_desa_detail"] = $this->data_persil_model->get_c_desa_id_pend($id);
-		else
-			$data["c_desa_detail"] = $this->data_persil_model->get_c_desa($id);
-
-		$data["persil_detail"] = $this->data_persil_model->list_detail_c_desa($mode, $id);
-		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$nav['act'] = 7;
-		if (isset($_POST['nik']))
-		{
-			$data['pemilik'] = $this->data_persil_model->get_penduduk($_POST['nik'], $nik=true);
-		}
-		$this->load->view('nav',$nav);
-		$this->load->view('data_persil/detail_edit', $data);
-		$this->load->view('footer');
-	}
-
 	public function rincian($id=0)
 	{
 		$header = $this->header_model->get_data();
@@ -200,24 +126,6 @@ class Data_persil extends Admin_Controller {
 		$this->load->view('footer');
 	}
 
-	// public function detail_persil($id=0)
-	// {
-	// 	$header = $this->header_model->get_data();
-	// 	$header['minsidebar'] = 1;
-	// 	$this->load->view('header', $header);
-
-	// 	$data["persil_detail"] = $this->data_persil_model->get_persil($id);
-	// 	$data["persil_mutasi"] = $this->data_persil_model->list_persil_mutasi($id);
-	// 	$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-	// 	$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-	// 	$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-	// 	$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-	// 	$nav['act'] = 7;
-	// 	$this->load->view('nav',$nav);
-	// 	$this->load->view('data_persil/detail_persil', $data);
-	// 	$this->load->view('footer');
-	// }
-
 	public function form($id)
 	{
 		$header = $this->header_model->get_data();
@@ -230,89 +138,6 @@ class Data_persil extends Admin_Controller {
 		$this->load->view('header', $header);
 		$this->load->view('nav', $nav);
 		$this->load->view('data_persil/form_persil', $data);
-		$this->load->view('footer');
-	}
-
-	public function update($id)
-	{
-
-	}
-
-	public function create_hapus($mode=0, $id=0)
-	{
-		$this->load->helper('form');
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('nama', 'Nama Jenis Tanah', 'required');
-
-		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
-		$this->tab_ini = 10;
-		$this->load->view('header', $header);
-
-		$data["mode"] = $mode;
-		$data["penduduk"] = $this->data_persil_model->list_penduduk();
-		if ($mode === 'edit')
-		{ 
-			$data["persil_detail"] = $this->data_persil_model->get_persil($id);
-			$data["persil_mutasi"] = $this->data_persil_model->list_persil_mutasi($id);
-		}
-		elseif ($mode === 'add')
-		{
-			$data["persil_detail"] = $this->data_persil_model->get_c_desa($id);
-		}
-		if ($id > 0)
-		{
-			$data['pemilik'] = $this->data_persil_model->get_penduduk($data["persil_detail"]["id_pend"]);
-			$data['pemilik']['nik_lama'] = $data['pemilik']['nik'];
-		}
-		else
-		{
-			$data['pemilik'] = false;
-		}
-		if (isset($_POST['nik']))
-		{
-			$data['pemilik'] = $this->data_persil_model->get_penduduk($_POST['nik'], $nik=true);
-		}
-		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$data["persil_sebab_mutasi"] = $this->data_persil_model->list_persil_sebab_mutasi();
-		$nav['act'] = 7;
-		$this->load->view('nav', $nav);
-		$this->load->view('data_persil/create', $data);
-		$this->load->view('footer');
-	}
-
-	public function create_ext($mode=0, $id=0)
-	{
-		$this->load->helper('form');
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('nama', 'Nama Jenis Tanah', 'required');
-
-		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
-		$this->tab_ini = 11;
-		$this->load->view('header', $header);
-
-		$data["mode"] = $mode;
-		if ($mode === 'edit')
-		{ 
-			$data["persil_detail"] = $this->data_persil_model->get_persil($id);
-			$data["persil_mutasi"] = $this->data_persil_model->list_persil_mutasi($id);
-		}
-		elseif ($mode === 'add')
-		{
-			$data["persil_detail"] = $this->data_persil_model->get_c_desa($id);
-		}	
-
-		$data["persil_lokasi"] = $this->data_persil_model->list_dusunrwrt();
-		$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-		$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-		$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-		$nav['act'] = 7;
-		$this->load->view('nav', $nav);
-		$this->load->view('data_persil/create_ext', $data);
 		$this->load->view('footer');
 	}
 
@@ -337,19 +162,6 @@ class Data_persil extends Admin_Controller {
 		}
 	}
 
-	public function simpan_c_desa($page=1)
-	{
-		$this->load->helper('form');
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('nama', 'Nama Jenis Tanah', 'required');
-
-		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
-		$this->load->view('header', $header);
-
-		$data["hasil"] = $this->data_persil_model->simpan_c_desa();
-		redirect("data_persil/clear");
-	}
 	public function persil_jenis($id=0)
 	{
 		$this->load->helper('form');
@@ -442,13 +254,6 @@ class Data_persil extends Admin_Controller {
 		redirect("data_persil/persil_peruntukan");
 	}
 
-	// public function hapus($mana, $id)
-	// {
-	// 	$this->redirect_hak_akses('h', "data_persil");
-	// 	$this->data_persil_model->hapus_c_desa($id, $mana);
-	// 	redirect("data_persil");
-	// }
-
 	public function hapus($id)
 	{
 		$this->redirect_hak_akses('h', "data_persil");
@@ -474,6 +279,7 @@ class Data_persil extends Admin_Controller {
 		$this->load->view('data_persil/c_desa_print', $data);
 	}
 
+	// Cek untuk dihapus
 	public function form_c_desa($id=0)
 	{
 		$header = $this->header_model->get_data();
@@ -506,69 +312,6 @@ class Data_persil extends Admin_Controller {
 		}
 		echo json_encode($data);
 	}
-
-	public function autocomplete()
-	{
-		$data = $this->data_persil_model->autocomplete($this->input->post('cari'));
-		echo json_encode($data);
-	}
-
-	public function mutasi($mode, $id=0, $ext=1)
-	{
-		$header = $this->header_model->get_data();
-		$header['minsidebar'] = 1;
-		$this->load->view('header', $header);
-		$nav['act'] = 7;
-		$this->tab_ini = 11;
-		$this->load->view('nav', $nav);
-		$data["id"] = $id;
-		if ($mode === 'edit')
-		{
-			$data["jenis"] = $ext;
-			$data['form_action'] = site_url("data_persil/simpan_mutasi");
-			$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-			$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-			$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-			$data["persil_sebab_mutasi"] = $this->data_persil_model->list_persil_sebab_mutasi();
-			$data["persil_jenis_mutasi"] = $this->data_persil_model->list_persil_jenis_mutasi();
-			$data["persil_mutasi"] = $this->data_persil_model->get_persil_mutasi($id);
-			$this->load->view('data_persil/mutasi', $data);
-		}
-		else
-		{
-			$data["jenis"] = $id;
-			$data['form_action'] = site_url("data_persil/simpan_mutasi");
-			$data['no_persil'] = $mode; 
-			$data["persil_peruntukan"] = $this->data_persil_model->list_persil_peruntukan();
-			$data["persil_jenis"] = $this->data_persil_model->list_persil_jenis();
-			$data["persil_kelas"] = $this->data_persil_model->list_persil_kelas();
-			$data["persil_detail"] = $this->data_persil_model->get_persil($data['no_persil']);
-			$data["persil_sebab_mutasi"] = $this->data_persil_model->list_persil_sebab_mutasi();
-			$data["persil_jenis_mutasi"] = $this->data_persil_model->list_persil_jenis_mutasi();
-			$this->load->view('data_persil/mutasi', $data);
-		}
-		$this->load->view('footer');
-	}
-
-	public function simpan_mutasi()
-	{
-		$data = $this->data_persil_model->simpan_mutasi();
-		if ($data["jenis"] == 2)
-			redirect("data_persil/create_ext/edit/".$data["id"]);
-		else
-			redirect("data_persil/create/edit/".$data["id"]);
-	}
-
-	public function hapus_mutasi($persil=0, $id=0, $ext=1)
-	{
-		$this->redirect_hak_akses('h', "data_persil/create/edit/".$persil);
-		$this->data_persil_model->hapus_mutasi($id);
-		if($ext==2)
-			redirect("data_persil/create_ext/edit/".$persil);
-		else
-			redirect("data_persil/create/edit/".$persil);
-	}
-
 }
 
 ?>
